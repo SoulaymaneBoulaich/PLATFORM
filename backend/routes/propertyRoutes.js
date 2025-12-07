@@ -70,7 +70,7 @@ router.get('/:id', async (req, res, next) => {
     if (!props.length) return res.status(404).json({ message: 'Not found' });
 
     const [images] = await pool.query(
-      'SELECT * FROM property_images WHERE property_id = ?',
+      'SELECT image_id, property_id, image_url, is_primary FROM property_images WHERE property_id = ? ORDER BY is_primary DESC, image_id ASC',
       [id]
     );
     res.json({ ...props[0], images });
@@ -82,13 +82,9 @@ router.get('/:id', async (req, res, next) => {
 // POST /api/properties  (only sellers/admin)
 router.post('/', auth, async (req, res, next) => {
   try {
-    if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
-      return res
-        .status(403)
-        .json({ message: 'Only sellers can create properties' });
-    }
-
     const seller_id = req.user.user_id;
+
+    // Accept both frontend names and DB names
     const {
       title,
       description,
@@ -96,7 +92,7 @@ router.post('/', auth, async (req, res, next) => {
       listing_type,
       price,
       address_line1,
-      address_line2,
+      address,          // frontend sends this
       city,
       state,
       zip_code,
@@ -104,31 +100,48 @@ router.post('/', auth, async (req, res, next) => {
       bedrooms,
       bathrooms,
       area_sqft,
+      area,             // frontend sends this
+      has_garage,       // new feature fields
+      has_pool,
+      has_garden
     } = req.body;
+
+    // Map to final values expected by DB
+    const finalAddressLine1 = address_line1 || address;
+    const finalAreaSqft = area_sqft || area || null;
+    const finalState = state || '';        // or a default
+    const finalZip = zip_code || '';
+    const finalCountry = country || 'Morocco';  // choose your default
+
+    if (!finalAddressLine1) {
+      return res.status(400).json({ message: 'Address is required' });
+    }
 
     const [result] = await pool.query(
       `INSERT INTO properties (
         seller_id, agent_id, title, description, property_type, listing_type, price,
         address_line1, address_line2, city, state, zip_code, country,
         bedrooms, bathrooms, area_sqft, status, listing_date
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'active',CURDATE())`,
+      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE())`,
       [
         seller_id,
-        null,
         title,
-        description,
+        description || '',
         property_type,
         listing_type,
         price,
-        address_line1,
-        address_line2,
+        finalAddressLine1,
+        '',                   // address_line2
         city,
-        state,
-        zip_code,
-        country || 'USA',
+        finalState,
+        finalZip,
+        finalCountry,
         bedrooms,
         bathrooms,
-        area_sqft,
+        finalAreaSqft,
+        has_garage || false,  // default to false if not provided
+        has_pool || false,
+        has_garden || false
       ]
     );
 
@@ -137,6 +150,7 @@ router.post('/', auth, async (req, res, next) => {
     next(err);
   }
 });
+
 
 // PUT /api/properties/:id  (only seller who owns it or admin)
 router.put('/:id', auth, async (req, res, next) => {
@@ -149,12 +163,25 @@ router.put('/:id', auth, async (req, res, next) => {
 
     const id = req.params.id;
     const seller_id = req.user.user_id;
-    const { title, description, price, status } = req.body;
+    const {
+      title,
+      description,
+      price,
+      status,
+      property_type,
+      listing_type,
+      bedrooms,
+      bathrooms,
+      area,
+      has_garage,
+      has_pool,
+      has_garden
+    } = req.body;
 
     const [result] = await pool.query(
       `UPDATE properties 
-       SET title = ?, description = ?, price = ?, status = ?, updated_at = NOW()
-       WHERE property_id = ? AND seller_id = ?`,
+       SET title=?, description=?, price=?, status=?, updated_at=NOW()
+       WHERE property_id=? AND seller_id=?`,
       [title, description, price, status, id, seller_id]
     );
 
