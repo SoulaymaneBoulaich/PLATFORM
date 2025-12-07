@@ -1,10 +1,11 @@
+// backend/routes/propertyRoutes.js
 const express = require('express');
 const pool = require('../config/database');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/properties
+// GET /api/properties  (public: buyers & sellers)
 router.get('/', async (req, res, next) => {
   try {
     const {
@@ -58,7 +59,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /api/properties/:id
+// GET /api/properties/:id  (public)
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -78,9 +79,15 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// POST /api/properties
+// POST /api/properties  (only sellers/admin)
 router.post('/', auth, async (req, res, next) => {
   try {
+    if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
+      return res
+        .status(403)
+        .json({ message: 'Only sellers can create properties' });
+    }
+
     const seller_id = req.user.user_id;
     const {
       title,
@@ -104,9 +111,10 @@ router.post('/', auth, async (req, res, next) => {
         seller_id, agent_id, title, description, property_type, listing_type, price,
         address_line1, address_line2, city, state, zip_code, country,
         bedrooms, bathrooms, area_sqft, status, listing_date
-      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE())`,
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'active',CURDATE())`,
       [
         seller_id,
+        null,
         title,
         description,
         property_type,
@@ -130,31 +138,47 @@ router.post('/', auth, async (req, res, next) => {
   }
 });
 
-// PUT /api/properties/:id
+// PUT /api/properties/:id  (only seller who owns it or admin)
 router.put('/:id', auth, async (req, res, next) => {
   try {
+    if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
+      return res
+        .status(403)
+        .json({ message: 'Only sellers can update properties' });
+    }
+
     const id = req.params.id;
     const seller_id = req.user.user_id;
     const { title, description, price, status } = req.body;
 
     const [result] = await pool.query(
       `UPDATE properties 
-       SET title=?, description=?, price=?, status=?, updated_at=NOW()
-       WHERE property_id=? AND seller_id=?`,
+       SET title = ?, description = ?, price = ?, status = ?, updated_at = NOW()
+       WHERE property_id = ? AND seller_id = ?`,
       [title, description, price, status, id, seller_id]
     );
+
     if (!result.affectedRows) {
-      return res.status(404).json({ message: 'Not found or not owner' });
+      return res
+        .status(404)
+        .json({ message: 'Property not found or not owner' });
     }
+
     res.json({ message: 'Updated' });
   } catch (err) {
     next(err);
   }
 });
 
-// DELETE /api/properties/:id
+// DELETE /api/properties/:id  (only seller who owns it or admin)
 router.delete('/:id', auth, async (req, res, next) => {
   try {
+    if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
+      return res
+        .status(403)
+        .json({ message: 'Only sellers can delete properties' });
+    }
+
     const id = req.params.id;
     const seller_id = req.user.user_id;
 
@@ -162,9 +186,13 @@ router.delete('/:id', auth, async (req, res, next) => {
       'DELETE FROM properties WHERE property_id = ? AND seller_id = ?',
       [id, seller_id]
     );
+
     if (!result.affectedRows) {
-      return res.status(404).json({ message: 'Not found or not owner' });
+      return res
+        .status(404)
+        .json({ message: 'Property not found or not owner' });
     }
+
     res.json({ message: 'Deleted' });
   } catch (err) {
     next(err);
