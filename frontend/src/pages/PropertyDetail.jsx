@@ -198,7 +198,7 @@ const PropertyDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-6">
-                        <ImageGallery images={property.images || []} />
+                        <ImageGallery images={property.images || []} imageUrl={property.image_url} />
 
                         <div className="bg-white rounded-lg shadow-md p-6">
                             <div className="flex justify-between items-start mb-4">

@@ -9,9 +9,10 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
         }).format(price);
     };
 
-    const primaryImage = property.images && property.images.length > 0
-        ? property.images[0].image_url
-        : 'https://via.placeholder.com/400x300?text=No+Image';
+    // Use image_url from property, fallback to images array for backward compatibility, then placeholder
+    const primaryImage = property.image_url
+        || (property.images && property.images.length > 0 ? property.images[0].image_url : null)
+        || 'https://via.placeholder.com/400x300?text=No+Image';
 
     return (
         <div className="card overflow-hidden">
@@ -20,6 +21,9 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
                     src={primaryImage}
                     alt={property.title}
                     className="w-full h-48 object-cover hover:scale-105 transition-transform duration-200"
+                    onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                    }}
                 />
             </Link>
 

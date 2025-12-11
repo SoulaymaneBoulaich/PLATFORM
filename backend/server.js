@@ -13,6 +13,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const agentRoutes = require('./routes/agentRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api', uploadRoutes); // Upload routes for property images
 app.use('/api/agents', agentRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api', reviewRoutes); // Review routes for properties
+app.use('/api/transactions', transactionRoutes);
 
 app.use(errorHandler);
 

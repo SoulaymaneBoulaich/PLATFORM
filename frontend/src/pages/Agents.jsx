@@ -49,15 +49,15 @@ const Agents = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Our Agents</h1>
-                    <p className="text-gray-600">Connect with experienced real estate professionals</p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Property Sellers</h1>
+                    <p className="text-gray-600">Connect with experienced property sellers</p>
                 </div>
 
                 {/* Search */}
                 <div className="mb-6">
                     <input
                         type="text"
-                        placeholder="Search agents by name or email..."
+                        placeholder="Search sellers by name or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="input-field w-full max-w-md"
@@ -96,10 +96,17 @@ const Agents = () => {
                                     </h3>
 
                                     {agent.license_number && (
-                                        <p className="text-xs text-gray-500 mb-3">
+                                        <p className="text-xs text-gray-500 mb-2">
                                             License: {agent.license_number}
                                         </p>
                                     )}
+
+                                    {/* Property Count Badge */}
+                                    <div className="mb-3">
+                                        <span className="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
+                                            {agent.property_count || 0} {(agent.property_count || 0) === 1 ? 'Property' : 'Properties'}
+                                        </span>
+                                    </div>
 
                                     {agent.bio && (
                                         <p className="text-sm text-gray-600 mb-4 line-clamp-3">
@@ -126,7 +133,7 @@ const Agents = () => {
                                         to={`/agents/${agent.agent_id}`}
                                         className="btn-primary w-full block text-center"
                                     >
-                                        View Profile
+                                        View Profile & Properties
                                     </Link>
                                 </div>
                             </div>
@@ -135,7 +142,7 @@ const Agents = () => {
                 ) : (
                     <div className="text-center py-12 bg-white rounded-lg shadow">
                         <p className="text-gray-600">
-                            {searchTerm ? 'No agents found matching your search.' : 'No agents available at the moment.'}
+                            {searchTerm ? 'No sellers found matching your search.' : 'No sellers available at the moment.'}
                         </p>
                     </div>
                 )}

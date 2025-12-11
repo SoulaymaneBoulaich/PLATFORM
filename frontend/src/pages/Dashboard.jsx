@@ -30,7 +30,7 @@ const Dashboard = () => {
         has_pool: false,
         has_garden: false,
     });
-    const [imageFile, setImageFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
     const [uploadingImage, setUploadingImage] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState('');
 
@@ -119,35 +119,8 @@ const Dashboard = () => {
         });
     };
 
-    const handleImageChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setImageFile(e.target.files[0]);
-        }
-    };
+    //uploadPropertyImage function removed - image_url now sent directly with property data
 
-    const uploadPropertyImage = async (propertyId) => {
-        if (!imageFile) return;
-
-        try {
-            setUploadingImage(true);
-            const formData = new FormData();
-            formData.append('image', imageFile);
-
-            await api.post(`/properties/${propertyId}/images`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            setUploadSuccess('Image uploaded successfully!');
-            setTimeout(() => setUploadSuccess(''), 3000);
-        } catch (err) {
-            console.error('Image upload error:', err);
-            setError('Failed to upload image: ' + (err.response?.data?.error || err.message));
-        } finally {
-            setUploadingImage(false);
-        }
-    };
 
     const handlePropertySubmit = async (e) => {
         e.preventDefault();
@@ -157,18 +130,18 @@ const Dashboard = () => {
         try {
             let propertyId;
 
+            // Include image_url in the request body
+            const propertyData = {
+                ...formData,
+                image_url: imageUrl?.trim() || null
+            };
+
             if (editingProperty) {
-                await api.put(`/properties/${editingProperty.property_id}`, formData);
+                await api.put(`/properties/${editingProperty.property_id}`, propertyData);
                 propertyId = editingProperty.property_id;
             } else {
-                const response = await api.post('/properties', formData);
+                const response = await api.post('/properties', propertyData);
                 propertyId = response.data.property_id;
-            }
-
-            // If an image file is selected, upload it
-            // TODO: Extend this to support multiple images
-            if (imageFile && propertyId) {
-                await uploadPropertyImage(propertyId);
             }
 
             setShowPropertyForm(false);
@@ -185,7 +158,7 @@ const Dashboard = () => {
                 bathrooms: '',
                 area: '',
             });
-            setImageFile(null);
+            setImageUrl('');
 
             fetchMyProperties();
         } catch (err) {
@@ -473,26 +446,26 @@ const Dashboard = () => {
                                         />
                                     </div>
 
-                                    {/* Image Upload */}
+                                    {/* Image URL Input */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Property Image
+                                            Property Image URL
                                         </label>
                                         <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageChange}
+                                            type="url"
+                                            placeholder="https://example.com/image.jpg"
+                                            value={imageUrl}
+                                            onChange={(e) => setImageUrl(e.target.value)}
                                             className="input-field"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">
-                                            Select an image file to upload (max 5MB). Supported formats: JPG, PNG, GIF, WebP.
+                                            Paste a direct URL to an image (e.g., from Imgur, your cloud storage, etc.)
                                         </p>
-                                        {imageFile && (
+                                        {imageUrl && (
                                             <p className="text-sm text-primary-600 mt-2">
-                                                Selected: {imageFile.name}
+                                                ✓ URL provided
                                             </p>
                                         )}
-                                        {/* TODO: Add support for multiple image uploads and image preview */}
                                     </div>
 
                                     {uploadSuccess && (

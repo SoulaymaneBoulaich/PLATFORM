@@ -1,12 +1,22 @@
 import { useState } from 'react';
 
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images, imageUrl }) => {
     const [selectedImage, setSelectedImage] = useState(0);
 
-    if (!images || images.length === 0) {
+    // Convert single image_url to images array format for consistency
+    let displayImages = images || [];
+    if (!displayImages.length && imageUrl) {
+        displayImages = [{ image_url: imageUrl, image_id: 1 }];
+    }
+
+    if (!displayImages || displayImages.length === 0) {
         return (
             <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">No images available</p>
+                <img
+                    src="https://via.placeholder.com/800x600?text=No+Image+Available"
+                    alt="No image"
+                    className="w-full h-full object-cover rounded-lg"
+                />
             </div>
         );
     }
@@ -15,15 +25,18 @@ const ImageGallery = ({ images }) => {
         <div className="space-y-4">
             <div className="relative">
                 <img
-                    src={images[selectedImage].image_url}
+                    src={displayImages[selectedImage].image_url}
                     alt={`Property image ${selectedImage + 1}`}
                     className="w-full h-96 object-cover rounded-lg shadow-lg"
+                    onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Found';
+                    }}
                 />
 
-                {images.length > 1 && (
+                {displayImages.length > 1 && (
                     <>
                         <button
-                            onClick={() => setSelectedImage((selectedImage - 1 + images.length) % images.length)}
+                            onClick={() => setSelectedImage((selectedImage - 1 + displayImages.length) % displayImages.length)}
                             className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-colors"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +44,7 @@ const ImageGallery = ({ images }) => {
                             </svg>
                         </button>
                         <button
-                            onClick={() => setSelectedImage((selectedImage + 1) % images.length)}
+                            onClick={() => setSelectedImage((selectedImage + 1) % displayImages.length)}
                             className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-colors"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,13 +55,13 @@ const ImageGallery = ({ images }) => {
                 )}
 
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/80 px-3 py-1 rounded-full text-sm font-medium">
-                    {selectedImage + 1} / {images.length}
+                    {selectedImage + 1} / {displayImages.length}
                 </div>
             </div>
 
-            {images.length > 1 && (
+            {displayImages.length > 1 && (
                 <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
-                    {images.map((image, index) => (
+                    {displayImages.map((image, index) => (
                         <button
                             key={image.image_id || index}
                             onClick={() => setSelectedImage(index)}

@@ -8,6 +8,7 @@ import Dashboard from '../pages/Dashboard';
 import Agents from '../pages/Agents';
 import AgentDetail from '../pages/AgentDetail';
 import Contact from '../pages/Contact';
+import Transactions from '../pages/Transactions';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const AppRouter = () => {
@@ -24,6 +25,11 @@ const AppRouter = () => {
             <Route path="/dashboard" element={
                 <ProtectedRoute>
                     <Dashboard />
+                </ProtectedRoute>
+            } />
+            <Route path="/transactions" element={
+                <ProtectedRoute>
+                    <Transactions />
                 </ProtectedRoute>
             } />
         </Routes>

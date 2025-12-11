@@ -19,7 +19,9 @@ router.get('/', async (req, res, next) => {
     } = req.query;
 
     const params = [];
-    let sql = `SELECT * FROM properties WHERE status = 'active'`;
+    let sql = `SELECT property_id, seller_id, title, description, property_type, listing_type, 
+                      price, city, bedrooms, bathrooms, area_sqft, status, image_url 
+               FROM properties WHERE status = 'active'`;
 
     if (city) {
       sql += ' AND city = ?';
@@ -103,7 +105,8 @@ router.post('/', auth, async (req, res, next) => {
       area,             // frontend sends this
       has_garage,       // new feature fields
       has_pool,
-      has_garden
+      has_garden,
+      image_url         // image URL field
     } = req.body;
 
     // Map to final values expected by DB
@@ -121,8 +124,8 @@ router.post('/', auth, async (req, res, next) => {
       `INSERT INTO properties (
         seller_id, agent_id, title, description, property_type, listing_type, price,
         address_line1, address_line2, city, state, zip_code, country,
-        bedrooms, bathrooms, area_sqft, status, listing_date
-      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE())`,
+        bedrooms, bathrooms, area_sqft, image_url, status, listing_date
+      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE())`,
       [
         seller_id,
         title,
@@ -139,6 +142,7 @@ router.post('/', auth, async (req, res, next) => {
         bedrooms,
         bathrooms,
         finalAreaSqft,
+        image_url || null,    // image URL
         has_garage || false,  // default to false if not provided
         has_pool || false,
         has_garden || false
@@ -175,14 +179,15 @@ router.put('/:id', auth, async (req, res, next) => {
       area,
       has_garage,
       has_pool,
-      has_garden
+      has_garden,
+      image_url
     } = req.body;
 
     const [result] = await pool.query(
       `UPDATE properties 
-       SET title=?, description=?, price=?, status=?, updated_at=NOW()
+       SET title=?, description=?, price=?, status=?, image_url=?, updated_at=NOW()
        WHERE property_id=? AND seller_id=?`,
-      [title, description, price, status, id, seller_id]
+      [title, description, price, status, image_url, id, seller_id]
     );
 
     if (!result.affectedRows) {
