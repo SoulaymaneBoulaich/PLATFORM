@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import ImageGallery from '../components/ImageGallery';
 import AppointmentForm from '../components/AppointmentForm';
+import ContactForm from '../components/ContactForm';
 import Loader from '../components/Loader';
 import ErrorMessage from '../components/ErrorMessage';
 
@@ -22,11 +23,12 @@ const PropertyDetail = () => {
     const [averageRating, setAverageRating] = useState(0);
     const [reviewCount, setReviewCount] = useState(0);
     const [showReviewForm, setShowReviewForm] = useState(false);
-    const [reviewFormData, setReviewFormData] = useState({ rating: 5 });
+    const [reviewFormData, setReviewFormData] = useState({ rating: 5, comment: '' });
     const [userReview, setUserReview] = useState(null);
 
     // Appointment state
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+    const [showContactModal, setShowContactModal] = useState(false);
 
     useEffect(() => {
         fetchProperty();
@@ -110,7 +112,7 @@ const PropertyDetail = () => {
                 const userRev = response.data.reviews.find(r => r.user_id === user.user_id);
                 setUserReview(userRev);
                 if (userRev) {
-                    setReviewFormData({ rating: userRev.rating });
+                    setReviewFormData({ rating: userRev.rating, comment: userRev.comment || '' });
                 }
             }
         } catch (err) {
@@ -152,7 +154,7 @@ const PropertyDetail = () => {
             setActionLoading(true);
             await api.delete(`/reviews/${userReview.review_id}`);
             await fetchReviews();
-            setReviewFormData({ rating: 5 });
+            setReviewFormData({ rating: 5, comment: '' });
             setShowReviewForm(false);
         } catch (err) {
             setError('Failed to delete review');
@@ -204,7 +206,7 @@ const PropertyDetail = () => {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-800 mb-2">{property.title}</h1>
-                                    <p className="text-gray-600">{property.address}, {property.city}</p>
+                                    <p className="text-gray-600">{property.address}, {property.city}{property.country ? `, ${property.country}` : ''}</p>
                                 </div>
                                 <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-lg font-semibold">
                                     {property.listing_type}
@@ -265,6 +267,13 @@ const PropertyDetail = () => {
                                     >
                                         📅 Schedule Viewing
                                     </button>
+
+                                    <button
+                                        onClick={() => setShowContactModal(true)}
+                                        className="w-full btn-secondary mb-3"
+                                    >
+                                        📧 Contact Seller
+                                    </button>
                                 </>
                             )}
 
@@ -294,6 +303,12 @@ const PropertyDetail = () => {
                                         <span className="text-gray-600">Property ID:</span>
                                         <span className="font-medium">{property.property_id}</span>
                                     </div>
+                                    {property.owner_first_name && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Owner:</span>
+                                            <span className="font-medium">{property.owner_first_name} {property.owner_last_name}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Listed:</span>
                                         <span className="font-medium">
@@ -338,19 +353,31 @@ const PropertyDetail = () => {
                             {showReviewForm && (
                                 <form onSubmit={handleReviewSubmit} className="mb-6 p-4 bg-gray-50 rounded-lg">
                                     <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating (Optional)</label>
                                         <div className="flex gap-2">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
                                                     type="button"
-                                                    onClick={() => setReviewFormData({ rating: star })}
+                                                    onClick={() => setReviewFormData({ ...reviewFormData, rating: star })}
                                                     className="text-3xl"
                                                 >
                                                     <span className={star <= reviewFormData.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
                                                 </button>
                                             ))}
                                         </div>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Your Review *</label>
+                                        <textarea
+                                            value={reviewFormData.comment}
+                                            onChange={(e) => setReviewFormData({ ...reviewFormData, comment: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                            rows={4}
+                                            placeholder="Write your review here..."
+                                            required
+                                        />
                                     </div>
 
                                     <div className="flex gap-2">
@@ -398,6 +425,20 @@ const PropertyDetail = () => {
                                 propertyId={parseInt(id)}
                                 onSuccess={handleAppointmentSuccess}
                                 onCancel={() => setShowAppointmentModal(false)}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Contact Modal */}
+                {showContactModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                            <h3 className="text-xl font-semibold mb-4">Contact Seller</h3>
+                            <ContactForm
+                                propertyId={parseInt(id)}
+                                onSuccess={() => setShowContactModal(false)}
+                                onCancel={() => setShowContactModal(false)}
                             />
                         </div>
                     </div>

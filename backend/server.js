@@ -14,6 +14,11 @@ const agentRoutes = require('./routes/agentRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const conversationRoutes = require('./routes/conversationRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -31,6 +36,11 @@ app.use('/api/agents', agentRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api', reviewRoutes); // Review routes for properties
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', contactRoutes); // Contact form routes
+app.use('/api', notificationRoutes); // Notification routes
+app.use('/api', chatRoutes); // Chat routes
+app.use('/api/conversations', conversationRoutes); // Conversation routes
 
 app.use(errorHandler);
 

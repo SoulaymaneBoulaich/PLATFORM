@@ -12,6 +12,9 @@ const Dashboard = () => {
     const [properties, setProperties] = useState([]);
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [dashboardStats, setDashboardStats] = useState(null);
+    const [statsLoading, setStatsLoading] = useState(true);
+    const [statsError, setStatsError] = useState('');
     const [error, setError] = useState('');
     const [showPropertyForm, setShowPropertyForm] = useState(false);
     const [editingProperty, setEditingProperty] = useState(null);
@@ -36,7 +39,9 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (user) {
+            // Fetch dashboard stats for sellers/admins
             if (user.user_type === 'seller' || user.user_type === 'admin') {
+                fetchDashboardStats();
                 fetchMyProperties();
             } else if (user.user_type === 'buyer') {
                 fetchFavorites();
@@ -49,6 +54,20 @@ const Dashboard = () => {
             }
         }
     }, [user, searchParams]);
+
+    const fetchDashboardStats = async () => {
+        try {
+            setStatsLoading(true);
+            const response = await api.get('/dashboard/summary');
+            setDashboardStats(response.data);
+            setStatsError('');
+        } catch (err) {
+            setStatsError('Failed to load dashboard statistics');
+            console.error(err);
+        } finally {
+            setStatsLoading(false);
+        }
+    };
 
     const fetchMyProperties = async () => {
         try {
@@ -94,17 +113,19 @@ const Dashboard = () => {
                 title: prop.title,
                 description: prop.description,
                 price: prop.price,
-                address: prop.address,
+                address: prop.address || prop.address_line1, // Handle both field names
                 city: prop.city,
                 property_type: prop.property_type,
                 listing_type: prop.listing_type,
                 bedrooms: prop.bedrooms,
                 bathrooms: prop.bathrooms,
-                area: prop.area,
+                area: prop.area || prop.area_sqft, // Handle both field names
                 has_garage: prop.has_garage || false,
                 has_pool: prop.has_pool || false,
                 has_garden: prop.has_garden || false,
             });
+            // CRITICAL: Set the image URL when editing
+            setImageUrl(prop.image_url || '');
             setShowPropertyForm(true);
         } catch (err) {
             setError('Failed to load property for editing');
@@ -233,6 +254,94 @@ const Dashboard = () => {
                 </div>
 
                 <ErrorMessage message={error} />
+
+                {/* Dashboard Statistics - For Sellers/Admins */}
+                {isSeller && (
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+
+                        {statsError && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                                {statsError}
+                            </div>
+                        )}
+
+                        {statsLoading ? (
+                            <div className="text-center py-8">
+                                <Loader />
+                                <p className="text-gray-500 mt-2">Loading dashboard statistics...</p>
+                            </div>
+                        ) : dashboardStats ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                {/* Total Properties Card */}
+                                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-blue-100 text-sm font-medium">Total Properties</p>
+                                            <p className="text-4xl font-bold mt-2">{dashboardStats.totalProperties}</p>
+                                        </div>
+                                        <div className="bg-blue-400 bg-opacity-30 rounded-full p-3">
+                                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Total Agents Card */}
+                                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-green-100 text-sm font-medium">Active Sellers</p>
+                                            <p className="text-4xl font-bold mt-2">{dashboardStats.totalAgents}</p>
+                                        </div>
+                                        <div className="bg-green-400 bg-opacity-30 rounded-full p-3">
+                                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Property Types Card */}
+                                <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
+                                    <h3 className="text-gray-700 text-sm font-semibold mb-3">By Property Type</h3>
+                                    <div className="space-y-2">
+                                        {dashboardStats.propertiesByType.slice(0, 3).map((item, idx) => (
+                                            <div key={idx} className="flex justify-between items-center">
+                                                <span className="text-gray-600 text-sm capitalize">{item.type}</span>
+                                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                                    {item.count}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        {dashboardStats.propertiesByType.length > 3 && (
+                                            <p className="text-gray-400 text-xs mt-2">+{dashboardStats.propertiesByType.length - 3} more types</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Property Status Card */}
+                                <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
+                                    <h3 className="text-gray-700 text-sm font-semibold mb-3">By Status</h3>
+                                    <div className="space-y-2">
+                                        {dashboardStats.propertiesByStatus.map((item, idx) => (
+                                            <div key={idx} className="flex justify-between items-center">
+                                                <span className="text-gray-600 text-sm capitalize">{item.status}</span>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                    item.status === 'sold' ? 'bg-red-100 text-red-800' :
+                                                        'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                    {item.count}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
+                )}
 
                 {/* Seller Section */}
                 {isSeller && (

@@ -11,12 +11,12 @@ router.get('/properties/:id/reviews', async (req, res, next) => {
 
         const [reviews] = await pool.query(
             `SELECT 
-        r.review_id, r.property_id, r.user_id, r.rating, r.created_at,
+        pr.review_id, pr.property_id, pr.user_id, pr.rating, pr.comment, pr.created_at,
         u.first_name, u.last_name
-      FROM reviews r
-      JOIN users u ON r.user_id = u.user_id
-      WHERE r.property_id = ?
-      ORDER BY r.created_at DESC`,
+      FROM property_reviews pr
+      LEFT JOIN users u ON pr.user_id = u.user_id
+      WHERE pr.property_id = ?
+      ORDER BY pr.created_at DESC`,
             [propertyId]
         );
 
@@ -24,7 +24,7 @@ router.get('/properties/:id/reviews', async (req, res, next) => {
             `SELECT 
         AVG(rating) as average_rating,
         COUNT(*) as review_count
-      FROM reviews
+      FROM property_reviews
       WHERE property_id = ?`,
             [propertyId]
         );
@@ -44,14 +44,14 @@ router.post('/properties/:id/reviews', auth, async (req, res, next) => {
     try {
         const propertyId = req.params.id;
         const userId = req.user.user_id;
-        const { rating } = req.body;
+        const { rating, comment } = req.body;
 
-        if (!rating || rating < 1 || rating > 5) {
-            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        if (!comment || comment.trim() === '') {
+            return res.status(400).json({ error: 'Comment is required' });
         }
 
         const [existing] = await pool.query(
-            'SELECT review_id FROM reviews WHERE property_id = ? AND user_id = ?',
+            'SELECT review_id FROM property_reviews WHERE property_id = ? AND user_id = ?',
             [propertyId, userId]
         );
 
@@ -60,9 +60,9 @@ router.post('/properties/:id/reviews', auth, async (req, res, next) => {
         }
 
         const [result] = await pool.query(
-            `INSERT INTO reviews (property_id, user_id, rating)
-      VALUES (?, ?, ?)`,
-            [propertyId, userId, rating]
+            `INSERT INTO property_reviews (property_id, user_id, rating, comment)
+      VALUES (?, ?, ?, ?)`,
+            [propertyId, userId, rating || null, comment]
         );
 
         res.status(201).json({

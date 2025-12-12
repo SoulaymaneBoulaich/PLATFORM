@@ -2,26 +2,308 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================
+   DESIGN SYSTEM - Custom Properties
+   ================================ */
 @layer base {
+  :root {
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   body {
-    @apply font-sans antialiased;
+    @apply font-sans antialiased bg-gray-50 text-gray-900;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
+/* ================================
+   COMPONENT CLASSES
+   ================================ */
 @layer components {
+
+  /* Buttons with micro-interactions */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
-  
+
+  .btn-primary:hover {
+    @apply shadow-md -translate-y-0.5;
+  }
+
+  .btn-primary:active {
+    @apply translate-y-0;
+  }
+
   .btn-secondary {
-    @apply bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-white text-gray-700 font-semibold py-2.5 px-6 rounded-lg border border-gray-300 transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2;
   }
-  
+
+  .btn-secondary:hover {
+    @apply bg-gray-50 shadow-md -translate-y-0.5;
+  }
+
+  .btn-secondary:active {
+    @apply translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-gray-100;
+  }
+
+  /* Form inputs with smooth focus */
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-gray-400;
   }
-  
+
+  /* Cards with hover animations */
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-white rounded-xl shadow-sm transition-all duration-200 ease-out;
+  }
+
+  .card-hover {
+    @apply bg-white rounded-xl shadow-sm transition-all duration-200 ease-out;
+  }
+
+  .card-hover:hover {
+    @apply shadow-xl -translate-y-1;
+  }
+
+  .property-card {
+    @apply bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transition-all duration-200 ease-out;
+  }
+
+  .property-card:hover {
+    @apply shadow-xl -translate-y-1;
+  }
+
+  .property-card img {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .property-card:hover img {
+    @apply scale-105;
+  }
+
+  /* Page animations */
+  .page-fade-in {
+    animation: fadeInUp 400ms ease-out;
+  }
+
+  .stagger-item {
+    animation: fadeInUp 400ms ease-out backwards;
+  }
+
+  .stagger-item:nth-child(1) {
+    animation-delay: 0ms;
+  }
+
+  .stagger-item:nth-child(2) {
+    animation-delay: 50ms;
+  }
+
+  .stagger-item:nth-child(3) {
+    animation-delay: 100ms;
+  }
+
+  .stagger-item:nth-child(4) {
+    animation-delay: 150ms;
+  }
+
+  .stagger-item:nth-child(5) {
+    animation-delay: 200ms;
+  }
+
+  .stagger-item:nth-child(6) {
+    animation-delay: 250ms;
+  }
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce-subtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ================================
+   SKELETON LOADERS
+   ================================ */
+.skeleton {
+  @apply bg-gray-200 rounded;
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.shimmer {
+  background: linear-gradient(90deg,
+      #f0f0f0 0%,
+      #e0e0e0 20%,
+      #f0f0f0 40%,
+      #f0f0f0 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.skeleton-card {
+  @apply bg-white rounded-xl shadow-sm p-4 space-y-3;
+}
+
+.skeleton-image {
+  @apply skeleton w-full h-48 rounded-lg;
+}
+
+.skeleton-title {
+  @apply skeleton h-6 w-3/4 rounded;
+}
+
+.skeleton-text {
+  @apply skeleton h-4 w-full rounded;
+}
+
+.skeleton-text.short {
+  @apply w-1/2;
+}
+
+/* ================================
+   SPINNER
+   ================================ */
+.spinner {
+  @apply inline-block w-8 h-8 border-4 border-gray-200 border-t-primary-600 rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-sm {
+  @apply w-5 h-5 border-2;
+}
+
+.spinner-lg {
+  @apply w-12 h-12 border-4;
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, rgb(37 99 235) 0%, rgb(29 78 216) 100%);
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md;
+  }
+}
+
+/* ================================
+   RESPONSIVE GRIDS
+   ================================ */
+.property-grid {
+  @apply grid gap-6;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+@media (min-width: 640px) {
+  .property-grid {
+    @apply gap-6;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .property-grid {
+    @apply gap-8;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .property-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ================================
+   MOBILE OPTIMIZATIONS
+   ================================ */
+@media (max-width: 640px) {
+
+  .btn-primary,
+  .btn-secondary {
+    @apply w-full py-3;
+  }
+
+  .card {
+    @apply rounded-lg;
   }
 }

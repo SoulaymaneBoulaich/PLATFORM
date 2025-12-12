@@ -2,6 +2,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const auth = require('../middleware/auth');
+const { getCountryFromCity } = require('../utils/cityToCountry');
 
 const router = express.Router();
 
@@ -20,7 +21,9 @@ router.get('/', async (req, res, next) => {
 
     const params = [];
     let sql = `SELECT property_id, seller_id, title, description, property_type, listing_type, 
-                      price, city, bedrooms, bathrooms, area_sqft, status, image_url 
+                      price, address_line1 as address, city, bedrooms, bathrooms, 
+                      area_sqft as area, status, image_url,
+                      has_garage, has_pool, has_garden
                FROM properties WHERE status = 'active'`;
 
     if (city) {
@@ -66,7 +69,18 @@ router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id;
     const [props] = await pool.query(
-      'SELECT * FROM properties WHERE property_id = ?',
+      `SELECT 
+        p.property_id, p.seller_id, p.agent_id, p.title, p.description, p.property_type, p.listing_type,
+        p.price, p.address_line1 as address, p.address_line2, p.city, p.state, p.zip_code, p.country,
+        p.bedrooms, p.bathrooms, p.area_sqft as area, p.image_url, p.status, p.listing_date,
+        p.created_at, p.updated_at, p.has_garage, p.has_pool, p.has_garden,
+        u.first_name as owner_first_name,
+        u.last_name as owner_last_name,
+        u.email as owner_email,
+        u.phone as owner_phone
+       FROM properties p
+       LEFT JOIN users u ON p.seller_id = u.user_id
+       WHERE p.property_id = ?`,
       [id]
     );
     if (!props.length) return res.status(404).json({ message: 'Not found' });
@@ -114,7 +128,7 @@ router.post('/', auth, async (req, res, next) => {
     const finalAreaSqft = area_sqft || area || null;
     const finalState = state || '';        // or a default
     const finalZip = zip_code || '';
-    const finalCountry = country || 'Morocco';  // choose your default
+    const finalCountry = country || getCountryFromCity(city);  // auto-fill from city
 
     if (!finalAddressLine1) {
       return res.status(400).json({ message: 'Address is required' });
@@ -124,8 +138,9 @@ router.post('/', auth, async (req, res, next) => {
       `INSERT INTO properties (
         seller_id, agent_id, title, description, property_type, listing_type, price,
         address_line1, address_line2, city, state, zip_code, country,
-        bedrooms, bathrooms, area_sqft, image_url, status, listing_date
-      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE())`,
+        bedrooms, bathrooms, area_sqft, image_url, status, listing_date,
+        has_garage, has_pool, has_garden
+      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE(), ?, ?, ?)`,
       [
         seller_id,
         title,
@@ -143,7 +158,7 @@ router.post('/', auth, async (req, res, next) => {
         bathrooms,
         finalAreaSqft,
         image_url || null,    // image URL
-        has_garage || false,  // default to false if not provided
+        has_garage || false, // property features
         has_pool || false,
         has_garden || false
       ]
@@ -185,9 +200,14 @@ router.put('/:id', auth, async (req, res, next) => {
 
     const [result] = await pool.query(
       `UPDATE properties 
-       SET title=?, description=?, price=?, status=?, image_url=?, updated_at=NOW()
+       SET title=?, description=?, price=?, status=COALESCE(?, status), image_url=?, 
+           property_type=?, listing_type=?, bedrooms=?, bathrooms=?, area_sqft=?,
+           has_garage=?, has_pool=?, has_garden=?, updated_at=NOW()
        WHERE property_id=? AND seller_id=?`,
-      [title, description, price, status, image_url, id, seller_id]
+      [title, description, price, status, image_url,
+        property_type, listing_type, bedrooms, bathrooms, area,
+        has_garage, has_pool, has_garden,
+        id, seller_id]
     );
 
     if (!result.affectedRows) {

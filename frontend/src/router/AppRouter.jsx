@@ -9,6 +9,7 @@ import Agents from '../pages/Agents';
 import AgentDetail from '../pages/AgentDetail';
 import Contact from '../pages/Contact';
 import Transactions from '../pages/Transactions';
+import Messages from '../pages/Messages';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const AppRouter = () => {
@@ -25,6 +26,11 @@ const AppRouter = () => {
             <Route path="/dashboard" element={
                 <ProtectedRoute>
                     <Dashboard />
+                </ProtectedRoute>
+            } />
+            <Route path="/messages" element={
+                <ProtectedRoute>
+                    <Messages />
                 </ProtectedRoute>
             } />
             <Route path="/transactions" element={

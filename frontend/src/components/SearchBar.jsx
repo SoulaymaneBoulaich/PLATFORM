@@ -19,7 +19,7 @@ const SearchBar = ({ onSearch }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg">
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl shadow-2xl border border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <input
                     type="text"
@@ -27,21 +27,21 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.city}
                     onChange={handleChange}
                     placeholder="City or Location"
-                    className="input-field"
+                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                 />
 
                 <select
                     name="property_type"
                     value={searchParams.property_type}
                     onChange={handleChange}
-                    className="input-field"
+                    className="w-full px-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white"
                 >
-                    <option value="">Property Type</option>
-                    <option value="House">House</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="Condo">Condo</option>
-                    <option value="Townhouse">Townhouse</option>
-                    <option value="Land">Land</option>
+                    <option value="" className="text-gray-500">Property Type</option>
+                    <option value="House" className="text-gray-900">House</option>
+                    <option value="Apartment" className="text-gray-900">Apartment</option>
+                    <option value="Condo" className="text-gray-900">Condo</option>
+                    <option value="Townhouse" className="text-gray-900">Townhouse</option>
+                    <option value="Land" className="text-gray-900">Land</option>
                 </select>
 
                 <input
@@ -50,7 +50,7 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.minPrice}
                     onChange={handleChange}
                     placeholder="Min Price"
-                    className="input-field"
+                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                 />
 
                 <input
@@ -59,12 +59,15 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.maxPrice}
                     onChange={handleChange}
                     placeholder="Max Price"
-                    className="input-field"
+                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                 />
             </div>
 
-            <button type="submit" className="btn-primary w-full mt-4">
-                Search Properties
+            <button
+                type="submit"
+                className="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+            >
+                🔍 Search Properties
             </button>
         </form>
     );
