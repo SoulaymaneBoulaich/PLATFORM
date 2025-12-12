@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import FilterSidebar from '../components/FilterSidebar';
 import PropertyCard from '../components/PropertyCard';
 import { SkeletonPropertyList } from '../components/SkeletonLoader';
 import PageTransition from '../components/PageTransition';
-import ErrorMessage from '../components/ErrorMessage';
 
 const PropertyList = () => {
     const [properties, setProperties] = useState([]);
@@ -14,7 +12,6 @@ const PropertyList = () => {
     const [error, setError] = useState('');
     const [searchParams] = useSearchParams();
     const { user } = useAuth();
-    const [showOnlyMyProperties, setShowOnlyMyProperties] = useState(false);
 
     const [filters, setFilters] = useState({
         city: searchParams.get('city') || '',
@@ -52,87 +49,201 @@ const PropertyList = () => {
         fetchProperties(newFilters);
     };
 
-    const displayedProperties = showOnlyMyProperties && user
-        ? properties.filter(p => p.seller_id === user.user_id)
-        : properties;
+    const handleClearFilters = () => {
+        const emptyFilters = {
+            city: '',
+            property_type: '',
+            listing_type: '',
+            minPrice: '',
+            maxPrice: '',
+            minBedrooms: '',
+            minBathrooms: '',
+        };
+        setFilters(emptyFilters);
+        fetchProperties(emptyFilters);
+    };
 
     return (
         <PageTransition>
-            <div className="min-h-screen bg-gray-50 py-8">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8 flex justify-between items-center">
-                        <div>
-                            <h1 className="text-4xl font-bold text-gray-900 mb-2">Browse Properties</h1>
-                            <p className="text-gray-600">Discover your dream home from our curated listings</p>
-                        </div>
-
-                        {user?.user_type === 'seller' && (
-                            <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                <input
-                                    type="checkbox"
-                                    checked={showOnlyMyProperties}
-                                    onChange={(e) => setShowOnlyMyProperties(e.target.checked)}
-                                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                                />
-                                <span className="text-sm font-medium text-gray-700">Only my properties</span>
-                            </label>
-                        )}
+            <div className="flex min-h-full bg-gray-50">
+                {/* Filters Sidebar */}
+                <div className="w-64 bg-white border-r border-gray-200 p-6 overflow-y-auto hidden lg:block flex-shrink-0">
+                    <div className="mb-6">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4">Filters</h2>
+                        <button
+                            onClick={handleClearFilters}
+                            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        >
+                            Clear All
+                        </button>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                        {/* Sidebar */}
-                        <aside className="lg:col-span-1">
-                            <div className="sticky top-4">
-                                <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+                    {/* City */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        <input
+                            type="text"
+                            value={filters.city}
+                            onChange={(e) => handleFilterChange({ ...filters, city: e.target.value })}
+                            className="input-field w-full"
+                            placeholder="Enter city"
+                        />
+                    </div>
+
+                    {/* Property Type */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                        <select
+                            value={filters.property_type}
+                            onChange={(e) => handleFilterChange({ ...filters, property_type: e.target.value })}
+                            className="input-field w-full"
+                        >
+                            <option value="">All Types</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="house">House</option>
+                            <option value="villa">Villa</option>
+                            <option value="land">Land</option>
+                            <option value="commercial">Commercial</option>
+                        </select>
+                    </div>
+
+                    {/* Listing Type */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Listing Type</label>
+                        <select
+                            value={filters.listing_type}
+                            onChange={(e) => handleFilterChange({ ...filters, listing_type: e.target.value })}
+                            className="input-field w-full"
+                        >
+                            <option value="">All</option>
+                            <option value="sale">For Sale</option>
+                            <option value="rent">For Rent</option>
+                        </select>
+                    </div>
+
+                    {/* Price Range */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                        <div className="grid grid-cols-2 gap-2">
+                            <input
+                                type="number"
+                                value={filters.minPrice}
+                                onChange={(e) => handleFilterChange({ ...filters, minPrice: e.target.value })}
+                                className="input-field w-full"
+                                placeholder="Min"
+                            />
+                            <input
+                                type="number"
+                                value={filters.maxPrice}
+                                onChange={(e) => handleFilterChange({ ...filters, maxPrice: e.target.value })}
+                                className="input-field w-full"
+                                placeholder="Max"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Bedrooms */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Bedrooms</label>
+                        <select
+                            value={filters.minBedrooms}
+                            onChange={(e) => handleFilterChange({ ...filters, minBedrooms: e.target.value })}
+                            className="input-field w-full"
+                        >
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+
+                    {/* Bathrooms */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Bathrooms</label>
+                        <select
+                            value={filters.minBathrooms}
+                            onChange={(e) => handleFilterChange({ ...filters, minBathrooms: e.target.value })}
+                            className="input-field w-full"
+                        >
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="flex-1 overflow-y-auto">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {/* Header */}
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-2">Browse Properties</h1>
+                            <p className="text-gray-600">
+                                {loading ? 'Loading...' : `${properties.length} properties found`}
+                            </p>
+                        </div>
+
+                        {/* Error Message */}
+                        {error && (
+                            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                                {error}
                             </div>
-                        </aside>
+                        )}
 
-                        {/* Main Content */}
-                        <main className="lg:col-span-3">
-                            <ErrorMessage message={error} />
-
-                            {loading ? (
-                                <SkeletonPropertyList count={9} />
-                            ) : displayedProperties.length > 0 ? (
-                                <>
-                                    <div className="mb-6 flex items-center justify-between">
-                                        <p className="text-gray-600">
-                                            <span className="font-semibold text-gray-900">{displayedProperties.length}</span>
-                                            {' '}{displayedProperties.length === 1 ? 'property' : 'properties'} found
-                                        </p>
-                                    </div>
-                                    <div className="property-grid">
-                                        {displayedProperties.map((property, index) => (
-                                            <div key={property.property_id} className="stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
-                                                <PropertyCard property={property} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
-                                    <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No properties found</h3>
-                                    <p className="text-gray-600 mb-6">
-                                        Try adjusting your filters to see more results
-                                    </p>
-                                    <button
-                                        onClick={() => handleFilterChange({
-                                            city: '', property_type: '', listing_type: '', minPrice: '', maxPrice: '', minBedrooms: '', minBathrooms: ''
-                                        })}
-                                        className="btn-primary"
+                        {/* Properties Grid */}
+                        {loading ? (
+                            <SkeletonPropertyList count={6} />
+                        ) : properties.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {properties.map((property, index) => (
+                                    <div
+                                        key={property.property_id}
+                                        className="property-card-stagger"
+                                        style={{ animationDelay: `${index * 50}ms` }}
                                     >
-                                        Clear Filters
-                                    </button>
-                                </div>
-                            )}
-                        </main>
+                                        <PropertyCard property={property} />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-16">
+                                <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
+                                <p className="text-gray-600 mb-6">Try adjusting your filters to see more results</p>
+                                <button
+                                    onClick={handleClearFilters}
+                                    className="btn-primary"
+                                >
+                                    Clear Filters
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                .property-card-stagger {
+                    animation: fadeInUp 400ms ease-out backwards;
+                }
+                
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `}</style>
         </PageTransition>
     );
 };

@@ -19,6 +19,8 @@ const contactRoutes = require('./routes/contactRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
+const searchRoutes = require('./routes/searchRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -41,6 +43,8 @@ app.use('/api', contactRoutes); // Contact form routes
 app.use('/api', notificationRoutes); // Notification routes
 app.use('/api', chatRoutes); // Chat routes
 app.use('/api/conversations', conversationRoutes); // Conversation routes
+app.use('/api/search', searchRoutes); // Search and recommendations routes
+app.use('/api', analyticsRoutes); // Analytics, offers, dashboards
 
 app.use(errorHandler);
 
