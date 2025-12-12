@@ -21,6 +21,7 @@ const chatRoutes = require('./routes/chatRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -45,6 +46,7 @@ app.use('/api', chatRoutes); // Chat routes
 app.use('/api/conversations', conversationRoutes); // Conversation routes
 app.use('/api/search', searchRoutes); // Search and recommendations routes
 app.use('/api', analyticsRoutes); // Analytics, offers, dashboards
+app.use('/api', profileRoutes); // Profile and settings routes
 
 app.use(errorHandler);
 
