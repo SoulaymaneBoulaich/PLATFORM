@@ -13,7 +13,7 @@ const ImageGallery = ({ images, imageUrl }) => {
         return (
             <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
                 <img
-                    src="https://via.placeholder.com/800x600?text=No+Image+Available"
+                    src="/images/property-placeholder.svg"
                     alt="No image"
                     className="w-full h-full object-cover rounded-lg"
                 />
@@ -21,15 +21,21 @@ const ImageGallery = ({ images, imageUrl }) => {
         );
     }
 
+    const getDisplayImage = (imgObj) => {
+        if (!imgObj) return '/images/property-placeholder.svg';
+        return imgObj.image_url || imgObj.image_path || '/images/property-placeholder.svg';
+    };
+
     return (
         <div className="space-y-4">
             <div className="relative">
                 <img
-                    src={displayImages[selectedImage].image_url}
+                    src={getDisplayImage(displayImages[selectedImage])}
                     alt={`Property image ${selectedImage + 1}`}
                     className="w-full h-96 object-cover rounded-lg shadow-lg"
                     onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Found';
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/images/property-placeholder.svg';
                     }}
                 />
 

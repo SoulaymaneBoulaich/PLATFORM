@@ -10,19 +10,18 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
     };
 
     // Use image_url from property, fallback to images array for backward compatibility, then placeholder
-    const primaryImage = property.image_url
-        || (property.images && property.images.length > 0 ? property.images[0].image_url : null)
-        || 'https://via.placeholder.com/400x300?text=No+Image';
+    const src = property.image_url || property.image_path || '/images/property-placeholder.svg';
 
     return (
         <div className="card overflow-hidden">
             <Link to={`/properties/${property.property_id}`}>
                 <img
-                    src={primaryImage}
-                    alt={property.title}
-                    className="w-full h-48 object-cover hover:scale-105 transition-transform duration-200"
+                    src={src}
+                    alt={property.title || 'Property'}
+                    className="w-full h-48 object-cover hover:scale-105 transition-transform duration-200 property-image"
                     onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/images/property-placeholder.svg';
                     }}
                 />
             </Link>
