@@ -117,12 +117,31 @@ router.post('/:id/messages', auth, upload.single('file'), async (req, res) => {
     try {
         const conversationId = req.params.id;
         const senderId = req.user.user_id;
-        const { content } = req.body;
+        const messageContent = req.body.content || '';
         const file = req.file;
 
         // Validate: must have either content or file
-        if ((!content || content.trim() === '') && !file) {
+        if (messageContent.trim() === '' && !file) {
             return res.status(400).json({ error: 'Message must contain text or a file' });
+        }
+
+        // Determine attachment info
+        let attachmentUrl = null;
+        let attachmentType = null;
+
+        if (file) {
+            attachmentUrl = `/uploads/chat/${file.filename}`;
+            const mimeType = file.mimetype;
+
+            if (mimeType.startsWith('image/')) {
+                attachmentType = 'image';
+            } else if (mimeType.startsWith('audio/')) {
+                attachmentType = 'audio';
+            } else if (mimeType.startsWith('video/')) {
+                attachmentType = 'video';
+            } else {
+                attachmentType = 'file';
+            }
         }
 
         // Verify user is part of this conversation
@@ -135,43 +154,18 @@ router.post('/:id/messages', auth, upload.single('file'), async (req, res) => {
             return res.status(403).json({ error: 'Not authorized to access this conversation' });
         }
 
-        // Determine attachment info
-        let attachmentUrl = null;
-        let attachmentType = null;
+        // Insert message - allow NULL content if there's an attachment
+        const contentValue = messageContent.trim() === '' && attachmentUrl ? null : messageContent.trim();
 
-        if (file) {
-            // Store relative path for URL
-            attachmentUrl = `/uploads/chat/${file.filename}`;
-
-            // Detect attachment type based on MIME
-            if (file.mimetype.startsWith('image/')) {
-                attachmentType = 'image';
-            } else if (file.mimetype.startsWith('audio/')) {
-                attachmentType = 'audio';
-            } else if (file.mimetype === 'application/pdf' || file.mimetype.includes('word')) {
-                attachmentType = 'file';
-            }
-        }
-
-        // Check for video URL in content (YouTube, Vimeo)
-        if (content && (content.includes('youtube.com') || content.includes('youtu.be') || content.includes('vimeo.com'))) {
-            const urlMatch = content.match(/(https?:\/\/[^\s]+)/);
-            if (urlMatch) {
-                attachmentUrl = urlMatch[0];
-                attachmentType = 'video';
-            }
-        }
-
-        // Insert message
         const [result] = await pool.query(
             'INSERT INTO messages (conversation_id, sender_id, content, attachment_url, attachment_type) VALUES (?, ?, ?, ?, ?)',
-            [conversationId, senderId, content ? content.trim() : null, attachmentUrl, attachmentType]
+            [conversationId, senderId, contentValue, attachmentUrl, attachmentType]
         );
 
         // Update conversation's last message
         const lastMessageText = attachmentType ?
             `${attachmentType === 'image' ? '📷' : attachmentType === 'audio' ? '🎤' : attachmentType === 'file' ? '📄' : '🎥'} ${attachmentType}` :
-            (content ? content.trim() : '');
+            messageContent.trim();
 
         await pool.query(
             'UPDATE conversations SET last_message = ?, last_message_at = NOW() WHERE conversation_id = ?',

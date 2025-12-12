@@ -1,15 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 const Navbar = () => {
     const { user, isAuthenticated, logout } = useAuth();
+    const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
     const [showNotifications, setShowNotifications] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
     // Fetch unread notification count for sellers
     useEffect(() => {
@@ -161,9 +165,62 @@ const Navbar = () => {
                                         </div>
                                     </>
                                 )}
-                                <button onClick={logout} className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg ml-3 transition-all duration-200">
-                                    Logout
-                                </button>
+
+                                {/* User Avatar/Menu */}
+                                <div className="relative ml-3">
+                                    <button
+                                        onClick={() => {
+                                            setShowUserMenu(!showUserMenu);
+                                            setShowNotifications(false);
+                                        }}
+                                        className="flex items-center gap-2 hover:bg-white/20 rounded-lg p-1 pr-3 transition-colors"
+                                    >
+                                        {user?.profile_image_url ? (
+                                            <img
+                                                src={user.profile_image_url}
+                                                alt="Profile"
+                                                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                                            />
+                                        ) : (
+                                            <div className="w-8 h-8 rounded-full bg-white text-primary-600 flex items-center justify-center text-sm font-bold border-2 border-white">
+                                                {user?.first_name?.charAt(0)}{user?.last_name?.charAt(0)}
+                                            </div>
+                                        )}
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    {showUserMenu && (
+                                        <>
+                                            <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)}></div>
+                                            <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                                <Link
+                                                    to="/account/profile"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    👤 {t('nav.editProfile')}
+                                                </Link>
+                                                <Link
+                                                    to="/account/settings"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    ⚙️ {t('nav.settings')}
+                                                </Link>
+                                                <hr className="my-2 border-gray-200" />
+                                                <button
+                                                    onClick={() => {
+                                                        setShowUserMenu(false);
+                                                        logout();
+                                                    }}
+                                                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                                >
+                                                    🚪 {t('nav.logout')}
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </>
                         ) : (
                             <>

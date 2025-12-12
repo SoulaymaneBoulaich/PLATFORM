@@ -6,6 +6,7 @@ import PageTransition from '../components/PageTransition';
 import { LoadingSpinner } from '../components/Spinner';
 import EmojiPickerComponent from '../components/EmojiPicker';
 import FileAttachment from '../components/FileAttachment';
+import AudioRecorder from '../components/AudioRecorder';
 
 const Messages = () => {
     const [searchParams] = useSearchParams();
@@ -18,6 +19,7 @@ const Messages = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isRecording, setIsRecording] = useState(false);
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -400,47 +402,83 @@ const Messages = () => {
 
                                 {/* Message Input */}
                                 <div className="bg-white border-t border-gray-200 p-4">
-                                    <form onSubmit={sendMessage} className="flex items-end gap-2">
-                                        {/* Emoji and File buttons */}
-                                        <div className="flex items-center gap-1">
-                                            <EmojiPickerComponent onEmojiSelect={handleEmojiSelect} />
-                                            <FileAttachment onFileSelect={setSelectedFile} disabled={sending} />
-                                        </div>
+                                    {isRecording ? (
+                                        <AudioRecorder
+                                            onRecordingComplete={(audioFile) => {
+                                                setSelectedFile(audioFile);
+                                                setIsRecording(false);
+                                            }}
+                                            onCancel={() => setIsRecording(false)}
+                                        />
+                                    ) : (
+                                        <form onSubmit={sendMessage} className="flex items-end gap-2">
+                                            {/* Emoji, File, and Audio buttons */}
+                                            <div className="flex items-center gap-1">
+                                                <EmojiPickerComponent onEmojiSelect={handleEmojiSelect} />
+                                                <FileAttachment onFileSelect={setSelectedFile} disabled={sending} />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsRecording(true)}
+                                                    className="p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                                    title="Record audio"
+                                                >
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
 
-                                        {/* Text input */}
-                                        <div className="flex-1">
-                                            <textarea
-                                                ref={textareaRef}
-                                                value={newMessage}
-                                                onChange={(e) => setNewMessage(e.target.value)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                                        e.preventDefault();
-                                                        sendMessage(e);
-                                                    }
-                                                }}
-                                                placeholder={selectedFile ? `Add a caption (optional)...` : `Type a message...`}
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                                                rows={1}
-                                                disabled={sending}
-                                            />
-                                        </div>
-
-                                        {/* Send button */}
-                                        <button
-                                            type="submit"
-                                            disabled={sending || (!newMessage.trim() && !selectedFile)}
-                                            className="w-12 h-12 bg-primary-600 hover:bg-primary-700 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            {sending ? (
-                                                <div className="spinner-sm border-white border-t-transparent"></div>
-                                            ) : (
-                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                                </svg>
+                                            {/* Selected file indicator */}
+                                            {selectedFile && (
+                                                <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-lg border border-primary-200">
+                                                    <span className="text-sm text-primary-700">
+                                                        📎 {selectedFile.name}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSelectedFile(null)}
+                                                        className="text-primary-600 hover:text-primary-800"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
                                             )}
-                                        </button>
-                                    </form>
+
+                                            {/* Text input */}
+                                            <div className="flex-1">
+                                                <textarea
+                                                    ref={textareaRef}
+                                                    value={newMessage}
+                                                    onChange={(e) => setNewMessage(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                                            e.preventDefault();
+                                                            sendMessage(e);
+                                                        }
+                                                    }}
+                                                    placeholder={selectedFile ? `Add a caption (optional)...` : `Type a message...`}
+                                                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                                                    rows={1}
+                                                    disabled={sending}
+                                                />
+                                            </div>
+
+                                            {/* Send button */}
+                                            <button
+                                                type="submit"
+                                                disabled={sending || (!newMessage.trim() && !selectedFile)}
+                                                className="w-12 h-12 bg-primary-600 hover:bg-primary-700 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {sending ? (
+                                                    <div className="spinner-sm border-white border-t-transparent"></div>
+                                                ) : (
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        </form>
+                                    )}
                                     <p className="text-xs text-gray-500 mt-2 text-center">
                                         Press Enter to send, Shift+Enter for new line
                                     </p>

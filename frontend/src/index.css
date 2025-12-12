@@ -139,9 +139,121 @@
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0px);
   }
 }
+
+/* ==========================================
+   DARK MODE THEME
+   ========================================== */
+.dark {
+  color-scheme: dark;
+}
+
+/* Dark mode backgrounds */
+.dark body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: #334155 !important;
+}
+
+/* Dark mode text colors */
+.dark .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-500 {
+  color: #64748b !important;
+}
+
+.dark .text-gray-400 {
+  color: #475569 !important;
+}
+
+/* Dark mode borders */
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+.dark .border-gray-300 {
+  border-color: #475569 !important;
+}
+
+/* Dark mode cards */
+.dark .card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+/* Dark mode inputs */
+.dark .input-field {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+.dark .input-field:focus {
+  border-color: #3b82f6;
+  background-color: #1e293b;
+}
+
+/* Dark mode buttons - keep primary/secondary as is */
+.dark .btn-secondary {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+.dark .btn-secondary:hover {
+  background-color: #475569;
+}
+
+/* Dark mode hover states */
+.dark .hover\:bg-gray-50:hover {
+  background-color: #1e293b !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: #334155 !important;
+}
+
+/* Dark mode property cards */
+.dark .property-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.dark .property-card:hover {
+  background-color: #334155;
+  border-color: #475569;
+}
+
 
 @keyframes shimmer {
   0% {

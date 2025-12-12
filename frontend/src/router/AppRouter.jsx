@@ -13,6 +13,8 @@ import Messages from '../pages/Messages';
 import ProtectedRoute from '../components/ProtectedRoute';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerDashboard from '../pages/BuyerDashboard';
+import EditProfile from '../pages/EditProfile';
+import Settings from '../pages/Settings';
 
 const AppRouter = () => {
     return (
@@ -38,6 +40,16 @@ const AppRouter = () => {
             <Route path="/dashboard/buyer" element={
                 <ProtectedRoute>
                     <BuyerDashboard />
+                </ProtectedRoute>
+            } />
+            <Route path="/account/profile" element={
+                <ProtectedRoute>
+                    <EditProfile />
+                </ProtectedRoute>
+            } />
+            <Route path="/account/settings" element={
+                <ProtectedRoute>
+                    <Settings />
                 </ProtectedRoute>
             } />
             <Route path="/messages" element={
