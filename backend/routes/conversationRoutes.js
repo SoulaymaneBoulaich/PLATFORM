@@ -4,6 +4,56 @@ const pool = require('../config/database');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/chatUpload');
 
+// POST /api/conversations/start - Get or create conversation
+router.post('/start', auth, async (req, res, next) => {
+    try {
+        const currentUser = req.user;
+        const { otherUserId, propertyId } = req.body;
+
+        if (!otherUserId) {
+            return res.status(400).json({ error: 'otherUserId is required' });
+        }
+
+        // Determine buyer_id and seller_id based on current user type
+        let buyer_id, seller_id;
+
+        if (currentUser.user_type === 'buyer') {
+            buyer_id = currentUser.user_id;
+            seller_id = otherUserId;
+        } else if (currentUser.user_type === 'seller') {
+            seller_id = currentUser.user_id;
+            buyer_id = otherUserId;
+        } else {
+            return res.status(403).json({ error: 'Invalid user type' });
+        }
+
+        // Check if conversation already exists
+        const [existing] = await pool.query(
+            `SELECT conversation_id FROM conversations 
+             WHERE buyer_id = ? AND seller_id = ? 
+             AND (property_id = ? OR (property_id IS NULL AND ? IS NULL))
+             LIMIT 1`,
+            [buyer_id, seller_id, propertyId, propertyId]
+        );
+
+        if (existing.length > 0) {
+            return res.json({ conversationId: existing[0].conversation_id });
+        }
+
+        // Create new conversation
+        const [result] = await pool.query(
+            `INSERT INTO conversations (buyer_id, seller_id, property_id, created_at, last_message_at)
+             VALUES (?, ?, ?, NOW(), NOW())`,
+            [buyer_id, seller_id, propertyId || null]
+        );
+
+        res.json({ conversationId: result.insertId });
+    } catch (err) {
+        console.error('Error starting conversation:', err);
+        next(err);
+    }
+});
+
 // GET /conversations - Get all conversations for current user
 router.get('/', auth, async (req, res) => {
     try {

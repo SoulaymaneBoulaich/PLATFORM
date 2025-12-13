@@ -98,6 +98,11 @@ router.get('/:id', async (req, res, next) => {
 // POST /api/properties  (only sellers/admin)
 router.post('/', auth, async (req, res, next) => {
   try {
+    // Must be seller or admin to create properties
+    if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
+      return res.status(403).json({ error: 'Only sellers can create properties' });
+    }
+
     const seller_id = req.user.user_id;
 
     // Accept both frontend names and DB names

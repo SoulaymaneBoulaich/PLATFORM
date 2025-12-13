@@ -4,21 +4,29 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/agents - Public, returns all agents/sellers with property count
+// GET /api/agents - Public, returns all sellers with property stats
 router.get('/', async (req, res, next) => {
     try {
-        const [rows] = await pool.query(
-            `SELECT 
-        a.agent_id, a.user_id, a.license_number, a.bio,
-        u.first_name, u.last_name, u.email, u.phone,
-        COUNT(p.property_id) as property_count
-      FROM agents a
-      LEFT JOIN users u ON a.user_id = u.user_id
-      LEFT JOIN properties p ON u.user_id = p.seller_id AND p.status = 'active'
-      GROUP BY a.agent_id, a.user_id, a.license_number, a.bio,
-               u.first_name, u.last_name, u.email, u.phone
-      ORDER BY u.first_name ASC`
-        );
+        const [rows] = await pool.query(`
+            SELECT 
+                u.user_id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.phone,
+                u.profile_image_url,
+                u.bio,
+                u.location,
+                COUNT(DISTINCT p.property_id) as property_count,
+                COALESCE(AVG(r.rating), 0) as avg_rating
+            FROM users u
+            LEFT JOIN properties p ON u.user_id = p.seller_id AND p.status = 'active'
+            LEFT JOIN reviews r ON p.property_id = r.property_id
+            WHERE u.user_type = 'seller'
+            GROUP BY u.user_id, u.first_name, u.last_name, u.email, u.phone, 
+                     u.profile_image_url, u.bio, u.location
+            ORDER BY u.first_name ASC
+        `);
         res.json(rows);
     } catch (err) {
         console.error('Error in GET /agents:', err);
@@ -26,43 +34,42 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// GET /api/agents/:id - Public, returns one agent with their properties
-router.get('/:id', async (req, res, next) => {
+// GET /api/agents/:userId - Public, returns seller info + their properties
+router.get('/:userId', async (req, res, next) => {
     try {
-        const agentId = req.params.id;
+        const userId = req.params.userId;
 
-        const [agents] = await pool.query(
-            `SELECT 
-        a.*, 
-        u.first_name, u.last_name, u.email, u.phone
-      FROM agents a
-      LEFT JOIN users u ON a.user_id = u.user_id
-      WHERE a.agent_id = ?`,
-            [agentId]
-        );
+        // Get seller info from users table
+        const [users] = await pool.query(`
+            SELECT 
+                user_id, first_name, last_name, email, phone,
+                profile_image_url, bio, location, user_type
+            FROM users
+            WHERE user_id = ? AND user_type = 'seller'
+        `, [userId]);
 
-        if (!agents.length) {
-            return res.status(404).json({ error: 'Agent not found' });
+        if (!users.length) {
+            return res.status(404).json({ error: 'Seller not found' });
         }
 
-        const agent = agents[0];
+        const seller = users[0];
 
-        // Fetch properties for this seller using their user_id (not agent_id)
-        const [properties] = await pool.query(
-            `SELECT property_id, title, city, price, listing_type, status, property_type, 
-                    address_line1, bedrooms, bathrooms, area_sqft, image_url
-       FROM properties
-       WHERE seller_id = ? AND status = 'active'
-       ORDER BY listing_date DESC`,
-            [agent.user_id]  // Use user_id, not agent_id
-        );
+        // Fetch properties for this seller
+        const [properties] = await pool.query(`
+            SELECT 
+                property_id, title, city, price, listing_type, status, property_type,
+                address_line1, bedrooms, bathrooms, area_sqft, image_url, listing_date
+            FROM properties
+            WHERE seller_id = ? AND status = 'active'
+            ORDER BY listing_date DESC
+        `, [userId]);
 
         res.json({
-            ...agent,
+            ...seller,
             properties
         });
     } catch (err) {
-        console.error('Error in GET /agents/:id:', err);
+        console.error('Error in GET /agents/:userId:', err);
         next(err);
     }
 });
