@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import SearchBar from '../components/SearchBar';
 import PropertyCard from '../components/PropertyCard';
@@ -8,6 +9,7 @@ import PageTransition from '../components/PageTransition';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Home = () => {
+    const { t } = useTranslation();
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -55,10 +57,10 @@ const Home = () => {
                         {/* Hero text with text-shadow for extra readability */}
                         <div className="text-center mb-12">
                             <h1 className="hero-headline text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white drop-shadow-lg">
-                                Find Your Dream Home
+                                {t('home.heroTitle')}
                             </h1>
                             <p className="hero-subheadline text-xl md:text-2xl text-white max-w-3xl mx-auto drop-shadow-md opacity-95">
-                                Discover the perfect property in your ideal location with thousands of listings
+                                {t('home.heroSubtitle')}
                             </p>
                         </div>
 
@@ -70,10 +72,10 @@ const Home = () => {
                         {/* Quick Stats */}
                         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto stats-fade-in">
                             {[
-                                { label: 'Properties', value: '1000+' },
-                                { label: 'Cities', value: '50+' },
-                                { label: 'Happy Clients', value: '10K+' },
-                                { label: 'Expert Agents', value: '100+' }
+                                { label: t('home.stats.properties'), value: '1000+' },
+                                { label: t('home.stats.cities'), value: '50+' },
+                                { label: t('home.stats.clients'), value: '10K+' },
+                                { label: t('home.stats.agents'), value: '100+' }
                             ].map((stat, index) => (
                                 <div key={index} className="text-center text-white" style={{ animationDelay: `${600 + index * 100}ms` }}>
                                     <div className="text-3xl md:text-4xl font-bold mb-1 drop-shadow-md">{stat.value}</div>

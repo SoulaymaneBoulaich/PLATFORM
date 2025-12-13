@@ -19,6 +19,7 @@ const EditProfile = () => {
         location: '',
         bio: ''
     });
+    const [uploadStatus, setUploadStatus] = useState('idle'); // idle, uploading, success, error
 
     useEffect(() => {
         loadProfile();
@@ -61,7 +62,7 @@ const EditProfile = () => {
         if (!selectedFile) return;
 
         try {
-            setSaving(true);
+            setUploadStatus('uploading');
             const formData = new FormData();
             formData.append('avatar', selectedFile);
 
@@ -71,16 +72,19 @@ const EditProfile = () => {
 
             setAvatarPreview(res.data.profile_image_url);
             setSelectedFile(null);
-            alert('Profile photo updated successfully!');
+            setUploadStatus('success');
 
-            // Update user context
+            // Update user context immediately for instant navbar update
             const updatedUser = await api.get('/me');
             updateUser(updatedUser.data);
+
+            // Reset success state after 2s
+            setTimeout(() => setUploadStatus('idle'), 2000);
         } catch (err) {
             console.error('Failed to upload avatar:', err);
             alert(err.response?.data?.error || 'Failed to upload avatar');
-        } finally {
-            setSaving(false);
+            setUploadStatus('error');
+            setTimeout(() => setUploadStatus('idle'), 3000);
         }
     };
 
@@ -135,7 +139,11 @@ const EditProfile = () => {
                                 <div className="flex flex-col items-center">
                                     {avatarPreview ? (
                                         <img
-                                            src={avatarPreview.startsWith('http') ? avatarPreview : avatarPreview.startsWith('/') ? `http://localhost:3001${avatarPreview}` : avatarPreview}
+                                            src={avatarPreview.startsWith('blob:')
+                                                ? avatarPreview
+                                                : avatarPreview.startsWith('/')
+                                                    ? `http://localhost:3001${avatarPreview}`
+                                                    : avatarPreview}
                                             alt="Profile"
                                             className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 mb-4"
                                             onError={(e) => {
@@ -168,10 +176,15 @@ const EditProfile = () => {
                                     {selectedFile && (
                                         <button
                                             onClick={handleUploadAvatar}
-                                            disabled={saving}
-                                            className="btn-primary w-full"
+                                            disabled={uploadStatus === 'uploading'}
+                                            className={`btn-primary w-full transition-all duration-300 ${uploadStatus === 'success' ? 'bg-green-600 hover:bg-green-700' :
+                                                    uploadStatus === 'error' ? 'bg-red-600 hover:bg-red-700' : ''
+                                                } ${uploadStatus === 'error' ? 'animate-shake' : ''}`}
                                         >
-                                            {saving ? 'Uploading...' : 'Upload Photo'}
+                                            {uploadStatus === 'uploading' && '⏳ Uploading...'}
+                                            {uploadStatus === 'success' && '✓ Uploaded!'}
+                                            {uploadStatus === 'error' && '✗ Failed'}
+                                            {uploadStatus === 'idle' && 'Upload Photo'}
                                         </button>
                                     )}
 

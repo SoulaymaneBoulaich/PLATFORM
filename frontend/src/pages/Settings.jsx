@@ -5,6 +5,7 @@ import api from '../services/api';
 import PageTransition from '../components/PageTransition';
 import { LoadingSpinner } from '../components/Spinner';
 import { useTranslation } from 'react-i18next';
+import { SUPPORTED_LANGUAGES, getLanguageConfig } from '../i18n/languages';
 
 const Settings = () => {
     const { user } = useAuth();
@@ -57,6 +58,13 @@ const Settings = () => {
             // Handle language change
             if (key === 'language') {
                 i18n.changeLanguage(value);
+
+                // Update HTML lang attribute
+                document.documentElement.lang = value;
+
+                // Handle RTL for Arabic
+                const langConfig = getLanguageConfig(value);
+                document.documentElement.dir = langConfig.dir;
             }
         } catch (err) {
             console.error('Failed to update setting:', err);
@@ -150,7 +158,9 @@ const Settings = () => {
                                     <div className="flex items-center gap-6 mb-8">
                                         {user?.profile_image_url ? (
                                             <img
-                                                src={user.profile_image_url}
+                                                src={user.profile_image_url.startsWith('/')
+                                                    ? `http://localhost:3001${user.profile_image_url}`
+                                                    : user.profile_image_url}
                                                 alt="Profile"
                                                 className="w-20 h-20 rounded-full object-cover"
                                             />
@@ -317,17 +327,19 @@ const Settings = () => {
 
                                         <div className="py-4">
                                             <label className=" block text-sm font-medium text-gray-700 mb-2">
-                                                {t('appearance.language')}
+                                                {t('settings.language')}
                                             </label>
+                                            <p className="text-sm text-gray-600 mb-3">{t('settings.selectLanguage')}</p>
                                             <select
                                                 value={settings?.language || 'en'}
                                                 onChange={(e) => handleToggleSetting('language', e.target.value)}
                                                 className="input-field w-full max-w-xs"
                                             >
-                                                <option value="en">English</option>
-                                                <option value="fr">Français</option>
-                                                <option value="ar">العربية</option>
-                                                <option value="es">Español</option>
+                                                {SUPPORTED_LANGUAGES.map(lang => (
+                                                    <option key={lang.code} value={lang.code}>
+                                                        {lang.label}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>

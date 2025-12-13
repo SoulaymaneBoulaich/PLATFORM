@@ -229,7 +229,7 @@ const Dashboard = () => {
     };
 
     const isSeller = user?.user_type === 'seller' || user?.user_type === 'admin';
-    const isBuyer = user?.user_type === 'buyer';
+    const isCustomer = user?.user_type === 'buyer';  // Keep 'buyer' for DB compatibility
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
@@ -617,7 +617,7 @@ const Dashboard = () => {
 
                 {/* Buyer Section */}
                 {
-                    isBuyer && (
+                    isCustomer && (
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">My Favorites</h2>
 

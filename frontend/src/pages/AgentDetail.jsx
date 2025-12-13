@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import PropertyCard from '../components/PropertyCard';
 import Loader from '../components/Loader';
+import StartChatButton from '../components/StartChatButton';
 import ErrorMessage from '../components/ErrorMessage';
 
 const AgentDetail = () => {
@@ -93,11 +94,17 @@ const AgentDetail = () => {
 
                             {/* Bio */}
                             {agent.bio && (
-                                <div>
+                                <div className="mb-4">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-2">About</h3>
                                     <p className="text-gray-700 leading-relaxed">{agent.bio}</p>
                                 </div>
                             )}
+
+                            {/* Chat Button */}
+                            <StartChatButton
+                                targetUser={{ user_id: agent.user_id, first_name: agent.first_name, last_name: agent.last_name }}
+                                className="mt-4"
+                            />
                         </div>
                     </div>
                 </div>

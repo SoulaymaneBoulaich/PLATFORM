@@ -5,6 +5,7 @@ import api from '../services/api';
 import MakeOfferModal from '../components/MakeOfferModal';
 import PageTransition from '../components/PageTransition';
 import { LoadingSpinner } from '../components/Spinner';
+import StartChatButton from '../components/StartChatButton';
 
 const PropertyDetail = () => {
     const { id } = useParams();
@@ -413,6 +414,19 @@ const PropertyDetail = () => {
                                         <p className="text-sm text-gray-600">{property.seller_email}</p>
                                     </div>
                                 </div>
+
+                                {!isOwner && (
+                                    <StartChatButton
+                                        targetUser={{
+                                            user_id: property.seller_id,
+                                            first_name: property.seller_first_name,
+                                            last_name: property.seller_last_name
+                                        }}
+                                        propertyId={property.property_id}
+                                        className="w-full mb-4"
+                                    />
+                                )}
+
                                 <div className="border-t pt-4 mt-4">
                                     <p className="text-sm text-gray-600">
                                         <span className="font-semibold">Listed:</span> {formatDate(property.created_at)}

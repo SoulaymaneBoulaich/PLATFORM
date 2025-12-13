@@ -1,5 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import i18n from '../i18n';
+import { getLanguageConfig } from '../i18n/languages';
+import api from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -25,9 +28,26 @@ export const AuthProvider = ({ children }) => {
         if (storedToken && storedUser) {
             setToken(storedToken);
             setUser(JSON.parse(storedUser));
+            // Load user language
+            loadUserLanguage();
         }
         setLoading(false);
     }, []);
+
+    const loadUserLanguage = async () => {
+        try {
+            const res = await api.get('/me/settings');
+            const userLang = res.data.language || 'en';
+
+            i18n.changeLanguage(userLang);
+            document.documentElement.lang = userLang;
+
+            const langConfig = getLanguageConfig(userLang);
+            document.documentElement.dir = langConfig.dir;
+        } catch (err) {
+            console.error('Failed to load user language:', err);
+        }
+    };
 
     const login = (apiResponse) => {
         const { token: newToken, user: newUser } = apiResponse;
@@ -37,6 +57,9 @@ export const AuthProvider = ({ children }) => {
 
         setToken(newToken);
         setUser(newUser);
+
+        // Load user's saved language in background (non-blocking)
+        loadUserLanguage().catch(err => console.error('Language load failed:', err));
 
         navigate('/dashboard');
     };

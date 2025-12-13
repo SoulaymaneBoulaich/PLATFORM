@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Loader from '../components/Loader';
+import StartChatButton from '../components/StartChatButton';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Agents = () => {
@@ -71,13 +72,15 @@ const Agents = () => {
                 ) : filteredAgents.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredAgents.map((agent) => (
-                            <div key={agent.agent_id} className="card p-6 hover:shadow-lg transition-shadow">
+                            <div key={agent.user_id} className="card p-6 hover:shadow-lg transition-shadow">
                                 {/* Profile Image */}
                                 <div className="flex justify-center mb-4">
                                     <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
-                                        {agent.profile_image ? (
+                                        {agent.profile_image_url ? (
                                             <img
-                                                src={agent.profile_image}
+                                                src={agent.profile_image_url.startsWith('/')
+                                                    ? `http://localhost:3001${agent.profile_image_url}`
+                                                    : agent.profile_image_url}
                                                 alt={`${agent.first_name} ${agent.last_name}`}
                                                 className="w-full h-full object-cover"
                                             />
@@ -95,17 +98,22 @@ const Agents = () => {
                                         {agent.first_name} {agent.last_name}
                                     </h3>
 
-                                    {agent.license_number && (
+                                    {agent.location && (
                                         <p className="text-xs text-gray-500 mb-2">
-                                            License: {agent.license_number}
+                                            📍 {agent.location}
                                         </p>
                                     )}
 
-                                    {/* Property Count Badge */}
-                                    <div className="mb-3">
+                                    {/* Property Count & Rating Badge */}
+                                    <div className="mb-3 space-y-1">
                                         <span className="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
                                             {agent.property_count || 0} {(agent.property_count || 0) === 1 ? 'Property' : 'Properties'}
                                         </span>
+                                        {agent.avg_rating > 0 && (
+                                            <span className="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium ml-2">
+                                                ⭐ {parseFloat(agent.avg_rating).toFixed(1)}
+                                            </span>
+                                        )}
                                     </div>
 
                                     {agent.bio && (
@@ -128,13 +136,19 @@ const Agents = () => {
                                         )}
                                     </div>
 
-                                    {/* View Profile Button */}
-                                    <Link
-                                        to={`/agents/${agent.agent_id}`}
-                                        className="btn-primary w-full block text-center"
-                                    >
-                                        View Profile & Properties
-                                    </Link>
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2">
+                                        <Link
+                                            to={`/agents/${agent.user_id}`}
+                                            className="btn-primary flex-1 text-center"
+                                        >
+                                            View Profile
+                                        </Link>
+                                        <StartChatButton
+                                            targetUser={{ user_id: agent.user_id, first_name: agent.first_name, last_name: agent.last_name }}
+                                            variant="icon"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ))}
