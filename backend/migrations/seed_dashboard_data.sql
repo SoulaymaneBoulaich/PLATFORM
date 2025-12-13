@@ -3,11 +3,11 @@
 
 -- Ensure we have seller users first
 -- Insert some test sellers if they don't exist
-INSERT INTO users (first_name, last_name, email, password_hash, phone, user_type, created_at)
+INSERT INTO users (first_name, last_name, email, password_hash, phone, user_type)
 VALUES 
-    ('Alice', 'Johnson', 'alice@test.com', '$2a$10$dummyhash1', '555-0001', 'seller', NOW()),
-    ('Bob', 'Smith', 'bob@test.com', '$2a$10$dummyhash2', '555-0002', 'seller', NOW()),
-    ('Carol', 'Williams', 'carol@test.com', '$2a$10$dummyhash3', '555-0003', 'seller', NOW())
+    ('Alice', 'Johnson', 'alice@test.com', '$2a$10$dummyhash1', '555-0001', 'seller'),
+    ('Bob', 'Smith', 'bob@test.com', '$2a$10$dummyhash2', '555-0002', 'seller'),
+    ('Carol', 'Williams', 'carol@test.com', '$2a$10$dummyhash3', '555-0003', 'seller')
 ON DUPLICATE KEY UPDATE user_id=LAST_INSERT_ID(user_id);
 
 -- Get seller IDs (assuming they are the last 3 inserted or existing users)
