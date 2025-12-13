@@ -4,6 +4,9 @@ import PropertyList from '../pages/PropertyList';
 import PropertyDetail from '../pages/PropertyDetail';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import SignUp from '../pages/SignUp';
+import ForgotPassword from '../pages/ForgotPassword';
+import ResetPassword from '../pages/ResetPassword';
 import Dashboard from '../pages/Dashboard';
 import Agents from '../pages/Agents';
 import AgentDetail from '../pages/AgentDetail';
@@ -26,6 +29,9 @@ const AppRouter = () => {
             <Route path="/agents/:id" element={<AgentDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/dashboard" element={
                 <ProtectedRoute>
@@ -67,3 +73,4 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
+

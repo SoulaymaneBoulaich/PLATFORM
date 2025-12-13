@@ -1,12 +1,9 @@
-// Page transition wrapper for smooth page animations
-import React from 'react';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const PageTransition = ({ children, className = '' }) => {
-    return (
-        <div className={`page-fade-in ${className}`}>
-            {children}
-        </div>
-    );
+const PageTransition = ({ children }) => {
+  // No animations - instant page load
+  return <div>{children}</div>;
 };
 
 export default PageTransition;

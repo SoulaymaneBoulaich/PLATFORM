@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "axios": "^1.13.2",
     "emoji-picker-react": "^4.16.1",
+    "framer-motion": "^12.23.26",
+    "gsap": "^3.14.2",
     "i18next": "^25.7.2",
+    "lucide-react": "^0.561.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.0",

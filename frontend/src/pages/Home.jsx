@@ -47,38 +47,37 @@ const Home = () => {
                 <div className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-20 md:py-28 overflow-hidden">
                     {/* Animated background pattern */}
                     <div className="absolute inset-0 opacity-10">
-                        <div className="absolute inset-0 animate-pattern" style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                            animation: 'pattern-move 20s linear infinite'
+                        <div className="hero-pattern absolute inset-0" style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
                         }}></div>
                     </div>
 
                     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Hero text with text-shadow for extra readability */}
                         <div className="text-center mb-12">
-                            <h1 className="hero-headline text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white drop-shadow-lg">
+                            <h1 className="hero-title text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white drop-shadow-lg">
                                 {t('home.heroTitle')}
                             </h1>
-                            <p className="hero-subheadline text-xl md:text-2xl text-white max-w-3xl mx-auto drop-shadow-md opacity-95">
+                            <p className="hero-subtitle text-xl md:text-2xl text-white max-w-3xl mx-auto drop-shadow-md opacity-95">
                                 {t('home.heroSubtitle')}
                             </p>
                         </div>
 
                         {/* Filter bar with white background and dark text */}
-                        <div className="filter-bar-animate max-w-5xl mx-auto">
+                        <div className="search-bar-container max-w-5xl mx-auto">
                             <SearchBar onSearch={handleSearch} />
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto stats-fade-in">
+                        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
                             {[
-                                { label: t('home.stats.properties'), value: '1000+' },
-                                { label: t('home.stats.cities'), value: '50+' },
-                                { label: t('home.stats.clients'), value: '10K+' },
-                                { label: t('home.stats.agents'), value: '100+' }
+                                { label: t('home.stats.properties'), value: 1000 },
+                                { label: t('home.stats.cities'), value: 50 },
+                                { label: t('home.stats.clients'), value: 10000 },
+                                { label: t('home.stats.agents'), value: 100 }
                             ].map((stat, index) => (
-                                <div key={index} className="text-center text-white" style={{ animationDelay: `${600 + index * 100}ms` }}>
-                                    <div className="text-3xl md:text-4xl font-bold mb-1 drop-shadow-md">{stat.value}</div>
+                                <div key={index} className="text-center text-white">
+                                    <div className="stat-number text-3xl md:text-4xl font-bold mb-1 drop-shadow-md">{stat.value}</div>
                                     <div className="text-white/90 text-sm md:text-base">{stat.label}</div>
                                 </div>
                             ))}
@@ -108,7 +107,7 @@ const Home = () => {
                         <>
                             <div className="property-grid">
                                 {properties.map((property, index) => (
-                                    <div key={property.property_id} className="stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
+                                    <div key={property.property_id} className="property-card-animate">
                                         <PropertyCard property={property} />
                                     </div>
                                 ))}
@@ -178,7 +177,7 @@ const Home = () => {
                                     description: 'Professional assistance throughout your property journey from search to closing'
                                 }
                             ].map((feature, index) => (
-                                <div key={index} className="text-center group">
+                                <div key={index} className="feature-card text-center group">
                                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary-100 text-primary-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                         {feature.icon}
                                     </div>

@@ -5,15 +5,13 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
-            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         }).format(price);
     };
 
-    // Validate image URL
     const hasValidImageUrl = property.image_url &&
-        property.image_url !== 'null' &&
-        property.image_url.trim() !== '' &&
-        !property.image_url.startsWith('data:');
+        (property.image_url.startsWith('http') ||
+            property.image_url.startsWith('/uploads'));
 
     const src = hasValidImageUrl ? property.image_url : '/images/property-placeholder.svg';
 

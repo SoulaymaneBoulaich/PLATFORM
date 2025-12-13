@@ -61,7 +61,19 @@ export const AuthProvider = ({ children }) => {
         // Load user's saved language in background (non-blocking)
         loadUserLanguage().catch(err => console.error('Language load failed:', err));
 
-        navigate('/dashboard');
+        // Role-based redirect
+        const userRole = newUser.user_type;
+        let redirectPath = '/dashboard';
+
+        if (userRole === 'buyer') {
+            redirectPath = '/dashboard/buyer';
+        } else if (userRole === 'seller' || userRole === 'agent') {
+            redirectPath = '/dashboard/seller';
+        } else if (userRole === 'admin') {
+            redirectPath = '/dashboard';
+        }
+
+        navigate(redirectPath);
     };
 
     const logout = () => {
@@ -79,6 +91,14 @@ export const AuthProvider = ({ children }) => {
         setUser(updatedUser);
     };
 
+    const getRememberedEmail = () => {
+        return localStorage.getItem('rememberedEmail') || '';
+    };
+
+    const clearRememberedEmail = () => {
+        localStorage.removeItem('rememberedEmail');
+    };
+
     const value = {
         user,
         token,
@@ -88,6 +108,8 @@ export const AuthProvider = ({ children }) => {
         setUser: updateUser,
         loading,
         isAuthenticated: !!token,
+        getRememberedEmail,
+        clearRememberedEmail,
     };
 
     return (
