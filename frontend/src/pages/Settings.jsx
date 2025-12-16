@@ -31,13 +31,10 @@ const Settings = () => {
         loadSettings();
     }, []);
 
-    // Theme effect removed - handled by ThemeContext
-
-
     const loadSettings = async () => {
         try {
             setLoading(true);
-            const res = await api.get('/settings'); // Changed endpoint
+            const res = await api.get('/settings');
             setSettings(res.data);
 
             // Apply saved language
@@ -61,7 +58,7 @@ const Settings = () => {
             // Optimistic update
             setSettings(prev => ({ ...prev, [key]: value }));
 
-            await api.put('/settings', payload); // Changed endpoint
+            await api.put('/settings', payload);
 
             // Handle language change
             if (key === 'language') {
@@ -99,14 +96,14 @@ const Settings = () => {
 
         try {
             setSaving(true);
-            await api.post('/auth/change-password', { // Assuming endpoint exists or will catch error
+            await api.post('/auth/change-password', {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             });
             alert('Password changed successfully!');
             setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
         } catch (err) {
-            alert(err.response?.data?.error || 'Failed to change password (feature pending endpoint implementation)');
+            alert(err.response?.data?.error || 'Failed to change password');
         } finally {
             setSaving(false);
         }
@@ -129,10 +126,10 @@ const Settings = () => {
 
     return (
         <PageTransition>
-            <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-stone-50 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-10 text-center sm:text-left">
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600 animate-slideIn">
                             {t('settings.title')}
                         </h1>
                         <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
@@ -144,7 +141,7 @@ const Settings = () => {
                         {/* Sidebar Navigation */}
                         <div className="lg:w-1/4">
                             <motion.div
-                                className="bg-white rounded-2xl shadow-xl overflow-hidden sticky top-24 border border-gray-100"
+                                className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden sticky top-24 border border-stone-100 dark:border-slate-700"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.1 }}
@@ -155,14 +152,14 @@ const Settings = () => {
                                             key={section.id}
                                             onClick={() => setActiveSection(section.id)}
                                             className={`w-full flex items-center p-4 rounded-xl transition-all duration-300 group ${activeSection === section.id
-                                                ? 'bg-gradient-to-r from-primary-50 to-white text-primary-600 shadow-sm border-l-4 border-primary-500'
-                                                : 'text-gray-600 hover:bg-gray-50 hover:pl-5'
+                                                ? 'bg-gradient-to-r from-primary-50 to-white dark:from-primary-900/20 dark:to-slate-800 text-primary-600 dark:text-primary-400 shadow-sm border-s-4 border-primary-500'
+                                                : 'text-gray-600 dark:text-gray-400 hover:bg-stone-50 dark:hover:bg-slate-700 hover:ps-5'
                                                 }`}
                                         >
-                                            <span className={`text-xl mr-4 ${activeSection === section.id ? 'text-primary-600' : 'text-gray-400 group-hover:text-primary-500'}`}>
+                                            <span className={`text-xl me-4 ${activeSection === section.id ? 'text-primary-600' : 'text-gray-400 group-hover:text-primary-500'}`}>
                                                 {section.icon}
                                             </span>
-                                            <div className="text-left">
+                                            <div className="text-start">
                                                 <span className="block font-semibold">{section.name}</span>
                                                 <span className="text-xs text-gray-400 hidden sm:block">{section.description}</span>
                                             </div>
@@ -184,19 +181,19 @@ const Settings = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.3 }}
-                                    className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 min-h-[500px]"
+                                    className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-stone-100 dark:border-slate-700 p-8 min-h-[500px]"
                                 >
                                     {/* Profile Section */}
                                     {activeSection === 'profile' && (
                                         <div>
                                             <div className="flex items-center justify-between mb-8">
-                                                <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
+                                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
                                                 <Link to="/account/profile" className="btn-primary flex items-center gap-2">
                                                     <FaUser /> Edit Profile
                                                 </Link>
                                             </div>
 
-                                            <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl border border-gray-200 flex flex-col sm:flex-row items-center gap-8 mb-8">
+                                            <div className="bg-gradient-to-br from-stone-50 to-white dark:from-slate-700 dark:to-slate-800 p-8 rounded-2xl border border-stone-200 dark:border-slate-600 flex flex-col sm:flex-row items-center gap-8 mb-8">
                                                 <div className="relative">
                                                     {user?.profile_image_url ? (
                                                         <img
@@ -204,37 +201,37 @@ const Settings = () => {
                                                                 ? `http://localhost:3001${user.profile_image_url}`
                                                                 : user.profile_image_url}
                                                             alt="Profile"
-                                                            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                                                            className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-slate-600 shadow-lg"
                                                         />
                                                     ) : (
-                                                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white">
+                                                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white dark:border-slate-600">
                                                             {user?.first_name?.charAt(0)}{user?.last_name?.charAt(0)}
                                                         </div>
                                                     )}
                                                     <div className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
                                                 </div>
 
-                                                <div className="text-center sm:text-left flex-1">
-                                                    <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                                                <div className="text-center sm:text-start flex-1">
+                                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                                                         {user?.first_name} {user?.last_name}
                                                     </h3>
-                                                    <p className="text-gray-500 flex items-center justify-center sm:justify-start gap-2 mb-4">
+                                                    <p className="text-gray-500 dark:text-gray-400 flex items-center justify-center sm:justify-start gap-2 mb-4">
                                                         <FaEnvelope className="text-gray-400" /> {user?.email}
                                                     </p>
-                                                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium">
+                                                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium">
                                                         Role: <span className="uppercase ms-1">{user?.role}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="p-4 bg-gray-50 rounded-xl">
-                                                    <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-                                                    <p className="font-semibold text-gray-900">{user?.phone || 'Not provided'}</p>
+                                                <div className="p-4 bg-stone-50 dark:bg-slate-700/50 rounded-xl">
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Phone Number</p>
+                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.phone || 'Not provided'}</p>
                                                 </div>
-                                                <div className="p-4 bg-gray-50 rounded-xl">
-                                                    <p className="text-sm text-gray-500 mb-1">Location</p>
-                                                    <p className="font-semibold text-gray-900">{user?.location || 'Not provided'}</p>
+                                                <div className="p-4 bg-stone-50 dark:bg-slate-700/50 rounded-xl">
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Location</p>
+                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.location || 'Not provided'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -243,15 +240,15 @@ const Settings = () => {
                                     {/* Security Section */}
                                     {activeSection === 'security' && (
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Security Settings</h2>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Security Settings</h2>
 
-                                            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-r-lg">
+                                            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-s-4 border-yellow-400 p-4 mb-8 rounded-e-lg">
                                                 <div className="flex">
                                                     <div className="flex-shrink-0">
                                                         <FaShieldAlt className="h-5 w-5 text-yellow-400" />
                                                     </div>
                                                     <div className="ms-3">
-                                                        <p className="text-sm text-yellow-700">
+                                                        <p className="text-sm text-yellow-700 dark:text-yellow-200">
                                                             Use a strong password to keep your account secure.
                                                         </p>
                                                     </div>
@@ -260,46 +257,46 @@ const Settings = () => {
 
                                             <form onSubmit={handleChangePassword} className="space-y-6 max-w-lg">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                         Current Password
                                                     </label>
                                                     <input
                                                         type="password"
                                                         value={passwordData.currentPassword}
                                                         onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                                                        className="input-field w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500 transition-shadow"
+                                                        className="input-field"
                                                         required
                                                     />
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                         New Password
                                                     </label>
                                                     <input
                                                         type="password"
                                                         value={passwordData.newPassword}
                                                         onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                                        className="input-field w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500 transition-shadow"
+                                                        className="input-field"
                                                         required
                                                         minLength={6}
                                                     />
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                         Confirm New Password
                                                     </label>
                                                     <input
                                                         type="password"
                                                         value={passwordData.confirmPassword}
                                                         onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                                                        className="input-field w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500 transition-shadow"
+                                                        className="input-field"
                                                         required
                                                     />
                                                 </div>
 
-                                                <button type="submit" disabled={saving} className="btn-gradient w-full md:w-auto px-8 py-3 rounded-xl font-bold shadow-lg transform transition hover:scale-105">
+                                                <button type="submit" disabled={saving} className="btn-gradient w-full md:w-auto px-8 py-3 rounded-xl font-bold">
                                                     {saving ? 'Processing...' : 'Change Password'}
                                                 </button>
                                             </form>
@@ -309,7 +306,7 @@ const Settings = () => {
                                     {/* Notifications Section */}
                                     {activeSection === 'notifications' && (
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Notification Preferences</h2>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Notification Preferences</h2>
 
                                             <div className="space-y-4">
                                                 {[
@@ -317,19 +314,19 @@ const Settings = () => {
                                                     { id: 'notifications_push', title: 'Push Notifications', desc: 'Receive real-time push alerts', icon: <FaBell className="text-purple-500" /> },
                                                     { id: 'notifications_marketing', title: 'Marketing Emails', desc: 'Receive news and special offers', icon: <FaGlobe className="text-green-500" /> },
                                                 ].map((item) => (
-                                                    <div key={item.id} className="flex items-center justify-between p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                                                    <div key={item.id} className="flex items-center justify-between p-5 bg-stone-50 dark:bg-slate-700/50 rounded-xl hover:bg-stone-100 dark:hover:bg-slate-700 transition-colors">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="p-3 bg-white rounded-full shadow-sm">
+                                                            <div className="p-3 bg-white dark:bg-slate-800 rounded-full shadow-sm">
                                                                 {item.icon}
                                                             </div>
                                                             <div>
-                                                                <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                                                                <p className="text-sm text-gray-500">{item.desc}</p>
+                                                                <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+                                                                <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
                                                             </div>
                                                         </div>
                                                         <button
                                                             onClick={() => handleToggleSetting(item.id, !settings?.[item.id])}
-                                                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${settings?.[item.id] ? 'bg-primary-600' : 'bg-gray-300'
+                                                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${settings?.[item.id] ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
                                                                 }`}
                                                         >
                                                             <span
@@ -346,12 +343,12 @@ const Settings = () => {
                                     {/* Appearance Section */}
                                     {activeSection === 'appearance' && (
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Appearance & Language</h2>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Appearance & Language</h2>
 
                                             <div className="grid gap-6">
                                                 {/* Theme Selection */}
-                                                <div className="p-6 bg-gray-50 rounded-2xl">
-                                                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                                <div className="p-6 bg-stone-50 dark:bg-slate-700/50 rounded-2xl">
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                                         <FaPalette className="text-primary-500" /> Theme Mode
                                                     </h3>
                                                     <div className="grid grid-cols-2 gap-4">
@@ -359,28 +356,28 @@ const Settings = () => {
                                                             onClick={() => handleToggleSetting('theme', 'light')}
                                                             className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme === 'light'
                                                                 ? 'border-primary-500 bg-white shadow-md'
-                                                                : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                                : 'border-transparent bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700'
                                                                 }`}
                                                         >
                                                             <FaSun className={`text-3xl ${theme === 'light' ? 'text-yellow-500' : 'text-gray-400'}`} />
-                                                            <span className="font-medium">Light Mode</span>
+                                                            <span className="font-medium text-gray-900 dark:text-white">Light Mode</span>
                                                         </button>
                                                         <button
                                                             onClick={() => handleToggleSetting('theme', 'dark')}
                                                             className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme === 'dark'
-                                                                ? 'border-primary-500 bg-gray-800 text-white shadow-md'
-                                                                : 'border-transparent bg-gray-100 hover:bg-gray-200'
+                                                                ? 'border-primary-500 bg-slate-800 text-white shadow-md'
+                                                                : 'border-transparent bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700'
                                                                 }`}
                                                         >
                                                             <FaMoon className={`text-3xl ${theme === 'dark' ? 'text-purple-400' : 'text-gray-400'}`} />
-                                                            <span className="font-medium">Dark Mode</span>
+                                                            <span className="font-medium text-gray-700 dark:text-white">Dark Mode</span>
                                                         </button>
                                                     </div>
                                                 </div>
 
                                                 {/* Language Selection */}
-                                                <div className="p-6 bg-gray-50 rounded-2xl">
-                                                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                                <div className="p-6 bg-stone-50 dark:bg-slate-700/50 rounded-2xl">
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                                         <FaGlobe className="text-primary-500" /> Language
                                                     </h3>
                                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -388,12 +385,12 @@ const Settings = () => {
                                                             <button
                                                                 key={lang.code}
                                                                 onClick={() => handleToggleSetting('language', lang.code)}
-                                                                className={`p-3 rounded-lg border text-left transition-all flex items-center justify-between ${settings?.language === lang.code
-                                                                    ? 'border-primary-500 bg-primary-50 text-primary-700'
-                                                                    : 'border-gray-200 bg-white hover:border-primary-300'
+                                                                className={`p-3 rounded-lg border text-start transition-all flex items-center justify-between ${settings?.language === lang.code
+                                                                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
+                                                                    : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-primary-300'
                                                                     }`}
                                                             >
-                                                                <span>{lang.label}</span>
+                                                                <span className="dark:text-white">{lang.label}</span>
                                                                 {settings?.language === lang.code && <FaCheck className="text-primary-600" />}
                                                             </button>
                                                         ))}

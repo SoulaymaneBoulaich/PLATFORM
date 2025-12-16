@@ -106,13 +106,6 @@ const Navbar = () => {
                                     </svg>
                                 </Link>
 
-                                {/* Favorites Icon */}
-                                <Link to="/favorites" className="relative p-2 text-white hover:bg-white/20 rounded-lg transition-all duration-200" title="My Favorites">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                    </svg>
-                                </Link>
-
                                 {user?.user_type === 'seller' && (
                                     <Link to="/dashboard" className="text-white hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-all duration-200">
                                         {t('navbar.dashboard')}
@@ -139,7 +132,7 @@ const Navbar = () => {
                                     {showNotifications && (
                                         <>
                                             <div className="fixed inset-0 z-10" onClick={() => setShowNotifications(false)}></div>
-                                            <div className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-hidden">
+                                            <div className="absolute end-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-hidden">
                                                 <div className="p-4 border-b border-gray-200 bg-gray-50">
                                                     <h3 className="font-semibold text-gray-900">Notifications</h3>
                                                 </div>
@@ -214,7 +207,7 @@ const Navbar = () => {
                                 {showUserMenu && (
                                     <>
                                         <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)}></div>
-                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                        <div className="absolute end-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                                             <Link
                                                 to="/account/profile"
                                                 onClick={() => setShowUserMenu(false)}
@@ -235,7 +228,7 @@ const Navbar = () => {
                                                     setShowUserMenu(false);
                                                     logout();
                                                 }}
-                                                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                                className="block w-full text-start px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
                                             >
                                                 🚪 {t('navbar.logout')}
                                             </button>
@@ -289,7 +282,7 @@ const Navbar = () => {
                                             Dashboard
                                         </Link>
                                     )}
-                                    <button onClick={() => { logout(); closeMobileMenu(); }} className="w-full text-left px-4 py-2 text-white hover:bg-white/20 rounded-lg transition-colors font-medium">
+                                    <button onClick={() => { logout(); closeMobileMenu(); }} className="w-full text-start px-4 py-2 text-white hover:bg-white/20 rounded-lg transition-colors font-medium">
                                         Logout
                                     </button>
                                 </>
