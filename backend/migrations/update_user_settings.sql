@@ -1,0 +1,8 @@
+ALTER TABLE user_settings
+ADD COLUMN theme VARCHAR(20) DEFAULT 'light',
+ADD COLUMN currency VARCHAR(10) DEFAULT 'USD',
+ADD COLUMN notifications_email BOOLEAN DEFAULT TRUE,
+ADD COLUMN notifications_push BOOLEAN DEFAULT TRUE,
+ADD COLUMN notifications_marketing BOOLEAN DEFAULT FALSE,
+ADD COLUMN privacy_show_email BOOLEAN DEFAULT FALSE,
+ADD COLUMN privacy_show_phone BOOLEAN DEFAULT FALSE;

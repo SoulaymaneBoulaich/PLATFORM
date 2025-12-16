@@ -241,7 +241,7 @@ router.get('/dashboard/buyer/summary', auth, async (req, res) => {
 
         // Total favorites
         const [favorites] = await pool.query(
-            'SELECT COUNT(*) as count FROM property_favorites WHERE user_id = ?',
+            'SELECT COUNT(*) as count FROM favorites WHERE user_id = ?',
             [buyerId]
         );
 
@@ -311,21 +311,21 @@ router.post('/properties/:id/favorite', auth, async (req, res) => {
 
         // Check if already favorited
         const [existing] = await pool.query(
-            'SELECT * FROM property_favorites WHERE property_id = ? AND user_id = ?',
+            'SELECT * FROM favorites WHERE property_id = ? AND user_id = ?',
             [propertyId, userId]
         );
 
         if (existing.length > 0) {
             // Remove favorite
             await pool.query(
-                'DELETE FROM property_favorites WHERE property_id = ? AND user_id = ?',
+                'DELETE FROM favorites WHERE property_id = ? AND user_id = ?',
                 [propertyId, userId]
             );
             res.json({ favorited: false, message: 'Removed from favorites' });
         } else {
             // Add favorite
             await pool.query(
-                'INSERT INTO property_favorites (property_id, user_id) VALUES (?, ?)',
+                'INSERT INTO favorites (property_id, user_id) VALUES (?, ?)',
                 [propertyId, userId]
             );
             res.json({ favorited: true, message: 'Added to favorites' });
@@ -343,7 +343,7 @@ router.get('/properties/:id/favorite-status', auth, async (req, res) => {
         const userId = req.user.user_id;
 
         const [favorite] = await pool.query(
-            'SELECT * FROM property_favorites WHERE property_id = ? AND user_id = ?',
+            'SELECT * FROM favorites WHERE property_id = ? AND user_id = ?',
             [propertyId, userId]
         );
 
@@ -388,6 +388,46 @@ router.post('/properties/:id/viewings', auth, async (req, res) => {
     } catch (error) {
         console.error('Error scheduling viewing:', error);
         res.status(500).json({ error: 'Failed to schedule viewing' });
+    }
+});
+
+// GET /dashboard/seller/charts - Get historical data for charts
+router.get('/dashboard/seller/charts', auth, async (req, res) => {
+    try {
+        const sellerId = req.user.user_id;
+
+        // Views over last 30 days
+        const [viewsData] = await pool.query(`
+            SELECT 
+                DATE(pv.viewed_at) as date,
+                COUNT(*) as count
+            FROM property_views pv
+            JOIN properties p ON pv.property_id = p.property_id
+            WHERE p.seller_id = ? 
+            AND pv.viewed_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            GROUP BY DATE(pv.viewed_at)
+            ORDER BY date ASC
+        `, [sellerId]);
+
+        // Offers over last 30 days
+        const [offersData] = await pool.query(`
+            SELECT 
+                DATE(created_at) as date,
+                COUNT(*) as count
+            FROM offers
+            WHERE seller_id = ?
+            AND created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            GROUP BY DATE(created_at)
+            ORDER BY date ASC
+        `, [sellerId]);
+
+        res.json({
+            views: viewsData,
+            offers: offersData
+        });
+    } catch (error) {
+        console.error('Error fetching charts data:', error);
+        res.status(500).json({ error: 'Failed to fetch charts data' });
     }
 });
 

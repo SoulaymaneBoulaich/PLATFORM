@@ -40,51 +40,63 @@ router.post('/properties/:propertyId/contact', auth, async (req, res, next) => {
 
         try {
             if (sellerId && req.user && req.user.user_id) {
-                // Check if conversation already exists
-                const [existingConv] = await pool.query(
-                    'SELECT conversation_id FROM conversations WHERE property_id = ? AND buyer_id = ? AND seller_id = ?',
-                    [propertyId, req.user.user_id, sellerId]
-                );
+                const buyerId = req.user.user_id;
+
+                // Check for existing conversation using participants table
+                const [existingConv] = await pool.query(`
+                    SELECT c.conversation_id 
+                    FROM conversations c
+                    INNER JOIN conversation_participants cp1 ON c.conversation_id = cp1.conversation_id
+                    INNER JOIN conversation_participants cp2 ON c.conversation_id = cp2.conversation_id
+                    WHERE c.property_id = ?
+                    AND cp1.user_id = ?
+                    AND cp2.user_id = ?
+                    LIMIT 1
+                `, [propertyId, buyerId, sellerId]);
 
                 if (existingConv.length > 0) {
                     conversationId = existingConv[0].conversation_id;
 
-                    // Just add message to existing conversation
+                    // Add message
                     await pool.query(
                         'INSERT INTO messages (conversation_id, sender_id, content) VALUES (?, ?, ?)',
-                        [conversationId, req.user.user_id, message]
+                        [conversationId, buyerId, message]
                     );
 
-                    // Update conversation last message
+                    // Update timestamp
                     await pool.query(
-                        'UPDATE conversations SET last_message = ?, last_message_at = NOW() WHERE conversation_id = ?',
-                        [message, conversationId]
+                        'UPDATE conversations SET updated_at = NOW() WHERE conversation_id = ?',
+                        [conversationId]
                     );
                 } else {
                     // Create new conversation
                     const [convResult] = await pool.query(
-                        'INSERT INTO conversations (property_id, buyer_id, seller_id, last_message, last_message_at) VALUES (?, ?, ?, ?, NOW())',
-                        [propertyId, req.user.user_id, sellerId, message]
+                        'INSERT INTO conversations (property_id) VALUES (?)',
+                        [propertyId]
                     );
                     conversationId = convResult.insertId;
 
-                    // Insert message linked to conversation
+                    // Add participants
+                    await pool.query(
+                        'INSERT INTO conversation_participants (conversation_id, user_id) VALUES (?, ?), (?, ?)',
+                        [conversationId, buyerId, conversationId, sellerId]
+                    );
+
+                    // Add initial message
                     await pool.query(
                         'INSERT INTO messages (conversation_id, sender_id, content) VALUES (?, ?, ?)',
-                        [conversationId, req.user.user_id, message]
+                        [conversationId, buyerId, message]
                     );
                 }
 
-                // Create notification for seller
+                // Create notification
                 await pool.query(
                     'INSERT INTO notifications (user_to_notify, user_from, property_id, type, message) VALUES (?, ?, ?, ?, ?)',
-                    [sellerId, req.user.user_id, propertyId, 'contact', `New inquiry for "${propertyTitle}"`]
+                    [sellerId, buyerId, propertyId, 'contact', `New inquiry for "${propertyTitle}"`]
                 );
             }
         } catch (convError) {
-            // Log conversation error but don't fail the whole request
             console.error('Error creating conversation:', convError);
-            // Continue without conversation - contact message was still saved
         }
 
         res.status(201).json({

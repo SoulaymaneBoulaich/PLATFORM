@@ -61,17 +61,12 @@ export const AuthProvider = ({ children }) => {
         // Load user's saved language in background (non-blocking)
         loadUserLanguage().catch(err => console.error('Language load failed:', err));
 
-        // Role-based redirect
-        const userRole = newUser.user_type;
+        // Role-based redirect (support both lowercase and uppercase roles)
+        const userRole = (newUser.user_type || newUser.role || '').toUpperCase();
         let redirectPath = '/dashboard';
 
-        if (userRole === 'buyer') {
-            redirectPath = '/dashboard/buyer';
-        } else if (userRole === 'seller' || userRole === 'agent') {
-            redirectPath = '/dashboard/seller';
-        } else if (userRole === 'admin') {
-            redirectPath = '/dashboard';
-        }
+        // All roles go to unified dashboard for now
+        // (Frontend will show different content based on role)
 
         navigate(redirectPath);
     };

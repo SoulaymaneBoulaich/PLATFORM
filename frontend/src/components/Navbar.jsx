@@ -74,7 +74,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo with high contrast */}
-                    <Link to="/" className="flex items-center space-x-3 group animate-slideIn">
+                    <Link to="/" className="flex items-center gap-3 group animate-slideIn">
                         <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200 shadow-md">
                             <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -86,7 +86,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop Navigation - White text for contrast */}
-                    <div className="hidden md:flex items-center space-x-1">
+                    <div className="hidden md:flex items-center gap-1">
                         <Link to="/" className="text-white hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-all duration-200">
                             Home
                         </Link>
@@ -100,9 +100,16 @@ const Navbar = () => {
                         {isAuthenticated ? (
                             <>
                                 {/* Messages/Chat Icon - Visible to ALL authenticated users */}
-                                <Link to="/messages" className="relative p-2 text-white hover:bg-white/20 rounded-lg transition-all duration-200 ml-2">
+                                <Link to="/messages" className="relative p-2 text-white hover:bg-white/20 rounded-lg transition-all duration-200 ms-2">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                </Link>
+
+                                {/* Favorites Icon */}
+                                <Link to="/favorites" className="relative p-2 text-white hover:bg-white/20 rounded-lg transition-all duration-200" title="My Favorites">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                     </svg>
                                 </Link>
 
@@ -172,7 +179,7 @@ const Navbar = () => {
                                 <Link to="/login" className="text-white hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-all duration-200">
                                     {t('navbar.login')}
                                 </Link>
-                                <Link to="/register" className="bg-white text-primary-600 hover:bg-gray-100 font-semibold py-2 px-4 rounded-lg ml-2 transition-all duration-200">
+                                <Link to="/register" className="bg-white text-primary-600 hover:bg-gray-100 font-semibold py-2 px-4 rounded-lg ms-2 transition-all duration-200">
                                     {t('navbar.getStarted')}
                                 </Link>
                             </>
@@ -180,13 +187,13 @@ const Navbar = () => {
 
                         {/* User Avatar/Menu */}
                         {isAuthenticated && (
-                            <div className="relative ml-3">
+                            <div className="relative ms-3">
                                 <button
                                     onClick={() => {
                                         setShowUserMenu(!showUserMenu);
                                         setShowNotifications(false);
                                     }}
-                                    className="flex items-center gap-2 hover:bg-white/20 rounded-lg p-1 pr-3 transition-colors"
+                                    className="flex items-center gap-2 hover:bg-white/20 rounded-lg p-1 pe-3 transition-colors"
                                 >
                                     {user?.profile_image_url ? (
                                         <img
