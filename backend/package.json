@@ -4,7 +4,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate:all": "node scripts/migrations/run-migrations.js",
+    "migrate:media": "node scripts/migrations/run-media-migration.js",
+    "migrate:favorites": "node scripts/migrations/run-favorites-migration.js",
+    "seed:agents": "node scripts/seeds/seed-agents.js",
+    "seed:images": "node scripts/seeds/seed-property-images.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -13,6 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.0",
     "express": "^4.19.0",
+    "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "mysql2": "^3.9.2"

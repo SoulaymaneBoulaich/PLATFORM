@@ -399,7 +399,7 @@ SET @seller3 = (SELECT user_id FROM users WHERE email = 'carol@test.com');
 INSERT INTO properties (seller_id, title, description, property_type, listing_type, price, address_line1, city, state, zip_code, country, bedrooms, bathrooms, area_sqft, status, listing_date, image_url)
 VALUES
     -- House properties
-    (@seller1, 'Modern Family House', 'Beautiful 3-bedroom house with garden', 'house', 'Sale', 350000, '123 Oak Street', 'Casablanca', 'Grand Casablanca', '20000', 'Morocco', 3, 2, 1500, 'active', CURDATE(), 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'),
+    (@seller1, 'Modern Family House', 'Beautifullly 3-bedroom house with garden', 'house', 'Sale', 350000, '123 Oak Street', 'Casablanca', 'Grand Casablanca', '20000', 'Morocco', 3, 2, 1500, 'active', CURDATE(), 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'),
     (@seller1, 'Cozy Suburban Home', 'Perfect starter home', 'house', 'Sale', 280000, '456 Maple Ave', 'Rabat', 'Rabat-Sale', '10000', 'Morocco', 2, 1, 1200, 'sold', CURDATE(), 'https://images.unsplash.com/photo-1570129477492-45c003edd2be'),
     (@seller2, 'Luxury Villa', 'Stunning villa with pool', 'house', 'Sale', 850000, '789 Palm Road', 'Marrakech', 'Marrakech-Safi', '40000', 'Morocco', 5, 4, 3500, 'active', CURDATE(), 'https://images.unsplash.com/photo-1613490493576-7fde63acd811'),
     

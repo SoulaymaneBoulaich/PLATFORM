@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import PropertyCard from '../components/PropertyCard';
 import Loader from '../components/Loader';
 import ErrorMessage from '../components/ErrorMessage';
+import AnalyticsCharts from '../components/AnalyticsCharts';
 
 const Dashboard = () => {
     const { user } = useAuth();
@@ -12,7 +14,16 @@ const Dashboard = () => {
     const [properties, setProperties] = useState([]);
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [dashboardStats, setDashboardStats] = useState(null);
+    const [sellerStats, setSellerStats] = useState({
+        totalProperties: 0,
+        activeProperties: 0,
+        soldProperties: 0,
+        totalViews: 0,
+        contactsReceived: 0,
+        totalAgents: 0,
+        propertiesByType: [],
+        propertiesByStatus: []
+    });
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState('');
     const [error, setError] = useState('');
@@ -39,9 +50,9 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (user) {
-            // Fetch dashboard stats for sellers/admins
+            // Fetch seller stats for sellers/admins
             if (user.user_type === 'seller' || user.user_type === 'admin') {
-                fetchDashboardStats();
+                fetchSellerStats();
                 fetchMyProperties();
             } else if (user.user_type === 'buyer') {
                 fetchFavorites();
@@ -55,14 +66,14 @@ const Dashboard = () => {
         }
     }, [user, searchParams]);
 
-    const fetchDashboardStats = async () => {
+    const fetchSellerStats = async () => {
         try {
             setStatsLoading(true);
-            const response = await api.get('/dashboard/summary');
-            setDashboardStats(response.data);
+            const response = await api.get('/dashboard/seller-stats');
+            setSellerStats(response.data);
             setStatsError('');
         } catch (err) {
-            setStatsError('Failed to load dashboard statistics');
+            setStatsError('Failed to load seller statistics');
             console.error(err);
         } finally {
             setStatsLoading(false);
@@ -231,6 +242,14 @@ const Dashboard = () => {
     const isSeller = user?.user_type === 'seller' || user?.user_type === 'admin';
     const isCustomer = user?.user_type === 'buyer';  // Keep 'buyer' for DB compatibility
 
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <Loader />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -259,6 +278,26 @@ const Dashboard = () => {
                 {isSeller && (
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+                        {/* Personalized Welcome Message */}
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg p-6 mb-8 shadow-lg">
+                            <h2 className="text-2xl font-bold">Welcome back, {user?.first_name}!</h2>
+                            <p className="mt-2">Here are your latest stats and quick actions.</p>
+                        </div>
+                        {/* Quick Action Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium">Manage Properties</span>
+                                <button onClick={() => setShowPropertyForm(true)} className="btn-primary">Go</button>
+                            </div>
+                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium">Messages</span>
+                                <Link to="/messages" className="btn-primary">Go</Link>
+                            </div>
+                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium">View Offers</span>
+                                <Link to="/offers" className="btn-primary">Go</Link>
+                            </div>
+                        </div>
 
                         {statsError && (
                             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
@@ -271,14 +310,14 @@ const Dashboard = () => {
                                 <Loader />
                                 <p className="text-gray-500 mt-2">Loading dashboard statistics...</p>
                             </div>
-                        ) : dashboardStats ? (
+                        ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                                 {/* Total Properties Card */}
                                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <p className="text-blue-100 text-sm font-medium">Total Properties</p>
-                                            <p className="text-4xl font-bold mt-2">{dashboardStats.totalProperties}</p>
+                                            <p className="text-4xl font-bold mt-2">{sellerStats.totalProperties}</p>
                                         </div>
                                         <div className="bg-blue-400 bg-opacity-30 rounded-full p-3">
                                             <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -293,7 +332,7 @@ const Dashboard = () => {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <p className="text-green-100 text-sm font-medium">Active Sellers</p>
-                                            <p className="text-4xl font-bold mt-2">{dashboardStats.totalAgents}</p>
+                                            <p className="text-4xl font-bold mt-2">{sellerStats.totalAgents}</p>
                                         </div>
                                         <div className="bg-green-400 bg-opacity-30 rounded-full p-3">
                                             <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -307,7 +346,7 @@ const Dashboard = () => {
                                 <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
                                     <h3 className="text-gray-700 text-sm font-semibold mb-3">By Property Type</h3>
                                     <div className="space-y-2">
-                                        {dashboardStats.propertiesByType.slice(0, 3).map((item, idx) => (
+                                        {sellerStats.propertiesByType.slice(0, 3).map((item, idx) => (
                                             <div key={idx} className="flex justify-between items-center">
                                                 <span className="text-gray-600 text-sm capitalize">{item.type}</span>
                                                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
@@ -315,8 +354,8 @@ const Dashboard = () => {
                                                 </span>
                                             </div>
                                         ))}
-                                        {dashboardStats.propertiesByType.length > 3 && (
-                                            <p className="text-gray-400 text-xs mt-2">+{dashboardStats.propertiesByType.length - 3} more types</p>
+                                        {sellerStats.propertiesByType.length > 3 && (
+                                            <p className="text-gray-400 text-xs mt-2">+{sellerStats.propertiesByType.length - 3} more types</p>
                                         )}
                                     </div>
                                 </div>
@@ -325,7 +364,7 @@ const Dashboard = () => {
                                 <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
                                     <h3 className="text-gray-700 text-sm font-semibold mb-3">By Status</h3>
                                     <div className="space-y-2">
-                                        {dashboardStats.propertiesByStatus.map((item, idx) => (
+                                        {sellerStats.propertiesByStatus.map((item, idx) => (
                                             <div key={idx} className="flex justify-between items-center">
                                                 <span className="text-gray-600 text-sm capitalize">{item.status}</span>
                                                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'active' ? 'bg-green-100 text-green-800' :
@@ -339,7 +378,13 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        ) : null}
+                        )}
+
+
+                        {/* Analytics Charts */}
+                        <div className="mb-8">
+                            <AnalyticsCharts />
+                        </div>
                     </div>
                 )}
 

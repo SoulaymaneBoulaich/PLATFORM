@@ -17,7 +17,7 @@ const StartChatButton = ({ targetUser, propertyId = null, className = '', varian
             setLoading(true);
 
             const response = await api.post('/conversations/start', {
-                otherUserId: targetUser.user_id,
+                targetUserId: targetUser.user_id,
                 propertyId: propertyId
             });
 

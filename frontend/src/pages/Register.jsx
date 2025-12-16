@@ -144,10 +144,10 @@ const Register = () => {
                                 className="input-field mt-1"
                             >
                                 <option value="buyer">Customer</option>
-                                <option value="seller">Seller</option>
+                                <option value="seller">Agent / Seller</option>
                             </select>
                             <p className="mt-1 text-xs text-gray-500">
-                                Customers can browse and save favorites. Sellers can list properties.
+                                Customers can browse, save favorites, and contact sellers. Agents/Sellers can list and manage properties.
                             </p>
                         </div>
 
