@@ -3,62 +3,75 @@
 @tailwind utilities;
 
 /* ================================
-   DESIGN SYSTEM - Custom Properties
+   DESIGN SYSTEM - Natural Theme
    ================================ */
 @layer base {
   :root {
-    /* Premium Gradient Colors (Restored) */
-    --primary-from: #6366f1;
-    --primary-to: #8b5cf6;
-    --secondary-from: #ec4899;
-    --secondary-to: #f43f5e;
-    --success-from: #10b981;
-    --success-to: #059669;
+    /* Natural Theme Colors (Teal & Amber) */
+    --primary-from: #14b8a6;
+    /* Teal 500 */
+    --primary-to: #0f766e;
+    /* Teal 700 */
+    --secondary-from: #f59e0b;
+    /* Amber 500 */
+    --secondary-to: #d97706;
+    /* Amber 600 */
 
     /* Background Gradients */
     --gradient-primary: linear-gradient(135deg, var(--primary-from) 0%, var(--primary-to) 100%);
     --gradient-secondary: linear-gradient(135deg, var(--secondary-from) 0%, var(--secondary-to) 100%);
-    --gradient-success: linear-gradient(135deg, var(--success-from) 0%, var(--success-to) 100%);
-    --gradient-radial: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent 50%);
 
     /* Glass Morphism */
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(255, 255, 255, 0.18);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(15, 118, 110, 0.1);
+    /* Teal tinted shadow */
 
     /* Effects */
-    --glow-primary: 0 0 20px rgba(99, 102, 241, 0.4);
-    --glow-secondary: 0 0 20px rgba(236, 72, 153, 0.4);
-
-    /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --glow-primary: 0 0 20px rgba(20, 184, 166, 0.4);
+    --glow-secondary: 0 0 20px rgba(245, 158, 11, 0.4);
   }
 
   /* Dark Mode Variables */
   [data-theme="dark"] {
-    --glass-bg: rgba(30, 41, 59, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(15, 23, 42, 0.7);
+    /* Slate 900 base */
+    --glass-border: rgba(255, 255, 255, 0.05);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+
+    --primary-from: #2dd4bf;
+    /* Teal 400 for dark mode */
+    --primary-to: #14b8a6;
+    /* Teal 500 */
   }
 
   body {
-    @apply font-sans antialiased bg-gray-50 text-gray-900;
+    @apply font-sans antialiased bg-stone-50 text-stone-900;
     overflow-x: hidden;
     width: 100%;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* Dark Mode Body */
   [data-theme="dark"] body {
-    @apply bg-slate-900 text-gray-100;
+    @apply bg-slate-900 text-stone-100;
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-stone-300 rounded-full hover:bg-stone-400 transition-colors;
+  }
+
+  [data-theme="dark"] ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 hover:bg-slate-600;
   }
 }
 
@@ -68,67 +81,27 @@
    ================================ */
 @layer components {
 
-  /* Buttons with micro-interactions */
+  /* Buttons */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 ease-out;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-  }
-
-  .btn-primary:hover {
-    @apply shadow-md -translate-y-0.5;
-  }
-
-  .btn-primary:active {
-    @apply translate-y-0;
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 ease-out shadow-md hover:shadow-lg hover:-translate-y-0.5;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-700 font-semibold py-2.5 px-6 rounded-lg border border-gray-300 transition-all duration-200 ease-out;
-    @apply focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2;
+    @apply bg-white text-stone-700 font-semibold py-2.5 px-6 rounded-lg border border-stone-200 transition-all duration-200 ease-out hover:bg-stone-50 hover:shadow-md hover:-translate-y-0.5;
   }
 
-  .btn-secondary:hover {
-    @apply bg-gray-50 shadow-md -translate-y-0.5;
+  /* Dark Mode Buttons */
+  [data-theme="dark"] .btn-secondary {
+    @apply bg-slate-800 border-slate-700 text-stone-200 hover:bg-slate-700;
   }
 
-  .btn-secondary:active {
-    @apply translate-y-0;
-  }
-
-  .btn-ghost {
-    @apply text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-gray-100;
-  }
-
-  /* Premium Gradient Buttons */
+  /* Gradient Button */
   .btn-gradient {
     background: var(--gradient-primary);
-    @apply text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300;
-    @apply shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
-    position: relative;
-    overflow: hidden;
+    @apply text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5;
   }
 
-  .btn-gradient:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glow-primary), 0 10px 25px -5px rgba(99, 102, 241, 0.4);
-  }
-
-  .btn-gradient:active {
-    transform: translateY(0);
-  }
-
-  .btn-gradient-secondary {
-    background: var(--gradient-secondary);
-    @apply text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300;
-    @apply shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500;
-  }
-
-  .btn-gradient-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glow-secondary), 0 10px 25px -5px rgba(236, 72, 153, 0.4);
-  }
-
-  /* Glass Morphism Cards */
+  /* Glass Cards */
   .card-glass {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -138,158 +111,19 @@
     @apply rounded-xl transition-all duration-300;
   }
 
-  .card-glass:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
-  }
-
-  [data-theme="dark"] .card-glass:hover {
-    background: rgba(30, 41, 59, 0.85);
-  }
-
-  /* Gradient Text */
-  .text-gradient {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .text-gradient-secondary {
-    background: var(--gradient-secondary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Premium Stat Cards */
-  .stat-card {
-    @apply relative overflow-hidden rounded-xl p-6 transition-all duration-300;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--gradient-primary);
-  }
-
-  .stat-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.3);
-  }
-
-  [data-theme="dark"] .stat-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%);
-  }
-
-  /* Form inputs with smooth focus */
+  /* Inputs */
   .input-field {
-    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg transition-all duration-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-gray-400;
+    @apply w-full px-4 py-2.5 border border-stone-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 bg-white/80 backdrop-blur-sm;
   }
 
-  /* Cards with hover animations */
-  .card {
-    @apply bg-white rounded-xl shadow-sm transition-all duration-200 ease-out;
-  }
-
-  .card-hover {
-    @apply bg-white rounded-xl shadow-sm transition-all duration-200 ease-out;
-  }
-
-  .card-hover:hover {
-    @apply shadow-xl -translate-y-1;
-  }
-
-  .property-card {
-    @apply bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transition-all duration-200 ease-out;
-  }
-
-  .property-card:hover {
-    @apply shadow-xl -translate-y-1;
-  }
-
-  .property-card img {
-    @apply transition-transform duration-300 ease-out;
-  }
-
-  .property-card:hover img {
-    @apply scale-105;
-  }
-
-  /* Page animations */
-  .page-fade-in {
-    animation: fadeInUp 400ms ease-out;
-  }
-
-  .stagger-item {
-    animation: fadeInUp 400ms ease-out backwards;
-  }
-
-  .stagger-item:nth-child(1) {
-    animation-delay: 0ms;
-  }
-
-  .stagger-item:nth-child(2) {
-    animation-delay: 50ms;
-  }
-
-  .stagger-item:nth-child(3) {
-    animation-delay: 100ms;
-  }
-
-  .stagger-item:nth-child(4) {
-    animation-delay: 150ms;
-  }
-
-  .stagger-item:nth-child(5) {
-    animation-delay: 200ms;
-  }
-
-  .stagger-item:nth-child(6) {
-    animation-delay: 250ms;
+  [data-theme="dark"] .input-field {
+    @apply bg-slate-800/50 border-slate-700 text-white placeholder-slate-400 focus:bg-slate-800;
   }
 }
 
 /* ================================
    ANIMATIONS
    ================================ */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-5px);
-  }
-
-  75% {
-    transform: translateX(5px);
-  }
-}
-
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -312,291 +146,20 @@
   }
 }
 
-.animate-shake {
-  animation: shake 0.3s;
-}
-
 .animate-slideIn {
   animation: slideIn 0.5s ease-out;
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.8s ease-out 0.2s both;
+  animation: fadeIn 0.8s ease-out;
 }
 
-/* ==========================================
-   DARK MODE THEME
-   ========================================== */
-.dark {
-  color-scheme: dark;
+/* RTL Support Utilities */
+[dir="rtl"] .animate-slideIn {
+  animation-name: slideInRTL;
 }
 
-/* Dark mode backgrounds */
-.dark body {
-  background-color: #0f172a;
-  color: #e2e8f0;
-}
-
-.dark .bg-white {
-  background-color: #1e293b !important;
-}
-
-.dark .bg-gray-50 {
-  background-color: #0f172a !important;
-}
-
-.dark .bg-gray-100 {
-  background-color: #1e293b !important;
-}
-
-.dark .bg-gray-200 {
-  background-color: #334155 !important;
-}
-
-/* Dark mode text colors */
-.dark .text-gray-900 {
-  color: #f1f5f9 !important;
-}
-
-.dark .text-gray-800 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-gray-700 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-gray-600 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-gray-500 {
-  color: #64748b !important;
-}
-
-.dark .text-gray-400 {
-  color: #475569 !important;
-}
-
-/* Dark mode borders */
-.dark .border-gray-200 {
-  border-color: #334155 !important;
-}
-
-.dark .border-gray-300 {
-  border-color: #475569 !important;
-}
-
-/* Dark mode cards */
-.dark .card {
-  background-color: #1e293b;
-  border-color: #334155;
-}
-
-/* Dark mode inputs */
-.dark .input-field {
-  background-color: #0f172a;
-  border-color: #334155;
-  color: #e2e8f0;
-}
-
-.dark .input-field:focus {
-  border-color: #3b82f6;
-  background-color: #1e293b;
-}
-
-/* Dark mode buttons - keep primary/secondary as is */
-.dark .btn-secondary {
-  background-color: #334155;
-  color: #e2e8f0;
-}
-
-.dark .btn-secondary:hover {
-  background-color: #475569;
-}
-
-/* Dark mode hover states */
-.dark .hover\:bg-gray-50:hover {
-  background-color: #1e293b !important;
-}
-
-.dark .hover\:bg-gray-100:hover {
-  background-color: #334155 !important;
-}
-
-/* Dark mode property cards */
-.dark .property-card {
-  background-color: #1e293b;
-  border-color: #334155;
-}
-
-.dark .property-card:hover {
-  background-color: #334155;
-  border-color: #475569;
-}
-
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes bounce-subtle {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes pulse-slow {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.6;
-  }
-}
-
-/* ================================
-   SKELETON LOADERS
-   ================================ */
-.skeleton {
-  @apply bg-gray-200 rounded;
-  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.shimmer {
-  background: linear-gradient(90deg,
-      #f0f0f0 0%,
-      #e0e0e0 20%,
-      #f0f0f0 40%,
-      #f0f0f0 100%);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
-}
-
-.skeleton-card {
-  @apply bg-white rounded-xl shadow-sm p-4 space-y-3;
-}
-
-.skeleton-image {
-  @apply skeleton w-full h-48 rounded-lg;
-}
-
-.skeleton-title {
-  @apply skeleton h-6 w-3/4 rounded;
-}
-
-.skeleton-text {
-  @apply skeleton h-4 w-full rounded;
-}
-
-.skeleton-text.short {
-  @apply w-1/2;
-}
-
-/* ================================
-   SPINNER
-   ================================ */
+/* Spinner */
 .spinner {
-  @apply inline-block w-8 h-8 border-4 border-gray-200 border-t-primary-600 rounded-full;
-  animation: spin 1s linear infinite;
-}
-
-.spinner-sm {
-  @apply w-5 h-5 border-2;
-}
-
-.spinner-lg {
-  @apply w-12 h-12 border-4;
-}
-
-/* ================================
-   UTILITY CLASSES
-   ================================ */
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Gradient backgrounds */
-  .gradient-primary {
-    background: linear-gradient(135deg, rgb(37 99 235) 0%, rgb(29 78 216) 100%);
-  }
-
-  /* Glass morphism effect */
-  .glass {
-    @apply bg-white/80 backdrop-blur-md;
-  }
-}
-
-/* ================================
-   RESPONSIVE GRIDS
-   ================================ */
-.property-grid {
-  @apply grid gap-6;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-
-@media (min-width: 640px) {
-  .property-grid {
-    @apply gap-6;
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .property-grid {
-    @apply gap-8;
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1280px) {
-  .property-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ================================
-   MOBILE OPTIMIZATIONS
-   ================================ */
-@media (max-width: 640px) {
-
-  .btn-primary,
-  .btn-secondary {
-    @apply w-full py-3;
-  }
-
-  .card {
-    @apply rounded-lg;
-  }
+  @apply inline-block w-8 h-8 border-4 border-stone-200 border-t-primary-600 rounded-full animate-spin;
 }
