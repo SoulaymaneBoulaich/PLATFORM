@@ -109,7 +109,7 @@ const EditProfile = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
                 <LoadingSpinner message="Loading profile..." />
             </div>
         );
@@ -123,18 +123,18 @@ const EditProfile = () => {
 
     return (
         <PageTransition>
-            <div className="min-h-screen bg-gray-50 py-8">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Edit Profile</h1>
-                        <p className="text-gray-600 mt-2">Update your personal information and profile photo</p>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Edit Profile</h1>
+                        <p className="text-gray-600 dark:text-gray-400 mt-2">Update your personal information and profile photo</p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Avatar Section */}
                         <div className="lg:col-span-1">
-                            <div className="card bg-white p-6">
-                                <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile Photo</h2>
+                            <div className="card bg-white dark:bg-slate-800 p-6">
+                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Profile Photo</h2>
 
                                 <div className="flex flex-col items-center">
                                     {avatarPreview ? (
@@ -145,7 +145,7 @@ const EditProfile = () => {
                                                     ? `http://localhost:3001${avatarPreview}`
                                                     : avatarPreview}
                                             alt="Profile"
-                                            className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 mb-4"
+                                            className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 dark:border-slate-700 mb-4"
                                             onError={(e) => {
                                                 console.log('Image failed to load:', avatarPreview);
                                                 e.target.onerror = null;
@@ -153,7 +153,7 @@ const EditProfile = () => {
                                             }}
                                         />
                                     ) : (
-                                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-4xl font-bold border-4 border-gray-200 mb-4">
+                                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-4xl font-bold border-4 border-gray-200 dark:border-slate-700 mb-4">
                                             {getInitials()}
                                         </div>
                                     )}
@@ -178,7 +178,7 @@ const EditProfile = () => {
                                             onClick={handleUploadAvatar}
                                             disabled={uploadStatus === 'uploading'}
                                             className={`btn-primary w-full transition-all duration-300 ${uploadStatus === 'success' ? 'bg-green-600 hover:bg-green-700' :
-                                                    uploadStatus === 'error' ? 'bg-red-600 hover:bg-red-700' : ''
+                                                uploadStatus === 'error' ? 'bg-red-600 hover:bg-red-700' : ''
                                                 } ${uploadStatus === 'error' ? 'animate-shake' : ''}`}
                                         >
                                             {uploadStatus === 'uploading' && '⏳ Uploading...'}
@@ -188,7 +188,7 @@ const EditProfile = () => {
                                         </button>
                                     )}
 
-                                    <p className="text-xs text-gray-500 mt-2 text-center">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                                         JPG, PNG or GIF. Max size 5MB.
                                     </p>
                                 </div>
@@ -197,13 +197,13 @@ const EditProfile = () => {
 
                         {/* Profile Form */}
                         <div className="lg:col-span-2">
-                            <div className="card bg-white p-6">
-                                <h2 className="text-lg font-semibold text-gray-900 mb-6">Personal Information</h2>
+                            <div className="card bg-white dark:bg-slate-800 p-6">
+                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Personal Information</h2>
 
                                 <form onSubmit={handleSaveProfile} className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 First Name *
                                             </label>
                                             <input
@@ -216,7 +216,7 @@ const EditProfile = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Last Name *
                                             </label>
                                             <input
@@ -230,19 +230,19 @@ const EditProfile = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Email (Read-only)
                                         </label>
                                         <input
                                             type="email"
                                             value={profile?.email || ''}
-                                            className="input-field w-full bg-gray-100 cursor-not-allowed"
+                                            className="input-field w-full bg-gray-100 dark:bg-slate-700 dark:text-gray-400 cursor-not-allowed"
                                             disabled
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Phone
                                         </label>
                                         <input
@@ -255,7 +255,7 @@ const EditProfile = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Location
                                         </label>
                                         <input
@@ -268,7 +268,7 @@ const EditProfile = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Bio
                                         </label>
                                         <textarea

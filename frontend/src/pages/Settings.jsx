@@ -111,7 +111,7 @@ const Settings = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
                 <LoadingSpinner message="Loading settings..." />
             </div>
         );

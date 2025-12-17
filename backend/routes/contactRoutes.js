@@ -1,9 +1,11 @@
 // backend/routes/contactRoutes.js
 const express = require('express');
+const router = express.Router();
 const pool = require('../config/database');
 const auth = require('../middleware/auth');
-
-const router = express.Router();
+const Contact = require('../models/Contact');
+const Conversation = require('../models/Conversation');
+const Message = require('../models/Message');
 
 // POST /api/properties/:propertyId/contact - Submit contact form (auth required)
 router.post('/properties/:propertyId/contact', auth, async (req, res, next) => {
@@ -29,11 +31,15 @@ router.post('/properties/:propertyId/contact', auth, async (req, res, next) => {
         const sellerId = property[0].seller_id;
         const propertyTitle = property[0].title || 'Unknown Property';
 
-        // Save contact message
-        await pool.query(
-            'INSERT INTO contact_messages (property_id, seller_id, name, email, phone, message) VALUES (?, ?, ?, ?, ?, ?)',
-            [propertyId, sellerId, name, email, phone || null, message]
-        );
+        // Save contact message used for admin purposes mostly or as backup
+        await Contact.create({
+            propertyId,
+            sellerId,
+            name,
+            email,
+            phone,
+            message
+        });
 
         // Create or find conversation between buyer and seller
         let conversationId = null;
@@ -42,61 +48,29 @@ router.post('/properties/:propertyId/contact', auth, async (req, res, next) => {
             if (sellerId && req.user && req.user.user_id) {
                 const buyerId = req.user.user_id;
 
-                // Check for existing conversation using participants table
-                const [existingConv] = await pool.query(`
-                    SELECT c.conversation_id 
-                    FROM conversations c
-                    INNER JOIN conversation_participants cp1 ON c.conversation_id = cp1.conversation_id
-                    INNER JOIN conversation_participants cp2 ON c.conversation_id = cp2.conversation_id
-                    WHERE c.property_id = ?
-                    AND cp1.user_id = ?
-                    AND cp2.user_id = ?
-                    LIMIT 1
-                `, [propertyId, buyerId, sellerId]);
+                // Use Conversation model to start or get conversation
+                const convResult = await Conversation.start(buyerId, sellerId, propertyId);
 
-                if (existingConv.length > 0) {
-                    conversationId = existingConv[0].conversation_id;
+                if (convResult.conversation_id) {
+                    conversationId = convResult.conversation_id;
 
-                    // Add message
-                    await pool.query(
-                        'INSERT INTO messages (conversation_id, sender_id, content) VALUES (?, ?, ?)',
-                        [conversationId, buyerId, message]
-                    );
+                    // Add message using Message model
+                    await Message.create({
+                        conversationId,
+                        senderId: buyerId,
+                        content: message
+                    });
 
                     // Update timestamp
-                    await pool.query(
-                        'UPDATE conversations SET updated_at = NOW() WHERE conversation_id = ?',
-                        [conversationId]
-                    );
-                } else {
-                    // Create new conversation
-                    const [convResult] = await pool.query(
-                        'INSERT INTO conversations (property_id) VALUES (?)',
-                        [propertyId]
-                    );
-                    conversationId = convResult.insertId;
+                    await Conversation.updateTimestamp(conversationId);
 
-                    // Add participants
-                    await pool.query(
-                        'INSERT INTO conversation_participants (conversation_id, user_id) VALUES (?, ?), (?, ?)',
-                        [conversationId, buyerId, conversationId, sellerId]
-                    );
-
-                    // Add initial message
-                    await pool.query(
-                        'INSERT INTO messages (conversation_id, sender_id, content) VALUES (?, ?, ?)',
-                        [conversationId, buyerId, message]
-                    );
+                    // Create notification
+                    await Contact.createNotification(sellerId, buyerId, propertyId, propertyTitle);
                 }
-
-                // Create notification
-                await pool.query(
-                    'INSERT INTO notifications (user_to_notify, user_from, property_id, type, message) VALUES (?, ?, ?, ?, ?)',
-                    [sellerId, buyerId, propertyId, 'contact', `New inquiry for "${propertyTitle}"`]
-                );
             }
         } catch (convError) {
             console.error('Error creating conversation:', convError);
+            // We continue even if conversation creation fails, as the contact form itself was submitted
         }
 
         res.status(201).json({
@@ -119,10 +93,14 @@ router.post('/contact', async (req, res) => {
             return res.status(400).json({ error: 'Name, email, and message are required' });
         }
 
-        await pool.query(
-            'INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)',
-            [name, email, phone || null, message]
-        );
+        await Contact.create({
+            propertyId: null,
+            sellerId: null,
+            name,
+            email,
+            phone,
+            message
+        });
 
         res.status(201).json({
             success: true,

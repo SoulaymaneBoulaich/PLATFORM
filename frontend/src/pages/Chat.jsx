@@ -89,14 +89,14 @@ const Chat = () => {
     if (loading) return <Loader />;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 min-h-screen bg-gray-50 dark:bg-slate-900 max-w-none">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
-                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold">Chat about: {property?.title}</h2>
-                            <p className="text-gray-600">
+                            <h2 className="text-2xl font-bold dark:text-white">Chat about: {property?.title}</h2>
+                            <p className="text-gray-600 dark:text-gray-400">
                                 Chatting with: {otherUser || 'Loading...'}
                             </p>
                         </div>
@@ -110,7 +110,7 @@ const Chat = () => {
                 </div>
 
                 {/* Messages Container */}
-                <div className="bg-white rounded-lg shadow-md">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md">
                     {/* Messages List */}
                     <div className="h-96 overflow-y-auto p-4 space-y-3">
                         {messages.length > 0 ? (
@@ -124,15 +124,15 @@ const Chat = () => {
                                     >
                                         <div
                                             className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${isSentByMe
-                                                    ? 'bg-primary-600 text-white'
-                                                    : 'bg-gray-200 text-gray-800'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-white'
                                                 }`}
                                         >
                                             <p className="text-sm font-semibold mb-1">
                                                 {isSentByMe ? 'You' : `${msg.sender_first_name} ${msg.sender_last_name}`}
                                             </p>
                                             <p className="break-words">{msg.content}</p>
-                                            <p className={`text-xs mt-2 ${isSentByMe ? 'text-primary-100' : 'text-gray-500'}`}>
+                                            <p className={`text-xs mt-2 ${isSentByMe ? 'text-primary-100' : 'text-gray-500 dark:text-gray-400'}`}>
                                                 {new Date(msg.created_at).toLocaleString()}
                                             </p>
                                         </div>
@@ -140,20 +140,20 @@ const Chat = () => {
                                 );
                             })
                         ) : (
-                            <div className="flex items-center justify-center h-full text-gray-500">
+                            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
                                 No messages yet. Start the conversation!
                             </div>
                         )}
                     </div>
 
                     {/* Message Input */}
-                    <form onSubmit={sendMessage} className="border-t p-4">
+                    <form onSubmit={sendMessage} className="border-t border-gray-200 dark:border-slate-700 p-4">
                         <div className="flex gap-2">
                             <textarea
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Type your message..."
-                                className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+                                className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none bg-white dark:bg-slate-700 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white"
                                 rows={2}
                                 disabled={sending}
                             />
@@ -172,7 +172,7 @@ const Chat = () => {
                 <div className="mt-4 text-center">
                     <button
                         onClick={fetchMessages}
-                        className="text-sm text-primary-600 hover:underline"
+                        className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
                     >
                         🔄 Refresh Messages
                     </button>

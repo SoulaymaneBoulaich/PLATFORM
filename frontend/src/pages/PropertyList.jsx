@@ -65,14 +65,14 @@ const PropertyList = () => {
 
     return (
         <PageTransition>
-            <div className="flex min-h-full bg-gray-50">
+            <div className="flex min-h-full bg-gray-50 dark:bg-slate-900">
                 {/* Filters Sidebar */}
-                <div className="w-64 bg-white border-r border-gray-200 p-6 overflow-y-auto hidden lg:block flex-shrink-0">
+                <div className="w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 p-6 overflow-y-auto hidden lg:block flex-shrink-0">
                     <div className="mb-6">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Filters</h2>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Filters</h2>
                         <button
                             onClick={handleClearFilters}
-                            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                            className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                         >
                             Clear All
                         </button>
@@ -80,23 +80,23 @@ const PropertyList = () => {
 
                     {/* City */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">City</label>
                         <input
                             type="text"
                             value={filters.city}
                             onChange={(e) => handleFilterChange({ ...filters, city: e.target.value })}
-                            className="input-field w-full"
+                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="Enter city"
                         />
                     </div>
 
                     {/* Property Type */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Property Type</label>
                         <select
                             value={filters.property_type}
                             onChange={(e) => handleFilterChange({ ...filters, property_type: e.target.value })}
-                            className="input-field w-full"
+                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                         >
                             <option value="">All Types</option>
                             <option value="apartment">Apartment</option>
@@ -109,11 +109,11 @@ const PropertyList = () => {
 
                     {/* Listing Type */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Listing Type</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Listing Type</label>
                         <select
                             value={filters.listing_type}
                             onChange={(e) => handleFilterChange({ ...filters, listing_type: e.target.value })}
-                            className="input-field w-full"
+                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                         >
                             <option value="">All</option>
                             <option value="sale">For Sale</option>
@@ -123,20 +123,20 @@ const PropertyList = () => {
 
                     {/* Price Range */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price Range</label>
                         <div className="grid grid-cols-2 gap-2">
                             <input
                                 type="number"
                                 value={filters.minPrice}
                                 onChange={(e) => handleFilterChange({ ...filters, minPrice: e.target.value })}
-                                className="input-field w-full"
+                                className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                 placeholder="Min"
                             />
                             <input
                                 type="number"
                                 value={filters.maxPrice}
                                 onChange={(e) => handleFilterChange({ ...filters, maxPrice: e.target.value })}
-                                className="input-field w-full"
+                                className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                 placeholder="Max"
                             />
                         </div>
@@ -144,11 +144,11 @@ const PropertyList = () => {
 
                     {/* Bedrooms */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Bedrooms</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Bedrooms</label>
                         <select
                             value={filters.minBedrooms}
                             onChange={(e) => handleFilterChange({ ...filters, minBedrooms: e.target.value })}
-                            className="input-field w-full"
+                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                         >
                             <option value="">Any</option>
                             <option value="1">1+</option>
@@ -161,11 +161,11 @@ const PropertyList = () => {
 
                     {/* Bathrooms */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Bathrooms</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Bathrooms</label>
                         <select
                             value={filters.minBathrooms}
                             onChange={(e) => handleFilterChange({ ...filters, minBathrooms: e.target.value })}
-                            className="input-field w-full"
+                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                         >
                             <option value="">Any</option>
                             <option value="1">1+</option>
@@ -181,15 +181,15 @@ const PropertyList = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {/* Header */}
                         <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">Browse Properties</h1>
-                            <p className="text-gray-600">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Browse Properties</h1>
+                            <p className="text-gray-600 dark:text-gray-400">
                                 {loading ? 'Loading...' : `${properties.length} properties found`}
                             </p>
                         </div>
 
                         {/* Error Message */}
                         {error && (
-                            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                            <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded">
                                 {error}
                             </div>
                         )}
@@ -211,11 +211,11 @@ const PropertyList = () => {
                             </div>
                         ) : (
                             <div className="text-center py-16">
-                                <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                 </svg>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
-                                <p className="text-gray-600 mb-6">Try adjusting your filters to see more results</p>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No properties found</h3>
+                                <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your filters to see more results</p>
                                 <button
                                     onClick={handleClearFilters}
                                     className="btn-primary"

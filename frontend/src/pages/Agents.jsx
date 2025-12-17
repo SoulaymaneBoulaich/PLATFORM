@@ -46,12 +46,12 @@ const Agents = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Property Sellers</h1>
-                    <p className="text-gray-600">Connect with experienced property sellers</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Property Sellers</h1>
+                    <p className="text-gray-600 dark:text-gray-400">Connect with experienced property sellers</p>
                 </div>
 
                 {/* Search */}
@@ -72,7 +72,7 @@ const Agents = () => {
                 ) : filteredAgents.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredAgents.map((agent) => (
-                            <div key={agent.user_id} className="card p-6 hover:shadow-lg transition-shadow">
+                            <div key={agent.user_id} className="card p-6 hover:shadow-lg transition-shadow bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
                                 {/* Profile Image */}
                                 <div className="flex justify-center mb-4">
                                     <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
@@ -94,30 +94,30 @@ const Agents = () => {
 
                                 {/* Agent Info */}
                                 <div className="text-center">
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
                                         {agent.first_name} {agent.last_name}
                                     </h3>
 
                                     {agent.location && (
-                                        <p className="text-xs text-gray-500 mb-2">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                                             📍 {agent.location}
                                         </p>
                                     )}
 
                                     {/* Property Count & Rating Badge */}
                                     <div className="mb-3 space-y-1">
-                                        <span className="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
+                                        <span className="inline-block bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-3 py-1 rounded-full text-sm font-medium">
                                             {agent.property_count || 0} {(agent.property_count || 0) === 1 ? 'Property' : 'Properties'}
                                         </span>
                                         {agent.avg_rating > 0 && (
-                                            <span className="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium ml-2">
+                                            <span className="inline-block bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-3 py-1 rounded-full text-sm font-medium ml-2">
                                                 ⭐ {parseFloat(agent.avg_rating).toFixed(1)}
                                             </span>
                                         )}
                                     </div>
 
                                     {agent.bio && (
-                                        <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
                                             {agent.bio}
                                         </p>
                                     )}
@@ -125,12 +125,12 @@ const Agents = () => {
                                     {/* Contact Info */}
                                     <div className="space-y-2 mb-4">
                                         {agent.phone && (
-                                            <p className="text-sm text-gray-700">
+                                            <p className="text-sm text-gray-700 dark:text-gray-300">
                                                 📞 {agent.phone}
                                             </p>
                                         )}
                                         {agent.email && (
-                                            <p className="text-sm text-gray-700">
+                                            <p className="text-sm text-gray-700 dark:text-gray-300">
                                                 ✉️ {agent.email}
                                             </p>
                                         )}
@@ -154,8 +154,8 @@ const Agents = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12 bg-white rounded-lg shadow">
-                        <p className="text-gray-600">
+                    <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow">
+                        <p className="text-gray-600 dark:text-gray-400">
                             {searchTerm ? 'No sellers found matching your search.' : 'No sellers available at the moment.'}
                         </p>
                     </div>

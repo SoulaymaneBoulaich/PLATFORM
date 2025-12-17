@@ -1,6 +1,6 @@
 const express = require('express');
-const pool = require('../config/database');
 const auth = require('../middleware/auth');
+const Review = require('../models/Review');
 
 const router = express.Router();
 
@@ -9,30 +9,13 @@ router.get('/properties/:id/reviews', async (req, res, next) => {
     try {
         const propertyId = req.params.id;
 
-        const [reviews] = await pool.query(
-            `SELECT 
-        pr.review_id, pr.property_id, pr.user_id, pr.rating, pr.comment, pr.created_at,
-        u.first_name, u.last_name
-      FROM property_reviews pr
-      LEFT JOIN users u ON pr.user_id = u.user_id
-      WHERE pr.property_id = ?
-      ORDER BY pr.created_at DESC`,
-            [propertyId]
-        );
-
-        const [stats] = await pool.query(
-            `SELECT 
-        AVG(rating) as average_rating,
-        COUNT(*) as review_count
-      FROM property_reviews
-      WHERE property_id = ?`,
-            [propertyId]
-        );
+        const reviews = await Review.findByPropertyId(propertyId);
+        const stats = await Review.getStats(propertyId);
 
         res.json({
             reviews,
-            average_rating: stats[0].average_rating ? parseFloat(stats[0].average_rating.toFixed(1)) : 0,
-            review_count: stats[0].review_count
+            average_rating: stats.average_rating,
+            review_count: stats.review_count
         });
     } catch (err) {
         next(err);
@@ -50,24 +33,15 @@ router.post('/properties/:id/reviews', auth, async (req, res, next) => {
             return res.status(400).json({ error: 'Comment is required' });
         }
 
-        const [existing] = await pool.query(
-            'SELECT review_id FROM property_reviews WHERE property_id = ? AND user_id = ?',
-            [propertyId, userId]
-        );
+        const result = await Review.create({ propertyId, userId, rating, comment });
 
-        if (existing.length > 0) {
-            return res.status(400).json({ error: 'You have already reviewed this property' });
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
         }
-
-        const [result] = await pool.query(
-            `INSERT INTO property_reviews (property_id, user_id, rating, comment)
-      VALUES (?, ?, ?, ?)`,
-            [propertyId, userId, rating || null, comment]
-        );
 
         res.status(201).json({
             message: 'Review submitted successfully',
-            review_id: result.insertId
+            review_id: result.review_id
         });
     } catch (err) {
         next(err);
@@ -81,29 +55,19 @@ router.put('/reviews/:id', auth, async (req, res, next) => {
         const userId = req.user.user_id;
         const { rating } = req.body;
 
-        const [reviews] = await pool.query(
-            'SELECT user_id FROM reviews WHERE review_id = ?',
-            [reviewId]
-        );
-
-        if (!reviews.length) {
-            return res.status(404).json({ error: 'Review not found' });
-        }
-
-        if (reviews[0].user_id !== userId) {
-            return res.status(403).json({ error: 'You can only edit your own reviews' });
-        }
-
         if (!rating || rating < 1 || rating > 5) {
             return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         }
 
-        await pool.query(
-            `UPDATE reviews SET rating = ? WHERE review_id = ?`,
-            [rating, reviewId]
-        );
+        const result = await Review.update(reviewId, userId, rating);
 
-        res.json({ message: 'Review updated successfully' });
+        if (result.error) {
+            if (result.error === 'Review not found') return res.status(404).json({ error: result.error });
+            if (result.error.includes('only edit')) return res.status(403).json({ error: result.error });
+            throw new Error(result.error);
+        }
+
+        res.json({ message: result.message });
     } catch (err) {
         next(err);
     }
@@ -116,27 +80,15 @@ router.delete('/reviews/:id', auth, async (req, res, next) => {
         const userId = req.user.user_id;
         const userType = req.user.user_type;
 
-        const [reviews] = await pool.query(
-            'SELECT user_id FROM reviews WHERE review_id = ?',
-            [reviewId]
-        );
+        const result = await Review.delete(reviewId, userId, userType);
 
-        if (!reviews.length) {
-            return res.status(404).json({ error: 'Review not found' });
+        if (result.error) {
+            if (result.error === 'Review not found') return res.status(404).json({ error: result.error });
+            if (result.error.includes('only delete')) return res.status(403).json({ error: result.error });
+            throw new Error(result.error);
         }
 
-        const canDelete = reviews[0].user_id === userId || userType === 'admin';
-
-        if (!canDelete) {
-            return res.status(403).json({ error: 'You can only delete your own reviews' });
-        }
-
-        await pool.query(
-            'DELETE FROM reviews WHERE review_id = ?',
-            [reviewId]
-        );
-
-        res.json({ message: 'Review deleted successfully' });
+        res.json({ message: result.message });
     } catch (err) {
         next(err);
     }

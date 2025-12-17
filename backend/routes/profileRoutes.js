@@ -1,27 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/database');
 const auth = require('../middleware/auth');
 const avatarUpload = require('../middleware/avatarUpload');
 const bcrypt = require('bcryptjs');
+const Profile = require('../models/Profile');
+const User = require('../models/User');
+const Settings = require('../models/Settings');
 
 // GET /me - Get current user profile
 router.get('/me', auth, async (req, res) => {
     try {
         const userId = req.user.user_id;
 
-        const [users] = await pool.query(
-            `SELECT user_id, first_name, last_name, email, user_type, 
-                    profile_image_url, phone, bio, location 
-             FROM users WHERE user_id = ?`,
-            [userId]
-        );
+        const user = await Profile.getByUserId(userId);
 
-        if (!users || users.length === 0) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        res.json(users[0]);
+        res.json(user);
     } catch (error) {
         console.error('Error fetching profile:', error);
         res.status(500).json({ error: 'Failed to fetch profile' });
@@ -34,50 +31,19 @@ router.put('/me', auth, async (req, res) => {
         const userId = req.user.user_id;
         const { first_name, last_name, phone, bio, location } = req.body;
 
-        const updateFields = [];
-        const updateValues = [];
+        const updatedUser = await User.update(userId, {
+            first_name,
+            last_name,
+            phone,
+            bio,
+            location
+        });
 
-        if (first_name !== undefined) {
-            updateFields.push('first_name = ?');
-            updateValues.push(first_name);
-        }
-        if (last_name !== undefined) {
-            updateFields.push('last_name = ?');
-            updateValues.push(last_name);
-        }
-        if (phone !== undefined) {
-            updateFields.push('phone = ?');
-            updateValues.push(phone);
-        }
-        if (bio !== undefined) {
-            updateFields.push('bio = ?');
-            updateValues.push(bio);
-        }
-        if (location !== undefined) {
-            updateFields.push('location = ?');
-            updateValues.push(location);
-        }
-
-        if (updateFields.length === 0) {
+        if (!updatedUser) {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        updateValues.push(userId);
-
-        await pool.query(
-            `UPDATE users SET ${updateFields.join(', ')} WHERE user_id = ?`,
-            updateValues
-        );
-
-        // Fetch updated user
-        const [users] = await pool.query(
-            `SELECT user_id, first_name, last_name, email, user_type, 
-                    profile_image_url, phone, bio, location 
-             FROM users WHERE user_id = ?`,
-            [userId]
-        );
-
-        res.json({ message: 'Profile updated successfully', user: users[0] });
+        res.json({ message: 'Profile updated successfully', user: updatedUser });
     } catch (error) {
         console.error('Error updating profile:', error);
         res.status(500).json({ error: 'Failed to update profile' });
@@ -96,10 +62,7 @@ router.post('/me/avatar', auth, avatarUpload.single('avatar'), async (req, res) 
 
         const imageUrl = `/uploads/avatars/${file.filename}`;
 
-        await pool.query(
-            'UPDATE users SET profile_image_url = ? WHERE user_id = ?',
-            [imageUrl, userId]
-        );
+        await Profile.updateAvatar(userId, imageUrl);
 
         res.json({
             message: 'Avatar uploaded successfully',
@@ -116,25 +79,14 @@ router.get('/me/settings', auth, async (req, res) => {
     try {
         const userId = req.user.user_id;
 
-        let [settings] = await pool.query(
-            'SELECT * FROM user_settings WHERE user_id = ?',
-            [userId]
-        );
+        let settings = await Settings.getByUserId(userId);
 
         // Create default settings if don't exist
-        if (!settings || settings.length === 0) {
-            await pool.query(
-                'INSERT INTO user_settings (user_id) VALUES (?)',
-                [userId]
-            );
-
-            [settings] = await pool.query(
-                'SELECT * FROM user_settings WHERE user_id = ?',
-                [userId]
-            );
+        if (!settings) {
+            settings = await Settings.createDefault(userId);
         }
 
-        res.json(settings[0]);
+        res.json(settings);
     } catch (error) {
         console.error('Error fetching settings:', error);
         res.status(500).json({ error: 'Failed to fetch settings' });
@@ -147,44 +99,18 @@ router.put('/me/settings', auth, async (req, res) => {
         const userId = req.user.user_id;
         const { email_notifications, sms_notifications, dark_mode, language } = req.body;
 
-        const updateFields = [];
-        const updateValues = [];
+        const updatedSettings = await Settings.update(userId, {
+            email_notifications,
+            sms_notifications,
+            dark_mode,
+            language
+        });
 
-        if (email_notifications !== undefined) {
-            updateFields.push('email_notifications = ?');
-            updateValues.push(email_notifications ? 1 : 0);
-        }
-        if (sms_notifications !== undefined) {
-            updateFields.push('sms_notifications = ?');
-            updateValues.push(sms_notifications ? 1 : 0);
-        }
-        if (dark_mode !== undefined) {
-            updateFields.push('dark_mode = ?');
-            updateValues.push(dark_mode ? 1 : 0);
-        }
-        if (language !== undefined) {
-            updateFields.push('language = ?');
-            updateValues.push(language);
-        }
-
-        if (updateFields.length === 0) {
+        if (!updatedSettings) {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        updateValues.push(userId);
-
-        await pool.query(
-            `UPDATE user_settings SET ${updateFields.join(', ')}, updated_at = NOW() WHERE user_id = ?`,
-            updateValues
-        );
-
-        // Fetch updated settings
-        const [settings] = await pool.query(
-            'SELECT * FROM user_settings WHERE user_id = ?',
-            [userId]
-        );
-
-        res.json({ message: 'Settings updated successfully', settings: settings[0] });
+        res.json({ message: 'Settings updated successfully', settings: updatedSettings });
     } catch (error) {
         console.error('Error updating settings:', error);
         res.status(500).json({ error: 'Failed to update settings' });
@@ -205,18 +131,42 @@ router.post('/me/change-password', auth, async (req, res) => {
             return res.status(400).json({ error: 'New password must be at least 6 characters' });
         }
 
-        // Get current password from database
-        const [users] = await pool.query(
-            'SELECT password FROM users WHERE user_id = ?',
-            [userId]
-        );
+        // Get current password from database (Need to fetch explicitly as it's typically hidden)
+        // Using pool here or need a specific method in User model. 
+        // User.findById might return password_hash but the current User model returns everything via SELECT *
+        // Let's verify User.js returns password_hash. Yes, SELECT * returns it.
+        const user = await User.findById(userId);
 
-        if (!users || users.length === 0) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
         // Verify current password
-        const validPassword = await bcrypt.compare(currentPassword, users[0].password);
+        // Note: The previous code was accessing `user.password`, but schema uses `password_hash`.
+        // Let's check init.sql or previous authRoutes. logic. authRoutes uses `password_hash`.
+        // The original profileRoutes.js line 210 used `users[0].password`, which might be a bug if the column is `password_hash`.
+        // However, I should assume `password_hash` based on authRoutes.
+        // Let's check `User.js` again. `findByEmail` returns `SELECT *`.
+        // The original logic in `profileRoutes.js` 210 was `SELECT password FROM users`.
+        // If the column name is indeed `password_hash` (as per `authRoutes.js` and `init.sql` likely), then `profileRoutes.js` WAS BUGGY or the column is named `password`?
+        // In `authRoutes.js` L69 it inserts user with `password_hash`.
+        // In `profileRoutes.js` L229 it updates `password = ?`.
+        // Wait, did I miss something?
+        // `authRoutes.js` L70: `INSERT INTO users (email, password_hash ...)`
+        // `profileRoutes.js` L229 (original): `UPDATE users SET password = ?`
+        // CONTRADICTION!
+        // One route uses `password_hash`, the other `password`?
+        // Let's check `authRoutes.js` again deeply.
+        // `authRoutes.js` L104 `SELECT * FROM users`. L110 `bcrypt.compare(password, user.password_hash)`.
+        // So the column is definitely `password_hash`.
+        // Therefore `profileRoutes.js` L210 `SELECT password FROM users` and L229 `UPDATE users SET password` were LIKELY BROKEN or using an alias I didn't see.
+        // Or maybe my `view_file` of `profileRoutes.js` was deceptive? No.
+        // It seems `profileRoutes.js` had a BUG using `password` column instead of `password_hash`.
+        // I should FIX THIS BUG as requested ("FIX ISSUES IF THEY APPEARD").
+
+        // I will use `password_hash`.
+
+        const validPassword = await bcrypt.compare(currentPassword, user.password_hash);
         if (!validPassword) {
             return res.status(401).json({ error: 'Current password is incorrect' });
         }
@@ -225,10 +175,7 @@ router.post('/me/change-password', auth, async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         // Update password
-        await pool.query(
-            'UPDATE users SET password = ? WHERE user_id = ?',
-            [hashedPassword, userId]
-        );
+        await User.updatePassword(userId, hashedPassword);
 
         res.json({ message: 'Password changed successfully' });
     } catch (error) {

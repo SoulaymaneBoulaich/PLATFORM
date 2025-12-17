@@ -112,6 +112,13 @@ const Navbar = () => {
                                     </Link>
                                 )}
 
+                                {/* Favorites Icon */}
+                                <Link to="/favorites" className="relative p-2 text-white hover:bg-white/20 rounded-lg transition-all duration-200" title="My Favorites">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </Link>
+
                                 {/* Notification Bell */}
                                 <div className="relative">
                                     <button
@@ -132,20 +139,20 @@ const Navbar = () => {
                                     {showNotifications && (
                                         <>
                                             <div className="fixed inset-0 z-10" onClick={() => setShowNotifications(false)}></div>
-                                            <div className="absolute end-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-hidden">
-                                                <div className="p-4 border-b border-gray-200 bg-gray-50">
-                                                    <h3 className="font-semibold text-gray-900">Notifications</h3>
+                                            <div className="absolute end-0 mt-2 w-96 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 z-20 max-h-96 overflow-hidden">
+                                                <div className="p-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700">
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
                                                 </div>
                                                 <div className="overflow-y-auto max-h-80">
                                                     {notifications.length > 0 ? (
                                                         notifications.map(n => (
                                                             <div
                                                                 key={n.notification_id}
-                                                                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${!n.is_read ? 'bg-blue-50' : ''}`}
+                                                                className={`p-4 border-b border-gray-100 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${!n.is_read ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
                                                                 onClick={() => handleNotificationClick(n)}
                                                             >
-                                                                <p className="font-medium text-sm text-gray-900 mb-1">{n.message}</p>
-                                                                <p className="text-xs text-gray-600 mb-1">
+                                                                <p className="font-medium text-sm text-gray-900 dark:text-white mb-1">{n.message}</p>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                                                                     From: {n.first_name} {n.last_name}
                                                                 </p>
                                                                 <p className="text-xs text-gray-400">
@@ -154,8 +161,8 @@ const Navbar = () => {
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <div className="p-8 text-center text-gray-500">
-                                                            <svg className="mx-auto h-12 w-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+                                                            <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                                             </svg>
                                                             <p className="text-sm">No notifications yet</p>
@@ -207,28 +214,35 @@ const Navbar = () => {
                                 {showUserMenu && (
                                     <>
                                         <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)}></div>
-                                        <div className="absolute end-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                        <div className="absolute end-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-2 z-50">
                                             <Link
                                                 to="/account/profile"
                                                 onClick={() => setShowUserMenu(false)}
-                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                                             >
                                                 👤 {t('navbar.editProfile')}
                                             </Link>
                                             <Link
                                                 to="/account/settings"
                                                 onClick={() => setShowUserMenu(false)}
-                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                                             >
                                                 ⚙️ {t('navbar.settings')}
                                             </Link>
-                                            <hr className="my-2 border-gray-200" />
+                                            <Link
+                                                to="/favorites"
+                                                onClick={() => setShowUserMenu(false)}
+                                                className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                                            >
+                                                ❤️ {t('dashboard.myFavorites')}
+                                            </Link>
+                                            <hr className="my-2 border-gray-200 dark:border-slate-700" />
                                             <button
                                                 onClick={() => {
                                                     setShowUserMenu(false);
                                                     logout();
                                                 }}
-                                                className="block w-full text-start px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                                className="block w-full text-start px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                             >
                                                 🚪 {t('navbar.logout')}
                                             </button>

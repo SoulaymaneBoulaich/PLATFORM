@@ -19,7 +19,7 @@ const SearchBar = ({ onSearch }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl shadow-2xl border border-gray-200">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <input
                     type="text"
@@ -27,14 +27,14 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.city}
                     onChange={handleChange}
                     placeholder="City or Location"
-                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 dark:bg-slate-700"
                 />
 
                 <select
                     name="property_type"
                     value={searchParams.property_type}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-4 py-3 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-slate-700"
                 >
                     <option value="" className="text-gray-500">Property Type</option>
                     <option value="House" className="text-gray-900">House</option>
@@ -50,7 +50,7 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.minPrice}
                     onChange={handleChange}
                     placeholder="Min Price"
-                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 dark:bg-slate-700"
                 />
 
                 <input
@@ -59,7 +59,7 @@ const SearchBar = ({ onSearch }) => {
                     value={searchParams.maxPrice}
                     onChange={handleChange}
                     placeholder="Max Price"
-                    className="w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 dark:bg-slate-700"
                 />
             </div>
 

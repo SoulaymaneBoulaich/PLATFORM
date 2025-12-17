@@ -42,7 +42,7 @@ const Home = () => {
 
     return (
         <PageTransition>
-            <div className="min-h-screen">
+            <div className="min-h-screen bg-stone-50 dark:bg-slate-900">
                 {/* Hero Section with high-contrast white text */}
                 <div className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-20 md:py-28 overflow-hidden">
                     {/* Animated background pattern */}
@@ -89,8 +89,8 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="flex justify-between items-end mb-8">
                         <div>
-                            <h2 className="text-4xl font-bold text-gray-900 mb-2">Featured Properties</h2>
-                            <p className="text-gray-600">Handpicked properties just for you</p>
+                            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Featured Properties</h2>
+                            <p className="text-gray-600 dark:text-gray-400">Handpicked properties just for you</p>
                         </div>
                         {!loading && properties.length > 0 && (
                             <Link to="/properties" className="hidden md:block btn-ghost">
@@ -123,14 +123,14 @@ const Home = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
-                            <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                            <svg className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
-                            <p className="text-gray-600 text-lg mb-4">
+                            <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">
                                 No properties available yet.
                             </p>
-                            <p className="text-gray-500">
+                            <p className="text-gray-500 dark:text-gray-400">
                                 Sellers can add properties from the dashboard.
                             </p>
                         </div>
@@ -138,11 +138,11 @@ const Home = () => {
                 </div>
 
                 {/* Features Section */}
-                <div className="bg-white border-t border-gray-200 py-20">
+                <div className="bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
-                            <p className="text-gray-600 max-w-2xl mx-auto">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Why Choose Us</h2>
+                            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                 Experience the best in real estate with our comprehensive platform
                             </p>
                         </div>
@@ -178,11 +178,11 @@ const Home = () => {
                                 }
                             ].map((feature, index) => (
                                 <div key={index} className="feature-card text-center group">
-                                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary-100 text-primary-600 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 mb-6 group-hover:scale-110 transition-transform duration-300">
                                         {feature.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                                    <p className="text-gray-600 leading-relaxed">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                                         {feature.description}
                                     </p>
                                 </div>

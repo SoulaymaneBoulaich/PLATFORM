@@ -87,21 +87,21 @@ const AuthLayout = ({ children, title, subtitle }) => {
             </div>
 
             {/* Right Panel - Auth Form */}
-            <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 bg-gray-50">
+            <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 bg-gray-50 dark:bg-slate-900">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="w-full max-w-md"
                 >
-                    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-10">
                         {title && (
                             <div className="mb-8">
-                                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                                     {title}
                                 </h2>
                                 {subtitle && (
-                                    <p className="text-gray-600">{subtitle}</p>
+                                    <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>
                                 )}
                             </div>
                         )}
