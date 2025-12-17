@@ -14,6 +14,17 @@ router.get('/seller', auth, async (req, res, next) => {
     }
 });
 
+// GET /api/offers/buyer - Get offers for logged-in buyer
+router.get('/buyer', auth, async (req, res, next) => {
+    try {
+        const buyerId = req.user.user_id;
+        const offers = await Offer.findAllByBuyerId(buyerId);
+        res.json(offers);
+    } catch (err) {
+        next(err);
+    }
+});
+
 // PATCH /api/offers/:id - Update offer status (seller only)
 router.patch('/:id', auth, async (req, res, next) => {
     try {
