@@ -34,13 +34,13 @@ const ForgotPassword = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-center py-8"
                 >
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-10 h-10 text-green-600" />
+                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
                     </div>
-                    <p className="text-gray-700 mb-6">
+                    <p className="text-gray-700 dark:text-gray-300 mb-6">
                         If an account exists for <strong>{email}</strong>, you will receive a password reset link shortly.
                     </p>
-                    <p className="text-sm text-gray-600 mb-8">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
                         Check your email inbox and follow the instructions to reset your password.
                     </p>
                     <Link
@@ -61,18 +61,18 @@ const ForgotPassword = () => {
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800"
+                        className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-800 dark:text-red-300"
                     >
                         {error}
                     </motion.div>
                 )}
 
                 <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Email address
                     </label>
                     <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                         <input
                             id="email"
                             name="email"

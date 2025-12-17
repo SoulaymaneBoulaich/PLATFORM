@@ -1,30 +1,46 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/database');
 const auth = require('../middleware/auth');
+const Offer = require('../models/Offer');
 
 // GET /api/offers/seller - Get offers for logged-in seller
 router.get('/seller', auth, async (req, res, next) => {
     try {
         const sellerId = req.user.user_id;
-
-        const [offers] = await pool.query(`
-            SELECT 
-                o.*,
-                p.title as property_title,
-                p.image_url as property_image,
-                u.first_name as buyer_first_name,
-                u.last_name as buyer_last_name,
-                u.email as buyer_email
-            FROM offers o
-            JOIN properties p ON o.property_id = p.property_id
-            JOIN users u ON o.buyer_id = u.user_id
-            WHERE o.seller_id = ?
-            ORDER BY o.created_at DESC
-        `, [sellerId]);
-
+        const offers = await Offer.findAllBySellerId(sellerId);
         res.json(offers);
     } catch (err) {
+        next(err);
+    }
+});
+
+// PATCH /api/offers/:id - Update offer status (seller only)
+router.patch('/:id', auth, async (req, res, next) => {
+    try {
+        const offerId = req.params.id;
+        const userId = req.user.user_id;
+        const { status, counter_amount, message } = req.body;
+
+        if (!['Accepted', 'Rejected', 'Countered'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        const result = await Offer.updateStatus(offerId, status, counter_amount, message, userId);
+
+        if (result.error) {
+            if (result.error === 'Offer not found') return res.status(404).json({ error: 'Offer not found' });
+            if (result.error === 'Unauthorized') return res.status(403).json({ error: 'Only the seller can update offers' });
+            throw new Error(result.error);
+        }
+
+        res.json({
+            offer_id: result.offer_id,
+            status: result.status,
+            amount: result.amount,
+            message: 'Offer updated successfully'
+        });
+    } catch (err) {
+        console.error('Error updating offer:', err);
         next(err);
     }
 });

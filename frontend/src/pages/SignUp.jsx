@@ -160,10 +160,10 @@ const SignUp = () => {
             {/* Progress Indicator */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Step {step} of 2</span>
-                    <span className="text-sm text-gray-500">{step === 1 ? 'Account basics' : 'Profile details'}</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Step {step} of 2</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{step === 1 ? 'Account basics' : 'Profile details'}</span>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                     <motion.div
                         className="h-full bg-primary-600"
                         initial={{ width: '0%' }}
@@ -178,7 +178,7 @@ const SignUp = () => {
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800"
+                        className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-800 dark:text-red-300"
                     >
                         {error}
                     </motion.div>
@@ -197,7 +197,7 @@ const SignUp = () => {
                             {/* Name Fields */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         First Name
                                     </label>
                                     <input
@@ -212,7 +212,7 @@ const SignUp = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Last Name
                                     </label>
                                     <input
@@ -230,7 +230,7 @@ const SignUp = () => {
 
                             {/* Email */}
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Email address
                                 </label>
                                 <input
@@ -247,7 +247,7 @@ const SignUp = () => {
 
                             {/* Password */}
                             <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Password
                                 </label>
                                 <div className="relative">
@@ -264,7 +264,7 @@ const SignUp = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                                     >
                                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
@@ -274,7 +274,7 @@ const SignUp = () => {
 
                             {/* Confirm Password */}
                             <div>
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Confirm Password
                                 </label>
                                 <div className="relative">
@@ -291,7 +291,7 @@ const SignUp = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                                     >
                                         {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
@@ -319,7 +319,7 @@ const SignUp = () => {
                         >
                             {/* Role Selection */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-3">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                     I am a... <span className="text-red-500">*</span>
                                 </label>
                                 <div className="grid grid-cols-1 gap-3">
@@ -346,7 +346,7 @@ const SignUp = () => {
                                     {/* Phone (for seller and agent) */}
                                     {(formData.user_type === 'seller' || formData.user_type === 'agent') && (
                                         <div>
-                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 Phone Number <span className="text-red-500">*</span>
                                             </label>
                                             <input
@@ -366,7 +366,7 @@ const SignUp = () => {
                                     {formData.user_type === 'agent' && (
                                         <>
                                             <div>
-                                                <label htmlFor="agency_name" className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label htmlFor="agency_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                     Agency Name <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
@@ -381,7 +381,7 @@ const SignUp = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label htmlFor="license_id" className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label htmlFor="license_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                     License ID <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
@@ -401,8 +401,8 @@ const SignUp = () => {
                                     {/* Seller-specific fields */}
                                     {formData.user_type === 'seller' && (
                                         <div>
-                                            <label htmlFor="agency_name" className="block text-sm font-medium text-gray-700 mb-1">
-                                                Agency Name <span className="text-gray-500">(Optional)</span>
+                                            <label htmlFor="agency_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                Agency Name <span className="text-gray-500 dark:text-gray-400">(Optional)</span>
                                             </label>
                                             <input
                                                 id="agency_name"
@@ -420,8 +420,8 @@ const SignUp = () => {
                                     {formData.user_type === 'buyer' && (
                                         <>
                                             <div>
-                                                <label htmlFor="preferred_city" className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Preferred City <span className="text-gray-500">(Optional)</span>
+                                                <label htmlFor="preferred_city" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Preferred City <span className="text-gray-500 dark:text-gray-400">(Optional)</span>
                                                 </label>
                                                 <input
                                                     id="preferred_city"
@@ -434,8 +434,8 @@ const SignUp = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label htmlFor="budget_range" className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Budget Range <span className="text-gray-500">(Optional)</span>
+                                                <label htmlFor="budget_range" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Budget Range <span className="text-gray-500 dark:text-gray-400">(Optional)</span>
                                                 </label>
                                                 <select
                                                     id="budget_range"
@@ -462,7 +462,7 @@ const SignUp = () => {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                                 >
                                     <ArrowLeft className="w-4 h-4" />
                                     Back
@@ -481,7 +481,7 @@ const SignUp = () => {
                 </AnimatePresence>
             </form>
 
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{' '}
                 <button
                     onClick={() => navigate('/login')}

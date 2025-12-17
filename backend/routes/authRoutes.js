@@ -2,7 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const pool = require('../config/database');
+const pool = require('../config/database'); // Still needed for password tokens for now
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -54,11 +55,8 @@ router.post('/register', async (req, res, next) => {
     }
 
     // Check if email already exists
-    const [existing] = await pool.query(
-      'SELECT user_id FROM users WHERE email = ?',
-      [email]
-    );
-    if (existing.length) {
+    const existing = await User.findByEmail(email);
+    if (existing) {
       return res.status(400).json({ message: 'Email already used' });
     }
 
@@ -66,25 +64,21 @@ router.post('/register', async (req, res, next) => {
     const hash = await bcrypt.hash(password, 10);
 
     // Insert user
-    const [result] = await pool.query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, phone, user_type, agency_name, license_id, preferences)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        email,
-        hash,
-        first_name,
-        last_name,
-        phone || null,
-        user_type,
-        agency_name || null,
-        license_id || null,
-        preferences ? JSON.stringify(preferences) : null
-      ]
-    );
+    const userId = await User.create({
+      email,
+      password_hash: hash,
+      first_name,
+      last_name,
+      phone,
+      user_type,
+      agency_name,
+      license_id,
+      preferences
+    });
 
     // Return user info (without password hash)
     res.status(201).json({
-      user_id: result.insertId,
+      user_id: userId,
       message: 'Registration successful'
     });
   } catch (err) {
@@ -101,19 +95,18 @@ router.post('/login', async (req, res, next) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (!rows.length) {
+    const user = await User.findByEmail(email);
+    if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const user = rows[0];
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Update last login
-    await pool.query('UPDATE users SET last_login = NOW() WHERE user_id = ?', [user.user_id]);
+    await User.updateLastLogin(user.user_id);
 
     // Generate JWT token
     const token = jwt.sign(
@@ -150,11 +143,11 @@ router.post('/forgot-password', async (req, res, next) => {
     }
 
     // Check if user exists
-    const [users] = await pool.query('SELECT user_id FROM users WHERE email = ?', [email]);
+    const user = await User.findByEmail(email);
 
     // Always return success message (don't reveal if email exists for security)
-    if (users.length > 0) {
-      const userId = users[0].user_id;
+    if (user) {
+      const userId = user.user_id;
 
       // Generate secure random token
       const token = crypto.randomBytes(32).toString('hex');
@@ -225,10 +218,7 @@ router.post('/reset-password', async (req, res, next) => {
     const hash = await bcrypt.hash(password, 10);
 
     // Update user password
-    await pool.query(
-      'UPDATE users SET password_hash = ? WHERE user_id = ?',
-      [hash, resetToken.user_id]
-    );
+    await User.updatePassword(resetToken.user_id, hash);
 
     // Mark token as used
     await pool.query(

@@ -37,12 +37,12 @@ const FilterSidebar = ({ onFilterChange, filters }) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Filters</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md border border-transparent dark:border-slate-700">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Filters</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         City
                     </label>
                     <input
@@ -155,7 +155,7 @@ const FilterSidebar = ({ onFilterChange, filters }) => {
                     <button
                         type="button"
                         onClick={handleReset}
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                        className="bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
                     >
                         Reset
                     </button>

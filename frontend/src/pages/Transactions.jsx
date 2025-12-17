@@ -88,13 +88,13 @@ const Transactions = () => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'paid':
-                return 'bg-green-100 text-green-800';
+                return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200';
             case 'pending':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200';
             case 'cancelled':
-                return 'bg-red-100 text-red-800';
+                return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-gray-300';
         }
     };
 
@@ -107,14 +107,14 @@ const Transactions = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">Transactions</h1>
-                            <p className="text-gray-600">Manage property transactions and payments</p>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Transactions</h1>
+                            <p className="text-gray-600 dark:text-gray-400">Manage property transactions and payments</p>
                         </div>
                         <button
                             onClick={() => setShowForm(!showForm)}
@@ -129,19 +129,19 @@ const Transactions = () => {
 
                 {/* Transaction Form */}
                 {showForm && (
-                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h3 className="text-xl font-semibold mb-4">Add New Transaction</h3>
+                    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6">
+                        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add New Transaction</h3>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Property
                                     </label>
                                     <select
                                         name="property_id"
                                         value={formData.property_id}
                                         onChange={handleFormChange}
-                                        className="input-field"
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                         required
                                     >
                                         <option value="">Select Property</option>
@@ -154,14 +154,14 @@ const Transactions = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Seller
                                     </label>
                                     <select
                                         name="seller_id"
                                         value={formData.seller_id}
                                         onChange={handleFormChange}
-                                        className="input-field"
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                         required
                                     >
                                         <option value="">Select Seller</option>
@@ -174,7 +174,7 @@ const Transactions = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Amount
                                     </label>
                                     <input
@@ -184,20 +184,20 @@ const Transactions = () => {
                                         onChange={handleFormChange}
                                         placeholder="0.00"
                                         step="0.01"
-                                        className="input-field"
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Type
                                     </label>
                                     <select
                                         name="type"
                                         value={formData.type}
                                         onChange={handleFormChange}
-                                        className="input-field"
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                     >
                                         <option value="payment">Payment</option>
                                         <option value="commission">Commission</option>
@@ -207,14 +207,14 @@ const Transactions = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Status
                                     </label>
                                     <select
                                         name="status"
                                         value={formData.status}
                                         onChange={handleFormChange}
-                                        className="input-field"
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="paid">Paid</option>
@@ -234,54 +234,54 @@ const Transactions = () => {
                 {loading ? (
                     <Loader />
                 ) : transactions.length > 0 ? (
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
+                            <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                                <thead className="bg-gray-50 dark:bg-slate-700">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Property
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Seller
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Amount
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Type
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Status
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             Date
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                                     {transactions.map((transaction) => (
-                                        <tr key={transaction.transaction_id} className="hover:bg-gray-50">
+                                        <tr key={transaction.transaction_id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50">
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm font-medium text-gray-900">
+                                                <div className="text-sm font-medium text-gray-900 dark:text-white">
                                                     {transaction.property_title || 'N/A'}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-sm text-gray-500 dark:text-gray-400">
                                                     {transaction.property_city}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-900">
+                                                <div className="text-sm text-gray-900 dark:text-white">
                                                     {transaction.seller_first_name} {transaction.seller_last_name}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm font-semibold text-gray-900">
+                                                <div className="text-sm font-semibold text-gray-900 dark:text-white">
                                                     ${parseFloat(transaction.amount).toLocaleString()}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-sm text-gray-900 capitalize">
+                                                <span className="text-sm text-gray-900 dark:text-white capitalize">
                                                     {transaction.type}
                                                 </span>
                                             </td>
@@ -290,7 +290,7 @@ const Transactions = () => {
                                                     {transaction.status}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {formatDate(transaction.created_at)}
                                             </td>
                                         </tr>
@@ -300,9 +300,9 @@ const Transactions = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                        <p className="text-gray-600">No transactions yet.</p>
-                        <p className="text-gray-500 text-sm mt-2">Click "Add Transaction" to create your first transaction.</p>
+                    <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow-md">
+                        <p className="text-gray-600 dark:text-gray-400">No transactions yet.</p>
+                        <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Click "Add Transaction" to create your first transaction.</p>
                     </div>
                 )}
             </div>

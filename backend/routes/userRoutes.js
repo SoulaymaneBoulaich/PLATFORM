@@ -1,6 +1,6 @@
 const express = require('express');
-const pool = require('../config/database');
 const auth = require('../middleware/auth');
+const Favorite = require('../models/Favorite');
 
 const router = express.Router();
 
@@ -11,13 +11,10 @@ router.get('/:id/favorites', auth, async (req, res, next) => {
     if (userId !== req.user.user_id) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    const [rows] = await pool.query(
-      `SELECT p.* FROM favorites f
-       JOIN properties p ON p.property_id = f.property_id
-       WHERE f.user_id = ?`,
-      [userId]
-    );
-    res.json(rows);
+    const favorites = await Favorite.getByUserId(userId);
+    // Note: The original returned 'rows' which was a JOIN result. 
+    // Favorite.getByUserId returns the same JOIN structure.
+    res.json(favorites);
   } catch (err) {
     next(err);
   }
@@ -31,10 +28,24 @@ router.post('/:id/favorites', auth, async (req, res, next) => {
     if (userId !== req.user.user_id) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    await pool.query(
-      'INSERT IGNORE INTO favorites (user_id, property_id) VALUES (?, ?)',
-      [userId, property_id]
-    );
+
+    const result = await Favorite.add(userId, property_id);
+
+    // Note: Original code used INSERT IGNORE, so it didn't error on duplicate.
+    // The model returns { error: 'Already in favorites' } on duplicate.
+    // Original code returned 201 "Added to favorites".
+    // If duplicate, it just returns "Added" anyway effectively (INSERT IGNORE).
+    // Or maybe insertId was 0?
+    // Let's mimic original behavior: success even if duplicate? 
+    // Actually the original code just said "Added to favorites".
+    // If I want to be 100% compatible, I should handle duplicate gracefully.
+
+    if (result.error && result.error !== 'Already in favorites') {
+      // If property not found or other error
+      if (result.error === 'Property not found') return res.status(404).json({ message: 'Property not found' });
+      throw new Error(result.error);
+    }
+
     res.status(201).json({ message: 'Added to favorites' });
   } catch (err) {
     next(err);
@@ -49,10 +60,10 @@ router.delete('/:id/favorites/:propertyId', auth, async (req, res, next) => {
     if (userId !== req.user.user_id) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    await pool.query(
-      'DELETE FROM favorites WHERE user_id = ? AND property_id = ?',
-      [userId, propertyId]
-    );
+
+    await Favorite.remove(userId, propertyId);
+    // Original code didn't check affectedRows, just returned success.
+
     res.json({ message: 'Removed from favorites' });
   } catch (err) {
     next(err);

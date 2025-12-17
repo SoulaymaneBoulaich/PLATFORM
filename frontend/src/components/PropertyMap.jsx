@@ -155,10 +155,10 @@ const PropertyMap = ({ properties = [], selectedProperty = null, onPropertyClick
             </MapContainer>
 
             {/* Map Legend */}
-            <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-3 z-[1000]">
+            <div className="absolute bottom-4 left-4 bg-white dark:bg-slate-800 rounded-lg shadow-lg p-3 z-[1000]">
                 <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full"></div>
-                    <span className="text-xs font-medium text-gray-700">
+                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                         {propertiesWithCoords.length} Properties
                     </span>
                 </div>

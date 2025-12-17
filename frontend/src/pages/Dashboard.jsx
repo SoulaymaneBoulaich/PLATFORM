@@ -251,23 +251,23 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* User Profile Section */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-4">Dashboard</h1>
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-8">
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Dashboard</h1>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <p className="text-sm text-gray-600">Name</p>
-                            <p className="text-lg font-semibold">{user?.first_name} {user?.last_name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Name</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{user?.first_name} {user?.last_name}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Email</p>
-                            <p className="text-lg font-semibold">{user?.email}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{user?.email}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Account Type</p>
-                            <p className="text-lg font-semibold capitalize">{user?.user_type}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Account Type</p>
+                            <p className="text-lg font-semibold capitalize text-gray-900 dark:text-white">{user?.user_type}</p>
                         </div>
                     </div>
                 </div>
@@ -277,7 +277,7 @@ const Dashboard = () => {
                 {/* Dashboard Statistics - For Sellers/Admins */}
                 {isSeller && (
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Dashboard Overview</h2>
                         {/* Personalized Welcome Message */}
                         <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg p-6 mb-8 shadow-lg">
                             <h2 className="text-2xl font-bold">Welcome back, {user?.first_name}!</h2>
@@ -285,16 +285,16 @@ const Dashboard = () => {
                         </div>
                         {/* Quick Action Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-                                <span className="font-medium">Manage Properties</span>
+                            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium text-gray-900 dark:text-white">Manage Properties</span>
                                 <button onClick={() => setShowPropertyForm(true)} className="btn-primary">Go</button>
                             </div>
-                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-                                <span className="font-medium">Messages</span>
+                            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium text-gray-900 dark:text-white">Messages</span>
                                 <Link to="/messages" className="btn-primary">Go</Link>
                             </div>
-                            <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-                                <span className="font-medium">View Offers</span>
+                            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 flex items-center justify-between">
+                                <span className="font-medium text-gray-900 dark:text-white">View Offers</span>
                                 <Link to="/offers" className="btn-primary">Go</Link>
                             </div>
                         </div>
@@ -343,13 +343,13 @@ const Dashboard = () => {
                                 </div>
 
                                 {/* Property Types Card */}
-                                <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
-                                    <h3 className="text-gray-700 text-sm font-semibold mb-3">By Property Type</h3>
+                                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 border-2 border-gray-100 dark:border-slate-700">
+                                    <h3 className="text-gray-700 dark:text-white text-sm font-semibold mb-3">By Property Type</h3>
                                     <div className="space-y-2">
                                         {sellerStats.propertiesByType.slice(0, 3).map((item, idx) => (
                                             <div key={idx} className="flex justify-between items-center">
-                                                <span className="text-gray-600 text-sm capitalize">{item.type}</span>
-                                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                                <span className="text-gray-600 dark:text-gray-400 text-sm capitalize">{item.type}</span>
+                                                <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs font-semibold">
                                                     {item.count}
                                                 </span>
                                             </div>
@@ -361,15 +361,15 @@ const Dashboard = () => {
                                 </div>
 
                                 {/* Property Status Card */}
-                                <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100">
-                                    <h3 className="text-gray-700 text-sm font-semibold mb-3">By Status</h3>
+                                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 border-2 border-gray-100 dark:border-slate-700">
+                                    <h3 className="text-gray-700 dark:text-white text-sm font-semibold mb-3">By Status</h3>
                                     <div className="space-y-2">
                                         {sellerStats.propertiesByStatus.map((item, idx) => (
                                             <div key={idx} className="flex justify-between items-center">
-                                                <span className="text-gray-600 text-sm capitalize">{item.status}</span>
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'active' ? 'bg-green-100 text-green-800' :
-                                                    item.status === 'sold' ? 'bg-red-100 text-red-800' :
-                                                        'bg-yellow-100 text-yellow-800'
+                                                <span className="text-gray-600 dark:text-gray-400 text-sm capitalize">{item.status}</span>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' :
+                                                    item.status === 'sold' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200' :
+                                                        'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200'
                                                     }`}>
                                                     {item.count}
                                                 </span>
@@ -392,7 +392,7 @@ const Dashboard = () => {
                 {isSeller && (
                     <div>
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-gray-800">My Properties</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">My Properties</h2>
                             <button
                                 onClick={() => {
                                     setShowPropertyForm(!showPropertyForm);
@@ -418,67 +418,67 @@ const Dashboard = () => {
 
                         {/* Property Form */}
                         {showPropertyForm && (
-                            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                                <h3 className="text-xl font-semibold mb-4">
+                            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6">
+                                <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
                                     {editingProperty ? 'Edit Property' : 'Add New Property'}
                                 </h3>
                                 <form onSubmit={handlePropertySubmit} className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                                             <input
                                                 type="text"
                                                 name="title"
                                                 value={formData.title}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
                                             <input
                                                 type="number"
                                                 name="price"
                                                 value={formData.price}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
                                             <input
                                                 type="text"
                                                 name="address"
                                                 value={formData.address}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
                                             <input
                                                 type="text"
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Property Type</label>
                                             <select
                                                 name="property_type"
                                                 value={formData.property_type}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                             >
                                                 <option value="house">House</option>
                                                 <option value="apartment">Apartment</option>
@@ -491,12 +491,12 @@ const Dashboard = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Listing Type</label>
                                             <select
                                                 name="listing_type"
                                                 value={formData.listing_type}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                             >
                                                 <option value="Sale">For Sale</option>
                                                 <option value="Rent">For Rent</option>
@@ -504,45 +504,45 @@ const Dashboard = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bedrooms</label>
                                             <input
                                                 type="number"
                                                 name="bedrooms"
                                                 value={formData.bedrooms}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bathrooms</label>
                                             <input
                                                 type="number"
                                                 name="bathrooms"
                                                 value={formData.bathrooms}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Area (sqft)</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area (sqft)</label>
                                             <input
                                                 type="number"
                                                 name="area"
                                                 value={formData.area}
                                                 onChange={handleFormChange}
-                                                className="input-field"
+                                                className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                                 required
                                             />
                                         </div>
                                     </div>
 
                                     {/* Property Features */}
-                                    <div className="border-t pt-4 mt-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-3">Property Features</label>
+                                    <div className="border-t border-gray-200 dark:border-slate-700 pt-4 mt-4">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Property Features</label>
                                         <div className="grid grid-cols-3 gap-4">
                                             <div className="flex items-center">
                                                 <input
@@ -553,7 +553,7 @@ const Dashboard = () => {
                                                     onChange={(e) => setFormData({ ...formData, has_garage: e.target.checked })}
                                                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                                                 />
-                                                <label htmlFor="has_garage" className="ml-2 text-sm text-gray-700">
+                                                <label htmlFor="has_garage" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                                                     Garage
                                                 </label>
                                             </div>
@@ -567,7 +567,7 @@ const Dashboard = () => {
                                                     onChange={(e) => setFormData({ ...formData, has_pool: e.target.checked })}
                                                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                                                 />
-                                                <label htmlFor="has_pool" className="ml-2 text-sm text-gray-700">
+                                                <label htmlFor="has_pool" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                                                     Swimming Pool
                                                 </label>
                                             </div>
@@ -581,7 +581,7 @@ const Dashboard = () => {
                                                     onChange={(e) => setFormData({ ...formData, has_garden: e.target.checked })}
                                                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                                                 />
-                                                <label htmlFor="has_garden" className="ml-2 text-sm text-gray-700">
+                                                <label htmlFor="has_garden" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                                                     Garden
                                                 </label>
                                             </div>
@@ -589,20 +589,20 @@ const Dashboard = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                                         <textarea
                                             name="description"
                                             value={formData.description}
                                             onChange={handleFormChange}
                                             rows={4}
-                                            className="input-field"
+                                            className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                             required
                                         />
                                     </div>
 
                                     {/* Image URL Input */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Property Image URL
                                         </label>
                                         <input
@@ -610,13 +610,13 @@ const Dashboard = () => {
                                             placeholder="https://example.com/image.jpg"
                                             value={imageUrl}
                                             onChange={(e) => setImageUrl(e.target.value)}
-                                            className="input-field"
+                                            className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                         />
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                             Paste a direct URL to an image (e.g., from Imgur, your cloud storage, etc.)
                                         </p>
                                         {imageUrl && (
-                                            <p className="text-sm text-primary-600 mt-2">
+                                            <p className="text-sm text-primary-600 dark:text-primary-400 mt-2">
                                                 ✓ URL provided
                                             </p>
                                         )}
@@ -651,9 +651,9 @@ const Dashboard = () => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                                <p className="text-gray-600">You haven't listed any properties yet.</p>
-                                <p className="text-gray-500 text-sm mt-2">Click "Add New Property" to get started.</p>
+                            <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow-md">
+                                <p className="text-gray-600 dark:text-gray-400">You haven't listed any properties yet.</p>
+                                <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Click "Add New Property" to get started.</p>
                             </div>
                         )}
                     </div>
@@ -664,7 +664,7 @@ const Dashboard = () => {
                 {
                     isCustomer && (
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-6">My Favorites</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">My Favorites</h2>
 
                             {loading ? (
                                 <Loader />
@@ -675,7 +675,7 @@ const Dashboard = () => {
                                             <PropertyCard property={property} />
                                             <button
                                                 onClick={() => handleRemoveFavorite(property.property_id)}
-                                                className="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-medium"
+                                                className="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-medium shadow-md"
                                             >
                                                 Remove
                                             </button>
@@ -683,9 +683,9 @@ const Dashboard = () => {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                                    <p className="text-gray-600">You haven't added any favorites yet.</p>
-                                    <p className="text-gray-500 text-sm mt-2">Browse properties and add them to your favorites!</p>
+                                <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow-md">
+                                    <p className="text-gray-600 dark:text-gray-400">You haven't added any favorites yet.</p>
+                                    <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Browse properties and add them to your favorites!</p>
                                 </div>
                             )}
                         </div>

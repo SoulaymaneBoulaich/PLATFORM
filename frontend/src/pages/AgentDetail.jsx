@@ -11,6 +11,7 @@ const AgentDetail = () => {
     const [agent, setAgent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isZoomed, setIsZoomed] = useState(false);
 
     useEffect(() => {
         fetchAgentDetail();
@@ -35,20 +36,30 @@ const AgentDetail = () => {
     if (!agent) return <div className="text-center py-12">Agent not found</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Agent Profile Section */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 mb-8">
                     <div className="flex flex-col md:flex-row gap-8">
                         {/* Profile Image */}
                         <div className="flex-shrink-0">
                             <div className="w-40 h-40 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
-                                {agent.profile_image ? (
-                                    <img
-                                        src={agent.profile_image}
-                                        alt={`${agent.first_name} ${agent.last_name}`}
-                                        className="w-full h-full object-cover"
-                                    />
+                                {agent.profile_image_url ? (
+                                    <div
+                                        className="relative w-full h-full cursor-pointer group"
+                                        onClick={() => setIsZoomed(true)}
+                                    >
+                                        <img
+                                            src={agent.profile_image_url.startsWith('/')
+                                                ? `http://localhost:3001${agent.profile_image_url}`
+                                                : agent.profile_image_url}
+                                            alt={`${agent.first_name} ${agent.last_name}`}
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                                            <span className="text-white opacity-0 group-hover:opacity-100 font-medium">Zoom</span>
+                                        </div>
+                                    </div>
                                 ) : (
                                     <span className="text-5xl font-bold text-primary-600">
                                         {agent.first_name?.[0]}{agent.last_name?.[0]}
@@ -59,12 +70,12 @@ const AgentDetail = () => {
 
                         {/* Agent Information */}
                         <div className="flex-grow">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                                 {agent.first_name} {agent.last_name}
                             </h1>
 
                             {agent.license_number && (
-                                <p className="text-sm text-gray-500 mb-4">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                                     License Number: {agent.license_number}
                                 </p>
                             )}
@@ -75,8 +86,8 @@ const AgentDetail = () => {
                                     <div className="flex items-center gap-2">
                                         <span className="text-2xl">📞</span>
                                         <div>
-                                            <p className="text-xs text-gray-500">Phone</p>
-                                            <p className="font-semibold">{agent.phone}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">Phone</p>
+                                            <p className="font-semibold dark:text-white">{agent.phone}</p>
                                         </div>
                                     </div>
                                 )}
@@ -85,8 +96,8 @@ const AgentDetail = () => {
                                     <div className="flex items-center gap-2">
                                         <span className="text-2xl">✉️</span>
                                         <div>
-                                            <p className="text-xs text-gray-500">Email</p>
-                                            <p className="font-semibold">{agent.email}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">Email</p>
+                                            <p className="font-semibold dark:text-white">{agent.email}</p>
                                         </div>
                                     </div>
                                 )}
@@ -95,8 +106,8 @@ const AgentDetail = () => {
                             {/* Bio */}
                             {agent.bio && (
                                 <div className="mb-4">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">About</h3>
-                                    <p className="text-gray-700 leading-relaxed">{agent.bio}</p>
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">About</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{agent.bio}</p>
                                 </div>
                             )}
 
@@ -112,10 +123,10 @@ const AgentDetail = () => {
                 {/* Agent's Properties Section */}
                 <div>
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                             {agent.first_name}'s Properties
                         </h2>
-                        <span className="text-gray-600">
+                        <span className="text-gray-600 dark:text-gray-400">
                             {agent.properties?.length || 0} {agent.properties?.length === 1 ? 'property' : 'properties'}
                         </span>
                     </div>
@@ -130,8 +141,8 @@ const AgentDetail = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12 bg-white rounded-lg shadow">
-                            <p className="text-gray-600">
+                        <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow">
+                            <p className="text-gray-600 dark:text-gray-400">
                                 This agent currently has no active properties listed.
                             </p>
                         </div>
@@ -140,12 +151,40 @@ const AgentDetail = () => {
 
                 {/* Back Button */}
                 <div className="mt-8">
-                    <Link to="/agents" className="text-primary-600 hover:text-primary-700 font-medium">
+                    <Link to="/agents" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
                         ← Back to All Agents
                     </Link>
                 </div>
             </div>
-        </div>
+
+            {/* Zoom Modal */}
+            {
+                isZoomed && agent?.profile_image_url && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 transition-opacity"
+                        onClick={() => setIsZoomed(false)}
+                    >
+                        <div className="relative max-w-3xl max-h-[90vh] mx-4">
+                            <img
+                                src={agent.profile_image_url.startsWith('/')
+                                    ? `http://localhost:3001${agent.profile_image_url}`
+                                    : agent.profile_image_url}
+                                alt={`${agent.first_name} ${agent.last_name}`}
+                                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                            />
+                            <button
+                                className="absolute -top-12 right-0 text-white hover:text-gray-300 focus:outline-none"
+                                onClick={() => setIsZoomed(false)}
+                            >
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

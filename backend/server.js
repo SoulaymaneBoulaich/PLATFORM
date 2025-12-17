@@ -21,7 +21,6 @@ const chatRoutes = require('./routes/chatRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-const analyticsRoutes = require('./routes/analyticsRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const favoritesRoutes = require('./routes/favoritesRoutes');
@@ -52,7 +51,6 @@ app.use('/api', chatRoutes); // Chat routes
 app.use('/api/conversations', conversationRoutes); // Conversation routes
 app.use('/api/messages', messageRoutes); // Message routes
 app.use('/api/search', searchRoutes); // Search and recommendations routes
-app.use('/api', analyticsRoutes); // Analytics, offers, dashboards
 app.use('/api', profileRoutes); // Profile and settings routes
 app.use('/api/offers', offerRoutes); // Offer management routes
 app.use('/api/favorites', favoritesRoutes); // Favorites management

@@ -1,64 +1,16 @@
 // backend/routes/propertyRoutes.js
 const express = require('express');
-const pool = require('../config/database');
 const auth = require('../middleware/auth');
-const { getCountryFromCity } = require('../utils/cityToCountry');
+const Property = require('../models/Property');
 
 const router = express.Router();
 
 // GET /api/properties  (public: buyers & sellers)
 router.get('/', async (req, res, next) => {
   try {
-    const {
-      city,
-      property_type,
-      listing_type,
-      minPrice,
-      maxPrice,
-      minBedrooms,
-      minBathrooms,
-    } = req.query;
-
-    const params = [];
-    let sql = `SELECT property_id, seller_id, title, description, property_type, listing_type, 
-                      price, address_line1 as address, city, bedrooms, bathrooms, 
-                      area_sqft as area, status, image_url,
-                      has_garage, has_pool, has_garden
-               FROM properties WHERE status = 'active'`;
-
-    if (city) {
-      sql += ' AND city = ?';
-      params.push(city);
-    }
-    if (property_type) {
-      sql += ' AND property_type = ?';
-      params.push(property_type);
-    }
-    if (listing_type) {
-      sql += ' AND listing_type = ?';
-      params.push(listing_type);
-    }
-    if (minPrice) {
-      sql += ' AND price >= ?';
-      params.push(minPrice);
-    }
-    if (maxPrice) {
-      sql += ' AND price <= ?';
-      params.push(maxPrice);
-    }
-    if (minBedrooms) {
-      sql += ' AND bedrooms >= ?';
-      params.push(minBedrooms);
-    }
-    if (minBathrooms) {
-      sql += ' AND bathrooms >= ?';
-      params.push(minBathrooms);
-    }
-
-    sql += ' ORDER BY listing_date DESC LIMIT 100';
-
-    const [rows] = await pool.query(sql, params);
-    res.json(rows);
+    const filters = req.query;
+    const properties = await Property.findAll(filters);
+    res.json(properties);
   } catch (err) {
     next(err);
   }
@@ -68,28 +20,11 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id;
-    const [props] = await pool.query(
-      `SELECT 
-        p.property_id, p.seller_id, p.agent_id, p.title, p.description, p.property_type, p.listing_type,
-        p.price, p.address_line1 as address, p.address_line2, p.city, p.state, p.zip_code, p.country,
-        p.bedrooms, p.bathrooms, p.area_sqft as area, p.image_url, p.status, p.listing_date,
-        p.created_at, p.updated_at, p.has_garage, p.has_pool, p.has_garden,
-        u.first_name as owner_first_name,
-        u.last_name as owner_last_name,
-        u.email as owner_email,
-        u.phone as owner_phone
-       FROM properties p
-       LEFT JOIN users u ON p.seller_id = u.user_id
-       WHERE p.property_id = ?`,
-      [id]
-    );
-    if (!props.length) return res.status(404).json({ message: 'Not found' });
+    const property = await Property.findById(id);
 
-    const [images] = await pool.query(
-      'SELECT image_id, property_id, image_url, is_primary FROM property_images WHERE property_id = ? ORDER BY is_primary DESC, image_id ASC',
-      [id]
-    );
-    res.json({ ...props[0], images });
+    if (!property) return res.status(404).json({ message: 'Not found' });
+
+    res.json(property);
   } catch (err) {
     next(err);
   }
@@ -104,72 +39,15 @@ router.post('/', auth, async (req, res, next) => {
     }
 
     const seller_id = req.user.user_id;
+    const propertyData = { ...req.body, seller_id };
 
-    // Accept both frontend names and DB names
-    const {
-      title,
-      description,
-      property_type,
-      listing_type,
-      price,
-      address_line1,
-      address,          // frontend sends this
-      city,
-      state,
-      zip_code,
-      country,
-      bedrooms,
-      bathrooms,
-      area_sqft,
-      area,             // frontend sends this
-      has_garage,       // new feature fields
-      has_pool,
-      has_garden,
-      image_url         // image URL field
-    } = req.body;
-
-    // Map to final values expected by DB
-    const finalAddressLine1 = address_line1 || address;
-    const finalAreaSqft = area_sqft || area || null;
-    const finalState = state || '';        // or a default
-    const finalZip = zip_code || '';
-    const finalCountry = country || getCountryFromCity(city);  // auto-fill from city
-
-    if (!finalAddressLine1) {
+    if (!propertyData.address_line1 && !propertyData.address) {
       return res.status(400).json({ message: 'Address is required' });
     }
 
-    const [result] = await pool.query(
-      `INSERT INTO properties (
-        seller_id, agent_id, title, description, property_type, listing_type, price,
-        address_line1, address_line2, city, state, zip_code, country,
-        bedrooms, bathrooms, area_sqft, image_url, status, listing_date,
-        has_garage, has_pool, has_garden
-      ) VALUES (NULLIF(?,0), NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURDATE(), ?, ?, ?)`,
-      [
-        seller_id,
-        title,
-        description || '',
-        property_type,
-        listing_type,
-        price,
-        finalAddressLine1,
-        '',                   // address_line2
-        city,
-        finalState,
-        finalZip,
-        finalCountry,
-        bedrooms,
-        bathrooms,
-        finalAreaSqft,
-        image_url || null,    // image URL
-        has_garage || false, // property features
-        has_pool || false,
-        has_garden || false
-      ]
-    );
+    const propertyId = await Property.create(propertyData);
 
-    res.status(201).json({ property_id: result.insertId });
+    res.status(201).json({ property_id: propertyId });
   } catch (err) {
     next(err);
   }
@@ -187,35 +65,11 @@ router.put('/:id', auth, async (req, res, next) => {
 
     const id = req.params.id;
     const seller_id = req.user.user_id;
-    const {
-      title,
-      description,
-      price,
-      status,
-      property_type,
-      listing_type,
-      bedrooms,
-      bathrooms,
-      area,
-      has_garage,
-      has_pool,
-      has_garden,
-      image_url
-    } = req.body;
+    const updateData = req.body;
 
-    const [result] = await pool.query(
-      `UPDATE properties 
-       SET title=?, description=?, price=?, status=COALESCE(?, status), image_url=?, 
-           property_type=?, listing_type=?, bedrooms=?, bathrooms=?, area_sqft=?,
-           has_garage=?, has_pool=?, has_garden=?, updated_at=NOW()
-       WHERE property_id=? AND seller_id=?`,
-      [title, description, price, status, image_url,
-        property_type, listing_type, bedrooms, bathrooms, area,
-        has_garage, has_pool, has_garden,
-        id, seller_id]
-    );
+    const success = await Property.update(id, seller_id, updateData);
 
-    if (!result.affectedRows) {
+    if (!success) {
       return res
         .status(404)
         .json({ message: 'Property not found or not owner' });
@@ -239,18 +93,141 @@ router.delete('/:id', auth, async (req, res, next) => {
     const id = req.params.id;
     const seller_id = req.user.user_id;
 
-    const [result] = await pool.query(
-      'DELETE FROM properties WHERE property_id = ? AND seller_id = ?',
-      [id, seller_id]
-    );
+    const success = await Property.delete(id, seller_id);
 
-    if (!result.affectedRows) {
+    if (!success) {
       return res
         .status(404)
         .json({ message: 'Property not found or not owner' });
     }
 
     res.json({ message: 'Deleted' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+const Offer = require('../models/Offer');
+const Favorite = require('../models/Favorite');
+const Analytics = require('../models/Analytics');
+const Appointment = require('../models/Appointment');  // For handling viewings if needed, though visitRoutes handles it primarily.
+
+// POST /api/properties/:id/offers - Submit an offer
+router.post('/:id/offers', auth, async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const buyerId = req.user.user_id;
+    const { amount, message } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Valid offer amount is required' });
+    }
+
+    const result = await Offer.create(propertyId, buyerId, amount, message);
+
+    if (result.error) {
+      if (result.error === 'Property not found') return res.status(404).json({ error: 'Property not found' });
+      throw new Error(result.error);
+    }
+
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/properties/:id/offers - Get offers for a property (seller only)
+router.get('/:id/offers', auth, async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user.user_id;
+
+    // Verify user is the seller
+    const property = await Property.findById(propertyId);
+    if (!property) return res.status(404).json({ error: 'Property not found' });
+
+    if (property.seller_id !== userId) {
+      return res.status(403).json({ error: 'Only the seller can view offers' });
+    }
+
+    const offers = await Offer.findAllByPropertyId(propertyId);
+    res.json({ offers });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/properties/:id/view - Track property view
+router.post('/:id/view', async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user?.user_id || null;
+    await Analytics.trackView(propertyId, userId);
+    res.json({ message: 'View tracked' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/properties/:id/favorite - Toggle favorite
+router.post('/:id/favorite', auth, async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user.user_id;
+
+    const isFavorited = await Favorite.isFavorited(userId, propertyId);
+    if (isFavorited) {
+      await Favorite.remove(userId, propertyId);
+      res.json({ favorited: false, message: 'Removed from favorites' });
+    } else {
+      const result = await Favorite.add(userId, propertyId);
+      if (result.error) return res.status(400).json({ error: result.error });
+      res.json({ favorited: true, message: 'Added to favorites' });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/properties/:id/favorite-status - Check favorite status
+router.get('/:id/favorite-status', auth, async (req, res, next) => {
+  try {
+    const propertyId = req.params.id;
+    const userId = req.user.user_id;
+    const isFavorited = await Favorite.isFavorited(userId, propertyId);
+    res.json({ isFavorited });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/properties/:id/viewings - Schedule a viewing
+// Note: This maps to 'visits' logic but maintains the endpoint for compatibility
+router.post('/:id/viewings', auth, async (req, res, next) => {
+  try {
+    const { preferredDate, preferredTime, message } = req.body;
+    // Construct scheduled_at from date and time or just pass specific logic.
+    // Appointment.createVisit expects (buyerId, propertyId, scheduledAt, notes)
+    // If preferredDate/Time provided, combine them.
+    let scheduledAt = new Date(); // Default or error? 
+    if (preferredDate && preferredTime) {
+      scheduledAt = new Date(`${preferredDate}T${preferredTime}`);
+    } else {
+      // If frontend sends 'scheduled_at' or we default. 
+      // The analyticsRoutes implementation accepted preferredDate/Time.
+      // We'll try to support it. 
+      // If this legacy endpoint is used, we'll try to map it.
+      if (!preferredDate) return res.status(400).json({ error: 'Date required' });
+      scheduledAt = new Date(preferredDate + (preferredTime ? 'T' + preferredTime : ''));
+    }
+
+    const visitId = await Appointment.createVisit(req.user.user_id, req.params.id, scheduledAt, message);
+
+    // Return format matching original analyticsRoutes somewhat?
+    res.status(201).json({
+      message: 'Viewing request sent successfully',
+      visit_id: visitId // Added ID which wasn't in original but useful
+    });
   } catch (err) {
     next(err);
   }
