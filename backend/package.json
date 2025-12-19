@@ -9,7 +9,9 @@
     "migrate:media": "node scripts/migrations/run-media-migration.js",
     "migrate:favorites": "node scripts/migrations/run-favorites-migration.js",
     "seed:agents": "node scripts/seeds/seed-agents.js",
-    "seed:images": "node scripts/seeds/seed-property-images.js"
+    "seed:images": "node scripts/seeds/seed-property-images.js",
+    "seed:presentation": "node scripts/seeds/seed-presentation.js",
+    "db:restore": "node scripts/restore-db.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

@@ -1,0 +1,232 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const User = require('../models/User');
+const Agent = require('../models/Agent');
+const PasswordResetToken = require('../models/PasswordResetToken');
+
+// Helper function to validate password strength
+function validatePassword(password) {
+    const errors = [];
+    if (password.length < 8) {
+        errors.push('Password must be at least 8 characters');
+    }
+    if (!/\d/.test(password)) {
+        errors.push('Password must contain at least one number');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        errors.push('Password must contain at least one special character');
+    }
+    return errors;
+}
+
+exports.register = async (req, res, next) => {
+    try {
+        const {
+            email,
+            password,
+            first_name,
+            last_name,
+            phone,
+            user_type,
+            agency_name,
+            license_id,
+            preferences
+        } = req.body;
+
+        // Validate required fields
+        if (!email || !password || !first_name || !last_name || !user_type) {
+            return res.status(400).json({
+                message: 'Missing required fields',
+                error: 'Email, password, first name, last name, and role are required'
+            });
+        }
+
+        // Validate password strength
+        const passwordErrors = validatePassword(password);
+        if (passwordErrors.length > 0) {
+            return res.status(400).json({
+                message: 'Password does not meet requirements',
+                error: passwordErrors.join('. ')
+            });
+        }
+
+        // Check if email already exists
+        const existing = await User.findByEmail(email);
+        if (existing) {
+            return res.status(400).json({ message: 'Email already used' });
+        }
+
+        // Hash password
+        const hash = await bcrypt.hash(password, 10);
+
+        // Insert user
+        const userId = await User.create({
+            email,
+            password_hash: hash,
+            first_name,
+            last_name,
+            phone,
+            user_type,
+            agency_name,
+            license_id,
+            preferences
+        });
+
+        // Automatically create Agent/Seller record if applicable
+        if (user_type === 'agent' || user_type === 'seller') {
+            try {
+                await Agent.create(
+                    userId,
+                    agency_name || (user_type === 'seller' ? 'Independent Seller' : 'Freelance Agent'),
+                    license_id || `LIC-${Date.now()}`,
+                    req.body.bio || `Professional ${user_type === 'seller' ? 'Property Seller' : 'Real Estate Agent'}`,
+                    req.body.experience_years || 0,
+                    req.body.languages || ['English', 'French']
+                );
+                console.log(`Auto-created Agent profile for user ${userId} (${user_type})`);
+            } catch (agentErr) {
+                console.error('Failed to auto-create Agent profile:', agentErr);
+                // Continue, don't block registration response
+            }
+        }
+
+        // Return user info (without password hash)
+        res.status(201).json({
+            user_id: userId,
+            message: 'Registration successful'
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.login = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
+
+        const user = await User.findByEmail(email);
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const match = await bcrypt.compare(password, user.password_hash);
+        if (!match) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Update last login
+        await User.updateLastLogin(user.user_id);
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { user_id: user.user_id, user_type: user.user_type },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        res.json({
+            token,
+            user: {
+                user_id: user.user_id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                user_type: user.user_type,
+                agency_name: user.agency_name,
+                license_id: user.license_id,
+                profile_image_url: user.profile_image_url,
+            },
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Check if user exists
+        const user = await User.findByEmail(email);
+
+        // Always return success message (don't reveal if email exists for security)
+        if (user) {
+            const userId = user.user_id;
+
+            // Generate secure random token
+            const token = crypto.randomBytes(32).toString('hex');
+            const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+            // Store token in database
+            await PasswordResetToken.create(userId, token, expiresAt);
+
+            // In production, send email here
+            // For now, log to console
+            console.log(`\n🔐 Password Reset Link: http://localhost:5173/reset-password/${token}\n`);
+        }
+
+        res.json({
+            message: 'If an account exists for this email, a password reset link has been sent.'
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+
+        if (!token || !password) {
+            return res.status(400).json({ message: 'Token and password are required' });
+        }
+
+        // Validate password strength
+        const passwordErrors = validatePassword(password);
+        if (passwordErrors.length > 0) {
+            return res.status(400).json({
+                message: 'Password does not meet requirements',
+                error: passwordErrors.join('. ')
+            });
+        }
+
+        // Check if token exists and is valid
+        const resetToken = await PasswordResetToken.findByToken(token);
+
+        if (!resetToken) {
+            return res.status(400).json({ message: 'Invalid or expired reset token' });
+        }
+
+        // Check if token is already used
+        if (resetToken.used) {
+            return res.status(400).json({ message: 'This reset link has already been used' });
+        }
+
+        // Check if token is expired
+        if (new Date() > new Date(resetToken.expires_at)) {
+            return res.status(400).json({ message: 'This reset link has expired' });
+        }
+
+        // Hash new password
+        const hash = await bcrypt.hash(password, 10);
+
+        // Update user password
+        await User.updatePassword(resetToken.user_id, hash);
+
+        // Mark token as used
+        await PasswordResetToken.markAsUsed(token);
+
+        res.json({ message: 'Password has been reset successfully' });
+    } catch (err) {
+        next(err);
+    }
+};
