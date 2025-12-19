@@ -9,6 +9,8 @@ class Agent {
                 u.last_name,
                 u.email,
                 u.phone,
+                u.profile_image as profile_image_url,
+                (SELECT COUNT(*) FROM properties p WHERE p.seller_id = u.user_id) as property_count,
                 u.profile_image as avatar,
                 u.profile_image_url,
                 (SELECT COUNT(*) FROM properties p WHERE p.agent_id = a.agent_id) as property_count,
@@ -29,6 +31,8 @@ class Agent {
                 u.last_name,
                 u.email,
                 u.phone,
+                u.phone,
+                u.profile_image as profile_image_url,
                 u.profile_image,
                 u.profile_image_url,
                 u.date_registered as joined_at
