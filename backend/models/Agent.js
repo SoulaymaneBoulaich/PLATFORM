@@ -8,8 +8,8 @@ class Agent {
                 u.first_name,
                 u.last_name,
                 u.email,
-                u.phone_number,
-                u.profile_picture as avatar,
+                u.phone,
+                u.profile_image as avatar,
                 (SELECT COUNT(*) FROM properties p WHERE p.agent_id = a.agent_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
                 (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as rating
@@ -27,9 +27,9 @@ class Agent {
                 u.first_name,
                 u.last_name,
                 u.email,
-                u.phone_number,
-                u.profile_picture,
-                u.created_at as joined_at
+                u.phone,
+                u.profile_image,
+                u.date_registered as joined_at
             FROM agents a
             JOIN users u ON a.user_id = u.user_id
             WHERE a.agent_id = ?
