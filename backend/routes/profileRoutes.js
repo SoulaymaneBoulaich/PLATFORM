@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const avatarUpload = require('../middleware/avatarUpload');
+const multer = require('multer');
+const { storage } = require('../config/cloudinary');
+const avatarUpload = multer({ storage });
 const bcrypt = require('bcryptjs');
 const Profile = require('../models/Profile');
 const User = require('../models/User');
@@ -60,7 +62,7 @@ router.post('/me/avatar', auth, avatarUpload.single('avatar'), async (req, res) 
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const imageUrl = `/uploads/avatars/${file.filename}`;
+        const imageUrl = file.path; // Cloudinary URL
 
         await Profile.updateAvatar(userId, imageUrl);
 
