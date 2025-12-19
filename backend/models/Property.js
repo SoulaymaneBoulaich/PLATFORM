@@ -1,5 +1,6 @@
 const pool = require('../config/database');
 const { getCountryFromCity } = require('../utils/cityToCountry');
+const PropertyImage = require('./PropertyImage');
 
 class Property {
     static async findAll(filters) {
@@ -10,7 +11,9 @@ class Property {
             minPrice,
             maxPrice,
             minBedrooms,
+
             minBathrooms,
+            seller_id,
             limit = 100
         } = filters;
 
@@ -20,6 +23,11 @@ class Property {
                           area_sqft as area, status, image_url,
                           has_garage, has_pool, has_garden
                    FROM properties WHERE status = 'active'`;
+
+        if (seller_id) {
+            sql += ' AND seller_id = ?';
+            params.push(seller_id);
+        }
 
         if (city) {
             sql += ' AND city = ?';
@@ -76,10 +84,7 @@ class Property {
 
         if (!props.length) return null;
 
-        const [images] = await pool.query(
-            'SELECT image_id, property_id, image_url, is_primary FROM property_images WHERE property_id = ? ORDER BY is_primary DESC, image_id ASC',
-            [id]
-        );
+        const images = await PropertyImage.findAllByPropertyId(id);
 
         return { ...props[0], images };
     }

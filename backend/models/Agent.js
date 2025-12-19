@@ -9,7 +9,7 @@ class Agent {
                 u.last_name,
                 u.email,
                 u.phone,
-                u.profile_image_url as avatar,
+                u.profile_image_url,
                 (SELECT COUNT(*) FROM properties p WHERE p.agent_id = a.agent_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
                 (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as rating
@@ -29,10 +29,10 @@ class Agent {
                 u.email,
                 u.phone,
                 u.profile_image_url,
-                u.created_at as joined_at
+                u.date_registered as joined_at
             FROM agents a
             JOIN users u ON a.user_id = u.user_id
-            WHERE a.agent_id = ?
+            WHERE a.user_id = ?
         `;
         const [rows] = await pool.query(query, [id]);
         return rows[0];
@@ -40,10 +40,10 @@ class Agent {
 
     static async create(userId, agencyName, licenseNumber, bio, experienceYears, languages) {
         const query = `
-            INSERT INTO agents (user_id, agency_name, license_number, bio, experience_years, languages)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO agents (user_id, agency_name, license_number, bio, experience_years)
+            VALUES (?, ?, ?, ?, ?)
         `;
-        const [result] = await pool.query(query, [userId, agencyName, licenseNumber, bio, experienceYears, JSON.stringify(languages)]);
+        const [result] = await pool.query(query, [userId, agencyName, licenseNumber, bio, experienceYears]);
         return result.insertId;
     }
 
@@ -67,10 +67,7 @@ class Agent {
             updates.push('experience_years = ?');
             values.push(data.experience_years);
         }
-        if (data.languages) {
-            updates.push('languages = ?');
-            values.push(JSON.stringify(data.languages));
-        }
+
 
         if (updates.length === 0) return false;
 
