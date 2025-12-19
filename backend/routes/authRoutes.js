@@ -123,9 +123,11 @@ router.post('/login', async (req, res, next) => {
         first_name: user.first_name,
         last_name: user.last_name,
         user_type: user.user_type,
+        role: user.user_type, // Frontend expects 'role'
         agency_name: user.agency_name,
         license_id: user.license_id,
-        profile_image_url: user.profile_image_url,
+        profile_image_url: user.profile_image, // Map DB profile_image to expected field
+        profile_picture: user.profile_image, // Add alternate mapping just in case
       },
     });
   } catch (err) {

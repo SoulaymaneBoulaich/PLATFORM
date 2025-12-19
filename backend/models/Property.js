@@ -21,6 +21,11 @@ class Property {
                           has_garage, has_pool, has_garden
                    FROM properties WHERE status = 'active'`;
 
+        if (filters.seller_id) {
+            sql += ' AND seller_id = ?';
+            params.push(filters.seller_id);
+        }
+
         if (city) {
             sql += ' AND city = ?';
             params.push(city);
@@ -67,7 +72,8 @@ class Property {
         u.first_name as owner_first_name,
         u.last_name as owner_last_name,
         u.email as owner_email,
-        u.phone as owner_phone
+        u.phone as owner_phone,
+        u.profile_image as owner_image
        FROM properties p
        LEFT JOIN users u ON p.seller_id = u.user_id
        WHERE p.property_id = ?`,
