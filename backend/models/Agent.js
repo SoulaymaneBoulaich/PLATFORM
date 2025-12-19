@@ -9,6 +9,7 @@ class Agent {
                 u.last_name,
                 u.email,
                 u.phone,
+                u.profile_image as avatar,
                 u.profile_image_url,
                 (SELECT COUNT(*) FROM properties p WHERE p.agent_id = a.agent_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
@@ -28,6 +29,7 @@ class Agent {
                 u.last_name,
                 u.email,
                 u.phone,
+                u.profile_image,
                 u.profile_image_url,
                 u.date_registered as joined_at
             FROM agents a
