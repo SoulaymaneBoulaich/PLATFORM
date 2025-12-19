@@ -1,0 +1,831 @@
+-- MySQL dump 10.13  Distrib 8.4.7, for Linux (x86_64)
+--
+-- Host: localhost    Database: real_estate_db
+-- ------------------------------------------------------
+-- Server version	8.4.7
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `agents`
+--
+
+DROP TABLE IF EXISTS `agents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `agents` (
+  `agent_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `license_number` varchar(50) DEFAULT NULL,
+  `agency_name` varchar(200) DEFAULT NULL,
+  `specialization` varchar(100) DEFAULT NULL,
+  `experience_years` int DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT '0.00',
+  `total_sales` int DEFAULT '0',
+  `commission_rate` decimal(5,2) DEFAULT NULL,
+  `bio` text,
+  PRIMARY KEY (`agent_id`),
+  UNIQUE KEY `license_number` (`license_number`),
+  KEY `user_id` (`user_id`),
+  KEY `idx_rating` (`rating`),
+  KEY `idx_license` (`license_number`),
+  CONSTRAINT `agents_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `agents`
+--
+
+LOCK TABLES `agents` WRITE;
+/*!40000 ALTER TABLE `agents` DISABLE KEYS */;
+INSERT INTO `agents` VALUES (1,1,'LIC-1','Independent Seller',NULL,NULL,0.00,0,NULL,'Property Seller'),(2,3,'LIC-3','Independent Seller',NULL,NULL,0.00,0,NULL,'Property Seller'),(3,4,'LIC-1766145164831','Independent Seller',NULL,0,0.00,0,NULL,'Professional Property Seller'),(4,5,'LIC-1766146596127','Independent Seller',NULL,0,0.00,0,NULL,'Professional Property Seller'),(5,6,'LIC-1766146700388','Independent Seller',NULL,0,0.00,0,NULL,'Professional Property Seller'),(6,7,'LIC-1766146802631','Independent Seller',NULL,0,0.00,0,NULL,'Professional Property Seller');
+/*!40000 ALTER TABLE `agents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `appointments`
+--
+
+DROP TABLE IF EXISTS `appointments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `appointments` (
+  `appointment_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `agent_id` int DEFAULT NULL,
+  `appointment_date` datetime NOT NULL,
+  `appointment_type` enum('viewing','consultation','inspection') NOT NULL,
+  `status` enum('scheduled','completed','cancelled','no_show') DEFAULT 'scheduled',
+  `notes` text,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`appointment_id`),
+  KEY `property_id` (`property_id`),
+  KEY `user_id` (`user_id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `idx_appointment_date` (`appointment_date`),
+  KEY `idx_appointment_status` (`status`),
+  CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`),
+  CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`agent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `appointments`
+--
+
+LOCK TABLES `appointments` WRITE;
+/*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_messages`
+--
+
+DROP TABLE IF EXISTS `contact_messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contact_messages` (
+  `message_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int DEFAULT NULL,
+  `seller_id` int DEFAULT NULL,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`message_id`),
+  KEY `idx_contact_property` (`property_id`),
+  KEY `idx_contact_seller` (`seller_id`),
+  CONSTRAINT `contact_messages_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE SET NULL,
+  CONSTRAINT `contact_messages_ibfk_2` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_messages`
+--
+
+LOCK TABLES `contact_messages` WRITE;
+/*!40000 ALTER TABLE `contact_messages` DISABLE KEYS */;
+INSERT INTO `contact_messages` VALUES (18,NULL,NULL,'Soulaymane Boulaichn','soulaimanbboulaich0@gmail.com',NULL,'b','2025-12-16 15:06:55');
+/*!40000 ALTER TABLE `contact_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `conversation_participants`
+--
+
+DROP TABLE IF EXISTS `conversation_participants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `conversation_participants` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `conversation_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_conv_user` (`conversation_id`,`user_id`),
+  KEY `idx_conversation_id` (`conversation_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_conv_user` (`conversation_id`,`user_id`),
+  CONSTRAINT `conversation_participants_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`conversation_id`) ON DELETE CASCADE,
+  CONSTRAINT `conversation_participants_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `conversation_participants`
+--
+
+LOCK TABLES `conversation_participants` WRITE;
+/*!40000 ALTER TABLE `conversation_participants` DISABLE KEYS */;
+INSERT INTO `conversation_participants` VALUES (1,1,32,'2025-12-16 15:24:11'),(3,2,33,'2025-12-16 16:06:29'),(5,3,33,'2025-12-16 16:54:16'),(7,4,24,'2025-12-16 21:30:29'),(9,5,24,'2025-12-16 21:30:41'),(11,6,24,'2025-12-16 22:47:09'),(12,6,25,'2025-12-16 22:47:09'),(13,7,35,'2025-12-17 15:44:14'),(15,8,57,'2025-12-19 10:47:56'),(16,8,56,'2025-12-19 10:47:56'),(17,9,57,'2025-12-19 11:11:45'),(18,9,56,'2025-12-19 11:11:45'),(19,10,57,'2025-12-19 11:11:59'),(20,10,25,'2025-12-19 11:11:59'),(21,11,3,'2025-12-19 11:43:43'),(22,11,1,'2025-12-19 11:43:43'),(23,12,7,'2025-12-19 12:31:50'),(24,12,1,'2025-12-19 12:31:50');
+/*!40000 ALTER TABLE `conversation_participants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `conversations`
+--
+
+DROP TABLE IF EXISTS `conversations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `conversations` (
+  `conversation_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`conversation_id`),
+  KEY `idx_property_id` (`property_id`),
+  KEY `idx_updated_at` (`updated_at`),
+  CONSTRAINT `conversations_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `conversations`
+--
+
+LOCK TABLES `conversations` WRITE;
+/*!40000 ALTER TABLE `conversations` DISABLE KEYS */;
+INSERT INTO `conversations` VALUES (1,NULL,'2025-12-16 15:24:11','2025-12-16 16:03:06'),(2,NULL,'2025-12-16 16:06:29','2025-12-16 16:06:39'),(3,NULL,'2025-12-16 16:54:16','2025-12-16 19:23:40'),(4,NULL,'2025-12-16 21:30:29','2025-12-16 21:31:04'),(5,NULL,'2025-12-16 21:30:41','2025-12-16 21:30:44'),(6,NULL,'2025-12-16 22:47:09','2025-12-16 22:47:23'),(7,NULL,'2025-12-17 15:44:14','2025-12-17 18:09:17'),(8,52,'2025-12-19 10:47:56','2025-12-19 10:48:07'),(9,NULL,'2025-12-19 11:11:45','2025-12-19 11:11:45'),(10,NULL,'2025-12-19 11:11:59','2025-12-19 11:11:59'),(11,1,'2025-12-19 11:43:43','2025-12-19 11:43:50'),(12,NULL,'2025-12-19 12:31:50','2025-12-19 12:31:50');
+/*!40000 ALTER TABLE `conversations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `favorites`
+--
+
+DROP TABLE IF EXISTS `favorites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `favorites` (
+  `favorite_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `property_id` int NOT NULL,
+  `added_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`favorite_id`),
+  UNIQUE KEY `unique_favorite` (`user_id`,`property_id`),
+  KEY `property_id` (`property_id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `favorites`
+--
+
+LOCK TABLES `favorites` WRITE;
+/*!40000 ALTER TABLE `favorites` DISABLE KEYS */;
+INSERT INTO `favorites` VALUES (1,3,1,'2025-12-19 11:47:43');
+/*!40000 ALTER TABLE `favorites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `messages` (
+  `message_id` int NOT NULL AUTO_INCREMENT,
+  `conversation_id` int NOT NULL,
+  `sender_id` int NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
+  `is_edited` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted_at` datetime DEFAULT NULL,
+  `media_url` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `media_type` enum('TEXT','AUDIO','IMAGE','VIDEO') COLLATE utf8mb4_unicode_ci DEFAULT 'TEXT',
+  PRIMARY KEY (`message_id`),
+  KEY `idx_conversation_id` (`conversation_id`),
+  KEY `idx_sender_id` (`sender_id`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_deleted_at` (`deleted_at`),
+  KEY `idx_conv_created` (`conversation_id`,`created_at` DESC),
+  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`conversation_id`) ON DELETE CASCADE,
+  CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`sender_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `messages`
+--
+
+LOCK TABLES `messages` WRITE;
+/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
+INSERT INTO `messages` VALUES (1,11,3,'khoya raune','2025-12-19 11:43:50',NULL,0,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notifications` (
+  `notification_id` int NOT NULL AUTO_INCREMENT,
+  `user_to_notify` int NOT NULL,
+  `user_from` int DEFAULT NULL,
+  `property_id` int NOT NULL,
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notification_id`),
+  KEY `user_from` (`user_from`),
+  KEY `property_id` (`property_id`),
+  KEY `idx_user_to_notify` (`user_to_notify`,`is_read`),
+  KEY `idx_created` (`created_at`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_to_notify`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`user_from`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
+  CONSTRAINT `notifications_ibfk_3` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notifications`
+--
+
+LOCK TABLES `notifications` WRITE;
+/*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
+INSERT INTO `notifications` VALUES (15,1,3,1,'offer','New offer of $25000 for \"APPARTEMENT KBIRA\"',0,'2025-12-19 11:47:34');
+/*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `offers`
+--
+
+DROP TABLE IF EXISTS `offers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `offers` (
+  `offer_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `buyer_id` int NOT NULL,
+  `seller_id` int NOT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `status` enum('Pending','Accepted','Rejected','Countered') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Pending',
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`offer_id`),
+  KEY `idx_property_id` (`property_id`),
+  KEY `idx_buyer_id` (`buyer_id`),
+  KEY `idx_seller_id` (`seller_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE,
+  CONSTRAINT `offers_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `offers_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `offers`
+--
+
+LOCK TABLES `offers` WRITE;
+/*!40000 ALTER TABLE `offers` DISABLE KEYS */;
+INSERT INTO `offers` VALUES (3,1,3,1,25000.00,'Pending',NULL,'2025-12-19 11:47:34','2025-12-19 11:47:34');
+/*!40000 ALTER TABLE `offers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `password_reset_tokens`
+--
+
+DROP TABLE IF EXISTS `password_reset_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `password_reset_tokens` (
+  `token_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `used` tinyint(1) DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`token_id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `idx_token` (`token`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_expires_at` (`expires_at`),
+  CONSTRAINT `password_reset_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `password_reset_tokens`
+--
+
+LOCK TABLES `password_reset_tokens` WRITE;
+/*!40000 ALTER TABLE `password_reset_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `password_reset_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `properties`
+--
+
+DROP TABLE IF EXISTS `properties`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `properties` (
+  `property_id` int NOT NULL AUTO_INCREMENT,
+  `seller_id` int NOT NULL,
+  `agent_id` int DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `property_type` enum('house','apartment','condo','land','commercial') NOT NULL,
+  `listing_type` enum('sale','rent') NOT NULL,
+  `price` decimal(15,2) NOT NULL,
+  `address_line1` varchar(255) NOT NULL,
+  `address_line2` varchar(255) DEFAULT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `zip_code` varchar(20) NOT NULL,
+  `country` varchar(100) DEFAULT 'USA',
+  `bedrooms` int DEFAULT NULL,
+  `bathrooms` decimal(3,1) DEFAULT NULL,
+  `area_sqft` int DEFAULT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` enum('active','pending','sold','rented','inactive') DEFAULT 'active',
+  `listing_date` date NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `has_garage` tinyint(1) DEFAULT '0',
+  `has_pool` tinyint(1) DEFAULT '0',
+  `has_garden` tinyint(1) DEFAULT '0',
+  `property_status` enum('Available','Under Offer','Sold') DEFAULT 'Available',
+  PRIMARY KEY (`property_id`),
+  KEY `seller_id` (`seller_id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `idx_city` (`city`),
+  KEY `idx_price` (`price`),
+  KEY `idx_property_type` (`property_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_listing_date` (`listing_date`),
+  KEY `idx_city_type` (`city`,`property_type`),
+  KEY `idx_city_price` (`city`,`price`),
+  CONSTRAINT `properties_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `properties_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`agent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `properties`
+--
+
+LOCK TABLES `properties` WRITE;
+/*!40000 ALTER TABLE `properties` DISABLE KEYS */;
+INSERT INTO `properties` VALUES (1,1,NULL,'APPARTEMENT KBIRA','GHALA MABGHITICH TCHRI','apartment','sale',25000.00,'HDA MAHLABAT OMAR','','RABAT','','','Morocco',3,2.0,160,'https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','active','2025-12-19','2025-12-19 11:22:26','2025-12-19 11:22:26',1,0,0,'Available'),(2,3,NULL,'APPARTMENT','DAR KBIRA FIHA COZINA WAJDA HHH.','apartment','sale',12000.00,'BARRIO MALAGA','','TETOUAN  CITY','','','Unknown',2,1.0,120,'https://images.unsplash.com/photo-1660472854785-434b1e457d50?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE1fHx8ZW58MHx8fHx8','active','2025-12-19','2025-12-19 11:39:56','2025-12-19 11:39:56',0,0,0,'Available');
+/*!40000 ALTER TABLE `properties` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `property_favorites`
+--
+
+DROP TABLE IF EXISTS `property_favorites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `property_favorites` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_favorite` (`property_id`,`user_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `property_favorites_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE,
+  CONSTRAINT `property_favorites_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `property_favorites`
+--
+
+LOCK TABLES `property_favorites` WRITE;
+/*!40000 ALTER TABLE `property_favorites` DISABLE KEYS */;
+/*!40000 ALTER TABLE `property_favorites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `property_images`
+--
+
+DROP TABLE IF EXISTS `property_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `property_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `is_primary` tinyint(1) DEFAULT '0',
+  `upload_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`image_id`),
+  KEY `idx_property` (`property_id`),
+  CONSTRAINT `property_images_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `property_images`
+--
+
+LOCK TABLES `property_images` WRITE;
+/*!40000 ALTER TABLE `property_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `property_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `property_reviews`
+--
+
+DROP TABLE IF EXISTS `property_reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `property_reviews` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `rating` int DEFAULT NULL,
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`review_id`),
+  KEY `idx_property_reviews_property` (`property_id`),
+  KEY `idx_property_reviews_user` (`user_id`),
+  CONSTRAINT `property_reviews_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE,
+  CONSTRAINT `property_reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
+  CONSTRAINT `property_reviews_chk_1` CHECK ((`rating` between 1 and 5))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `property_reviews`
+--
+
+LOCK TABLES `property_reviews` WRITE;
+/*!40000 ALTER TABLE `property_reviews` DISABLE KEYS */;
+/*!40000 ALTER TABLE `property_reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `property_views`
+--
+
+DROP TABLE IF EXISTS `property_views`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `property_views` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `viewed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_property_id` (`property_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_viewed_at` (`viewed_at`),
+  CONSTRAINT `property_views_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `property_views`
+--
+
+LOCK TABLES `property_views` WRITE;
+/*!40000 ALTER TABLE `property_views` DISABLE KEYS */;
+INSERT INTO `property_views` VALUES (166,52,NULL,'2025-12-19 10:30:55'),(167,52,NULL,'2025-12-19 10:30:55'),(168,52,NULL,'2025-12-19 10:47:54'),(169,52,NULL,'2025-12-19 10:47:54'),(170,52,NULL,'2025-12-19 10:49:29'),(171,52,NULL,'2025-12-19 10:49:29'),(172,52,NULL,'2025-12-19 10:49:57'),(173,52,NULL,'2025-12-19 10:49:57'),(174,52,NULL,'2025-12-19 11:12:30'),(175,52,NULL,'2025-12-19 11:12:30'),(176,1,NULL,'2025-12-19 11:24:11'),(177,1,NULL,'2025-12-19 11:24:11'),(178,1,NULL,'2025-12-19 11:34:25'),(179,1,NULL,'2025-12-19 11:34:25'),(180,2,NULL,'2025-12-19 11:43:02'),(181,2,NULL,'2025-12-19 11:43:02'),(182,2,NULL,'2025-12-19 11:43:30'),(183,2,NULL,'2025-12-19 11:43:30'),(184,1,NULL,'2025-12-19 11:43:39'),(185,1,NULL,'2025-12-19 11:43:39'),(186,2,NULL,'2025-12-19 11:47:24'),(187,2,NULL,'2025-12-19 11:47:24'),(188,1,NULL,'2025-12-19 11:47:27'),(189,1,NULL,'2025-12-19 11:47:27'),(190,1,NULL,'2025-12-19 11:47:42'),(191,1,NULL,'2025-12-19 11:47:42'),(192,1,NULL,'2025-12-19 11:47:47'),(193,1,NULL,'2025-12-19 11:47:47'),(194,2,NULL,'2025-12-19 11:55:04'),(195,2,NULL,'2025-12-19 11:55:04'),(196,2,NULL,'2025-12-19 12:05:40'),(197,2,NULL,'2025-12-19 12:05:40'),(198,2,NULL,'2025-12-19 12:31:36'),(199,2,NULL,'2025-12-19 12:31:36');
+/*!40000 ALTER TABLE `property_views` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int DEFAULT NULL,
+  `agent_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `rating` int NOT NULL,
+  `review_text` text,
+  `review_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `is_verified` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`review_id`),
+  KEY `property_id` (`property_id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `user_id` (`user_id`),
+  KEY `idx_review_rating` (`rating`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE,
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`agent_id`) ON DELETE CASCADE,
+  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviews`
+--
+
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `saved_searches`
+--
+
+DROP TABLE IF EXISTS `saved_searches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `saved_searches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `filters_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `saved_searches_chk_1` CHECK (json_valid(`filters_json`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `saved_searches`
+--
+
+LOCK TABLES `saved_searches` WRITE;
+/*!40000 ALTER TABLE `saved_searches` DISABLE KEYS */;
+/*!40000 ALTER TABLE `saved_searches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `search_history`
+--
+
+DROP TABLE IF EXISTS `search_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `search_history` (
+  `search_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `search_query` varchar(255) DEFAULT NULL,
+  `filters` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `search_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `results_count` int DEFAULT NULL,
+  PRIMARY KEY (`search_id`),
+  KEY `idx_search_user` (`user_id`),
+  KEY `idx_search_date` (`search_date`),
+  CONSTRAINT `search_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `search_history_chk_1` CHECK (json_valid(`filters`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `search_history`
+--
+
+LOCK TABLES `search_history` WRITE;
+/*!40000 ALTER TABLE `search_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `search_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test`
+--
+
+DROP TABLE IF EXISTS `test`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `test` (
+  `id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test`
+--
+
+LOCK TABLES `test` WRITE;
+/*!40000 ALTER TABLE `test` DISABLE KEYS */;
+/*!40000 ALTER TABLE `test` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transactions`
+--
+
+DROP TABLE IF EXISTS `transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transactions` (
+  `transaction_id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `buyer_id` int NOT NULL,
+  `seller_id` int NOT NULL,
+  `agent_id` int DEFAULT NULL,
+  `transaction_type` enum('sale','rental') NOT NULL,
+  `transaction_amount` decimal(15,2) NOT NULL,
+  `commission_amount` decimal(15,2) DEFAULT NULL,
+  `transaction_date` date NOT NULL,
+  `status` enum('pending','completed','cancelled') DEFAULT 'pending',
+  `payment_method` varchar(50) DEFAULT NULL,
+  `notes` text,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`transaction_id`),
+  KEY `property_id` (`property_id`),
+  KEY `buyer_id` (`buyer_id`),
+  KEY `seller_id` (`seller_id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `idx_transaction_date` (`transaction_date`),
+  KEY `idx_transaction_status` (`status`),
+  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`),
+  CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `transactions_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `transactions_ibfk_4` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`agent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transactions`
+--
+
+LOCK TABLES `transactions` WRITE;
+/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_settings`
+--
+
+DROP TABLE IF EXISTS `user_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `email_notifications` tinyint(1) DEFAULT '1',
+  `sms_notifications` tinyint(1) DEFAULT '0',
+  `dark_mode` tinyint(1) DEFAULT '0',
+  `language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'en',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `theme` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'light',
+  `currency` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'USD',
+  `notifications_email` tinyint(1) DEFAULT '1',
+  `notifications_push` tinyint(1) DEFAULT '1',
+  `notifications_marketing` tinyint(1) DEFAULT '0',
+  `privacy_show_email` tinyint(1) DEFAULT '0',
+  `privacy_show_phone` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_settings`
+--
+
+LOCK TABLES `user_settings` WRITE;
+/*!40000 ALTER TABLE `user_settings` DISABLE KEYS */;
+INSERT INTO `user_settings` VALUES (11,24,1,0,1,'en','2025-12-13 14:57:20','2025-12-17 15:42:44','light','USD',1,1,0,0,0),(12,25,1,0,0,'en','2025-12-13 19:34:10','2025-12-13 19:34:10','light','USD',1,1,0,0,0),(13,26,1,0,0,'en','2025-12-14 14:23:55','2025-12-14 14:27:47','light','USD',1,1,0,0,0),(14,27,1,0,0,'en','2025-12-14 14:29:24','2025-12-14 14:29:24','light','USD',1,1,0,0,0),(15,28,1,0,0,'en','2025-12-14 21:31:25','2025-12-15 17:20:50','light','USD',1,1,0,0,0),(16,29,1,0,0,'en','2025-12-16 13:09:31','2025-12-16 13:09:31','light','USD',1,1,0,0,0),(17,30,1,0,0,'en','2025-12-16 13:32:13','2025-12-16 13:32:13','light','USD',1,1,0,0,0),(18,31,1,0,0,'en','2025-12-16 13:39:51','2025-12-16 13:39:51','light','USD',1,1,0,0,0),(19,32,1,0,0,'en','2025-12-16 14:50:28','2025-12-16 15:03:32','light','USD',1,1,0,0,0),(20,33,1,0,0,'en','2025-12-16 16:05:09','2025-12-16 19:24:43','light','USD',1,1,0,0,0),(28,34,1,0,0,'en','2025-12-16 21:32:46','2025-12-16 21:39:28','light','USD',1,1,0,0,0),(29,35,1,0,0,'en','2025-12-17 15:43:59','2025-12-17 22:48:01','light','USD',1,1,0,0,0),(30,56,1,0,0,'en','2025-12-19 10:26:58','2025-12-19 10:26:58','light','USD',1,1,0,0,0),(31,57,1,0,0,'en','2025-12-19 10:32:53','2025-12-19 10:32:53','light','USD',1,1,0,0,0),(32,1,1,0,0,'en','2025-12-19 11:20:47','2025-12-19 11:20:47','light','USD',1,1,0,0,0),(33,2,1,0,0,'en','2025-12-19 11:37:37','2025-12-19 11:37:37','light','USD',1,1,0,0,0),(34,3,1,0,0,'en','2025-12-19 11:38:48','2025-12-19 11:38:48','light','USD',1,1,0,0,0),(35,4,1,0,0,'en','2025-12-19 11:52:44','2025-12-19 13:06:20','light','USD',1,1,0,0,0),(36,5,1,0,0,'en','2025-12-19 12:16:36','2025-12-19 12:16:36','light','USD',1,1,0,0,0),(37,6,1,0,0,'en','2025-12-19 12:18:20','2025-12-19 12:18:20','light','USD',1,1,0,0,0),(38,7,1,0,0,'en','2025-12-19 12:20:02','2025-12-19 12:20:02','light','USD',1,1,0,0,0);
+/*!40000 ALTER TABLE `user_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `user_type` enum('buyer','seller','agent','admin') NOT NULL,
+  `profile_image` varchar(255) DEFAULT NULL,
+  `date_registered` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_login` datetime DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `profile_image_url` varchar(500) DEFAULT NULL,
+  `bio` text,
+  `location` varchar(150) DEFAULT NULL,
+  `agency_name` varchar(200) DEFAULT NULL,
+  `license_id` varchar(100) DEFAULT NULL,
+  `preferences` json DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `idx_email` (`email`),
+  KEY `idx_user_type` (`user_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'RayaneAlAA@hotmail.com','$2b$10$Q477Rk..49xqbOaA7AXbN.Qc2dkSdknJvomSGPvQMVG/VcHav8z2C','Rayane','Alaamrani','0634565435','seller',NULL,'2025-12-19 11:20:47','2025-12-19 11:20:47',1,'/uploads/avatars/avatar_1766143913653_1.jpeg','','',NULL,NULL,NULL),(2,'Maronkidhkni@gmail.com','$2b$10$ahio//hN1UfStcOJRH2cZ.RkW3bxg7JaUaMZRZUOiJlJAJs9hq7jO','Mar1','Aouami','0643567821','agent',NULL,'2025-12-19 11:37:37','2025-12-19 11:37:37',1,NULL,NULL,NULL,'GWW9','00034453AF',NULL),(3,'MaronkidhknBi@gmail.com','$2b$10$DH3lynL4edSu4y5icnpV/OF7kPFnffnrTMmSFdakwToIp5rGZQBI6','Marouan','Aouami','0645364640','seller',NULL,'2025-12-19 11:38:48','2025-12-19 11:38:48',1,'/uploads/avatars/avatar_1766144414559_3.jpeg',NULL,NULL,NULL,NULL,NULL),(4,'AabidBenaabid@gmail.com','$2b$10$5y8qwscBNRDVa9ZeOVIt8eECpt7kTaZkXDzIvy4rWP1cKEVkMoQsi','Soulayman','Aabid','0632458082','seller',NULL,'2025-12-19 11:52:44','2025-12-19 11:52:44',1,'/uploads/avatars/avatar_1766145189138_4.jpeg','','',NULL,NULL,NULL),(5,'MachiHoussam@gmail.com','$2b$10$fUMpNJM4gAH2OaYPYMXjZeWqEtJphX1U9YipN0Et0C0g8s27yMgc.','Not','Houssam','0634567875','seller',NULL,'2025-12-19 12:16:36','2025-12-19 12:16:36',1,'/uploads/avatars/avatar_1766146624585_5.jpeg','','',NULL,NULL,NULL),(6,'FouadAchtoun@gmail.com','$2b$10$rRKk4HQRX725sCvuykuOYOD6eWOuM/.BxpTXSInqYo0TrIemjCTdi','Fouad','Achtoun','0698239230','seller',NULL,'2025-12-19 12:18:20','2025-12-19 12:18:20',1,'/uploads/avatars/avatar_1766146719401_6.jpeg',NULL,NULL,NULL,NULL,NULL),(7,'pspsmeowmeow@gmail.com','$2b$10$YlZXfNpr5qryEoYdm0pTOudJNHQnbElIetL28AKip3UMJuQzpn65K','psps','meowmeow','0734596540','seller',NULL,'2025-12-19 12:20:02','2025-12-19 12:20:02',1,'/uploads/avatars/avatar_1766146826498_7.jpeg','','',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `visits`
+--
+
+DROP TABLE IF EXISTS `visits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visits` (
+  `visit_id` int NOT NULL AUTO_INCREMENT,
+  `buyer_id` int NOT NULL,
+  `property_id` int NOT NULL,
+  `scheduled_at` datetime NOT NULL,
+  `status` enum('PENDING','CONFIRMED','CANCELLED') COLLATE utf8mb4_unicode_ci DEFAULT 'PENDING',
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`visit_id`),
+  KEY `idx_buyer_id` (`buyer_id`),
+  KEY `idx_property_id` (`property_id`),
+  KEY `idx_scheduled_at` (`scheduled_at`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `visits_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `visits_ibfk_2` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visits`
+--
+
+LOCK TABLES `visits` WRITE;
+/*!40000 ALTER TABLE `visits` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visits` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-19 14:28:01
