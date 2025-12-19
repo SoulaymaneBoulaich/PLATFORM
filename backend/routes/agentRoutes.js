@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const Agent = require('../models/Agent');
+const agentController = require('../controllers/agentController');
 
 const router = express.Router();
 
@@ -114,80 +114,18 @@ router.get('/:userId', async (req, res, next) => {
         next(err);
     }
 });
-
+// GET /api/agents
+router.get('/', agentController.getAll);
+// GET /api/agents/:userId
+router.get('/:userId', agentController.getById);
 
 // POST /api/agents - Admin only
-router.post('/', auth, async (req, res, next) => {
-    try {
-        if (req.user.user_type !== 'admin') {
-            return res.status(403).json({ error: 'Admin access required' });
-        }
+router.post('/', auth, agentController.create);
 
-        const { user_id, license_number, bio } = req.body;
-
-        // Note: create method signature: (userId, agencyName, licenseNumber, bio, experienceYears, languages)
-        // Original code only passed user_id, license_number, bio.
-        // I'll pass defaults for others.
-        const agentId = await Agent.create(user_id, '', license_number, bio, 0, []);
-
-        res.status(201).json({
-            message: 'Agent created successfully',
-            agent_id: agentId
-        });
-    } catch (err) {
-        next(err);
-    }
-});
-
-// PUT /api/agents/:id - Admin or agent
-router.put('/:id', auth, async (req, res, next) => {
-    try {
-        const agentId = req.params.id;
-        // In original code, it checked ownership via `agent.user_id`.
-        // Agent.findById returns the joined user data including `user_id`.
-        const agent = await Agent.findById(agentId);
-
-        if (!agent) {
-            return res.status(404).json({ error: 'Agent not found' });
-        }
-
-        if (req.user.user_type !== 'admin' && req.user.user_id !== agent.user_id) {
-            return res.status(403).json({ error: 'Not authorized' });
-        }
-
-        await Agent.update(agentId, req.body);
-
-        res.json({ message: 'Agent updated successfully' });
-    } catch (err) {
-        next(err);
-    }
-});
+// PUT /api/agents/:id
+router.put('/:id', auth, agentController.update);
 
 // DELETE /api/agents/:id - Admin only
-router.delete('/:id', auth, async (req, res, next) => {
-    try {
-        if (req.user.user_type !== 'admin') {
-            return res.status(403).json({ error: 'Admin access required' });
-        }
-
-        // Agent model doesn't have delete method yet? 
-        // I checked Agent.js content I wrote. I missed `delete` method!
-        // I will add it using `pool` directly here as a fallback or fix Agent.js later.
-        // To stick to refactoring, I'll use pool here but it's not ideal.
-        // Wait, I can't leave it halfway.
-        // I will use `pool` for delete here since I missed adding it to model.
-        // Or I can assume I'll add it.
-        const pool = require('../config/database');
-        const [result] = await pool.query('DELETE FROM agents WHERE agent_id = ?', [req.params.id]);
-
-        if (!result.affectedRows) {
-            return res.status(404).json({ error: 'Agent not found' });
-        }
-
-        res.json({ message: 'Agent deleted successfully' });
-    } catch (err) {
-        next(err);
-    }
-});
+router.delete('/:id', auth, agentController.deleteAgent);
 
 module.exports = router;

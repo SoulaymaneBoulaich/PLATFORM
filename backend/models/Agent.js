@@ -17,6 +17,9 @@ class Agent {
                 a.bio,
                 a.experience_years,
                 (SELECT COUNT(*) FROM properties p WHERE p.seller_id = u.user_id) as property_count,
+                u.profile_image as avatar,
+                u.profile_image_url,
+                (SELECT COUNT(*) FROM properties p WHERE p.agent_id = a.agent_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
                 (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as rating
             FROM users u
@@ -37,10 +40,12 @@ class Agent {
                 u.phone,
                 u.phone,
                 u.profile_image as profile_image_url,
+                u.profile_image,
+                u.profile_image_url,
                 u.date_registered as joined_at
             FROM agents a
             JOIN users u ON a.user_id = u.user_id
-            WHERE a.agent_id = ?
+            WHERE a.user_id = ?
         `;
         const [rows] = await pool.query(query, [id]);
         return rows[0];

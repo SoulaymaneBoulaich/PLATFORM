@@ -72,6 +72,26 @@ class Offer {
         return rows;
     }
 
+    static async findAllByBuyerId(buyerId) {
+        const query = `
+            SELECT 
+                o.*,
+                p.title as property_title,
+                p.image_url as property_image,
+                p.city,
+                p.price as property_price,
+                u.first_name as seller_first_name,
+                u.last_name as seller_last_name
+            FROM offers o
+            JOIN properties p ON o.property_id = p.property_id
+            JOIN users u ON o.seller_id = u.user_id
+            WHERE o.buyer_id = ?
+            ORDER BY o.created_at DESC
+        `;
+        const [rows] = await pool.query(query, [buyerId]);
+        return rows;
+    }
+
     static async findById(offerId) {
         const [rows] = await pool.query('SELECT * FROM offers WHERE offer_id = ?', [offerId]);
         return rows[0];
