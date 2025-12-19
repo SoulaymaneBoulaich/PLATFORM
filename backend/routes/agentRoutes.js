@@ -101,6 +101,10 @@ router.get('/:userId', async (req, res, next) => {
         const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ error: 'Seller not found' });
 
+        if (user) {
+            user.profile_image_url = user.profile_image;
+        }
+
         const properties = await Property.findAll({ seller_id: req.params.userId });
 
         res.json({ ...user, properties });

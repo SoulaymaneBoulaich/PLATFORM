@@ -4,17 +4,24 @@ class Agent {
     static async findAll() {
         const query = `
             SELECT 
-                a.*,
+                u.user_id,
                 u.first_name,
                 u.last_name,
                 u.email,
                 u.phone,
                 u.profile_image as profile_image_url,
+                u.user_type,
+                a.agent_id,
+                a.agency_name,
+                a.license_number,
+                a.bio,
+                a.experience_years,
                 (SELECT COUNT(*) FROM properties p WHERE p.seller_id = u.user_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
                 (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as rating
-            FROM agents a
-            JOIN users u ON a.user_id = u.user_id
+            FROM users u
+            LEFT JOIN agents a ON u.user_id = a.user_id
+            WHERE u.user_type IN ('agent', 'seller')
         `;
         const [rows] = await pool.query(query);
         return rows;
@@ -41,10 +48,10 @@ class Agent {
 
     static async create(userId, agencyName, licenseNumber, bio, experienceYears, languages) {
         const query = `
-            INSERT INTO agents (user_id, agency_name, license_number, bio, experience_years, languages)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO agents (user_id, agency_name, license_number, bio, experience_years)
+            VALUES (?, ?, ?, ?, ?)
         `;
-        const [result] = await pool.query(query, [userId, agencyName, licenseNumber, bio, experienceYears, JSON.stringify(languages)]);
+        const [result] = await pool.query(query, [userId, agencyName, licenseNumber, bio, experienceYears]);
         return result.insertId;
     }
 
@@ -67,10 +74,6 @@ class Agent {
         if (data.experience_years) {
             updates.push('experience_years = ?');
             values.push(data.experience_years);
-        }
-        if (data.languages) {
-            updates.push('languages = ?');
-            values.push(JSON.stringify(data.languages));
         }
 
         if (updates.length === 0) return false;
