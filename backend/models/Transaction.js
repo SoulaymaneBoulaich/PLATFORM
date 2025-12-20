@@ -36,6 +36,10 @@ class Transaction {
         return rows;
     }
 
+    static async findByUserId(userId) {
+        return this.findAll({ seller_id: userId });
+    }
+
     static async findById(id) {
         const query = `
             SELECT 

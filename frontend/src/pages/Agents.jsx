@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Loader from '../components/Loader';
@@ -72,19 +73,43 @@ const Agents = () => {
                 {loading ? (
                     <Loader />
                 ) : filteredAgents.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: {
+                                    staggerChildren: 0.1
+                                }
+                            }
+                        }}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
                         {filteredAgents.map((agent) => (
-                            <div key={agent.user_id} className="card p-6 hover:shadow-lg transition-shadow bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
+                            <motion.div
+                                key={agent.user_id}
+                                variants={{
+                                    hidden: { opacity: 0, y: 20 },
+                                    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+                                }}
+                                className="card p-6 hover:shadow-lg transition-shadow bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700"
+                            >
                                 {/* Profile Image */}
                                 <div className="flex justify-center mb-4">
                                     <div className={`w-24 h-24 rounded-full ${theme.bgLight} flex items-center justify-center overflow-hidden`}>
                                         {agent.profile_image_url ? (
                                             <img
-                                                src={agent.profile_image_url.startsWith('/')
-                                                    ? `http://localhost:5000${agent.profile_image_url}`
-                                                    : agent.profile_image_url}
+                                                src={agent.profile_image_url.startsWith('http')
+                                                    ? agent.profile_image_url
+                                                    : `http://localhost:3001${agent.profile_image_url.startsWith('/') ? '' : '/'}${agent.profile_image_url}`}
                                                 alt={`${agent.first_name} ${agent.last_name}`}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'block';
+                                                }}
                                             />
                                         ) : (
                                             <span className={`text-3xl font-bold ${theme.text}`}>
@@ -152,9 +177,9 @@ const Agents = () => {
                                         />
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
                     <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow">
                         <p className="text-gray-600 dark:text-gray-400">

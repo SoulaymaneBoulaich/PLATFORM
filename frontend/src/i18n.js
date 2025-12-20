@@ -19,7 +19,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources,
-        lng: DEFAULT_LANGUAGE,
+        lng: localStorage.getItem('i18nextLng') || DEFAULT_LANGUAGE,
         fallbackLng: DEFAULT_LANGUAGE,
         supportedLngs: SUPPORTED_LANGUAGES.map(lang => lang.code),
         interpolation: {

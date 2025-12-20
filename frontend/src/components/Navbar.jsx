@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 const Navbar = () => {
+    const { t } = useTranslation();
     const { user, isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -127,19 +129,25 @@ const Navbar = () => {
                             to="/"
                             className={`text-gray-700 dark:text-gray-300 ${location.pathname === '/' ? `text-${theme.main} dark:text-${theme.mainDark} font-semibold` : 'hover:text-gray-900 dark:hover:text-white'} font-medium transition-colors`}
                         >
-                            Home
+                            {t('navbar.home')}
                         </Link>
                         <Link
                             to="/properties"
                             className={`text-gray-700 dark:text-gray-300 ${location.pathname === '/properties' ? `text-${theme.main} dark:text-${theme.mainDark} font-semibold` : 'hover:text-gray-900 dark:hover:text-white'} font-medium transition-colors`}
                         >
-                            Properties
+                            {t('navbar.properties')}
                         </Link>
                         <Link
                             to="/agents"
                             className={`text-gray-700 dark:text-gray-300 ${location.pathname === '/agents' ? `text-${theme.main} dark:text-${theme.mainDark} font-semibold` : 'hover:text-gray-900 dark:hover:text-white'} font-medium transition-colors`}
                         >
-                            Agents
+                            {t('navbar.agents')}
+                        </Link>
+                        <Link
+                            to="/contact"
+                            className={`text-gray-700 dark:text-gray-300 ${location.pathname === '/contact' ? `text-${theme.main} dark:text-${theme.mainDark} font-semibold` : 'hover:text-gray-900 dark:hover:text-white'} font-medium transition-colors`}
+                        >
+                            Contact
                         </Link>
                     </div>
 
@@ -247,21 +255,22 @@ const Navbar = () => {
                                     {showUserMenu && (
                                         <>
                                             <div className="fixed inset-0" onClick={() => setShowUserMenu(false)}></div>
-                                            <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 py-2">
-                                                <Link to="/account/profile" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-700 dark:text-gray-300">
-                                                    Profile
+                                            <div className="absolute end-0 mt-2 w-60 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-gray-200 dark:border-slate-800 py-2">
+                                                <Link to="/account/profile" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-gray-700 dark:text-gray-300 text-start">
+                                                    {t('settings.profile')}
                                                 </Link>
-                                                <Link to="/account/settings" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-700 dark:text-gray-300">
-                                                    Settings
+                                                <Link to="/account/settings" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-gray-700 dark:text-gray-300 text-start">
+                                                    {t('navbar.settings')}
                                                 </Link>
-                                                {user?.user_type === 'seller' && (
-                                                    <Link to="/dashboard" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-700 dark:text-gray-300">
-                                                        Dashboard
-                                                    </Link>
-                                                )}
-                                                <hr className="my-2 border-gray-200 dark:border-slate-700" />
-                                                <button onClick={() => { logout(); setShowUserMenu(false); }} className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                                                    Logout
+                                                <Link to="/dashboard" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-gray-700 dark:text-gray-300 text-start">
+                                                    {t('navbar.dashboard')}
+                                                </Link>
+                                                <Link to="/transactions" onClick={() => setShowUserMenu(false)} className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-gray-700 dark:text-gray-300 text-start">
+                                                    Transactions
+                                                </Link>
+                                                <hr className="my-2 border-gray-200 dark:border-slate-800" />
+                                                <button onClick={() => { logout(); setShowUserMenu(false); }} className="block w-full text-start px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                                    {t('navbar.logout')}
                                                 </button>
                                             </div>
                                         </>
@@ -271,10 +280,10 @@ const Navbar = () => {
                         ) : (
                             <>
                                 <Link to="/login" className="hidden md:block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium">
-                                    Login
+                                    {t('navbar.login')}
                                 </Link>
                                 <Link to="/register" className={`bg-gradient-to-r ${theme.gradient} text-white font-semibold px-6 py-2.5 rounded-full hover:shadow-lg transition-all`}>
-                                    Sign up
+                                    {t('auth.signUp')}
                                 </Link>
                             </>
                         )}
@@ -295,21 +304,30 @@ const Navbar = () => {
                 {mobileMenuOpen && (
                     <div className="md:hidden py-4 border-t border-gray-200 dark:border-slate-800">
                         <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
-                            Home
+                            {t('navbar.home')}
                         </Link>
                         <Link to="/properties" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
-                            Properties
+                            {t('navbar.properties')}
                         </Link>
                         <Link to="/agents" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
-                            Agents
+                            {t('navbar.agents')}
+                        </Link>
+                        <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
+                            Contact
                         </Link>
                         {isAuthenticated && (
                             <>
+                                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
+                                    {t('navbar.dashboard')}
+                                </Link>
+                                <Link to="/transactions" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
+                                    Transactions
+                                </Link>
                                 <Link to="/messages" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
-                                    Messages
+                                    {t('navbar.messages')}
                                 </Link>
                                 <Link to="/favorites" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg">
-                                    Favorites
+                                    {t('dashboard.myFavorites')}
                                 </Link>
                             </>
                         )}
