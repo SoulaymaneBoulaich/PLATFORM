@@ -1,5 +1,14 @@
 const Transaction = require('../models/Transaction');
 
+exports.getAll = async (req, res, next) => {
+    try {
+        const transactions = await Transaction.findByUserId(req.user.user_id);
+        res.json(transactions);
+    } catch (err) {
+        next(err);
+    }
+};
+
 exports.create = async (req, res, next) => {
     try {
         const id = await Transaction.create(req.body);

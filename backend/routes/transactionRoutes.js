@@ -4,6 +4,9 @@ const transactionController = require('../controllers/transactionController');
 
 const router = express.Router();
 
+// GET /api/transactions
+router.get('/', auth, transactionController.getAll);
+
 // POST /api/transactions
 router.post('/', auth, transactionController.create);
 

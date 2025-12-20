@@ -3,7 +3,6 @@ import Home from '../pages/Home';
 import PropertyList from '../pages/PropertyList';
 import PropertyDetail from '../pages/PropertyDetail';
 import Login from '../pages/Login';
-import Register from '../pages/Register';
 import SignUp from '../pages/SignUp';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
@@ -14,8 +13,6 @@ import Contact from '../pages/Contact';
 import Transactions from '../pages/Transactions';
 import Messages from '../pages/Messages';
 import ProtectedRoute from '../components/ProtectedRoute';
-import SellerDashboard from '../pages/SellerDashboard';
-import BuyerDashboard from '../pages/BuyerDashboard';
 import EditProfile from '../pages/EditProfile';
 import Settings from '../pages/Settings';
 import Offers from '../pages/Offers';
@@ -32,24 +29,13 @@ const AppRouter = () => {
             <Route path="/agents" element={<PageTransition><Agents /></PageTransition>} />
             <Route path="/agents/:id" element={<PageTransition><AgentDetail /></PageTransition>} />
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
-            <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
-            <Route path="/signup" element={<PageTransition><SignUp /></PageTransition>} />
+            <Route path="/register" element={<PageTransition><SignUp /></PageTransition>} />
             <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
             <Route path="/reset-password/:token" element={<PageTransition><ResetPassword /></PageTransition>} />
             <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
             <Route path="/dashboard" element={
                 <ProtectedRoute>
                     <PageTransition><Dashboard /></PageTransition>
-                </ProtectedRoute>
-            } />
-            <Route path="/dashboard/seller" element={
-                <ProtectedRoute>
-                    <PageTransition><SellerDashboard /></PageTransition>
-                </ProtectedRoute>
-            } />
-            <Route path="/dashboard/buyer" element={
-                <ProtectedRoute>
-                    <PageTransition><BuyerDashboard /></PageTransition>
                 </ProtectedRoute>
             } />
             <Route path="/account/profile" element={

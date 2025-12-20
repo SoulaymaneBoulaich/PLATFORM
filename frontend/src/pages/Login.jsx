@@ -61,9 +61,6 @@ const Login = () => {
 
             // Login and let AuthContext handle redirect
             login(response.data);
-
-            // Show success message (optional - can be done in AuthContext)
-            // toast.success(`Welcome back, ${response.data.user.first_name}!`);
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
             setLoading(false);
@@ -120,7 +117,7 @@ const Login = () => {
                         value={formData.email}
                         onChange={handleChange}
                         className="input-field w-full"
-                        placeholder="you@example.com"
+                        placeholder="Enter your email address"
                     />
                 </div>
 
@@ -190,7 +187,7 @@ const Login = () => {
                     Create one now
                 </Link>
             </div>
-        </AuthLayout>
+        </AuthLayout >
     );
 };
 

@@ -51,10 +51,10 @@ const Home = () => {
                         {/* Hero Content */}
                         <div className="text-center max-w-4xl mx-auto mb-12">
                             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                                Find Your Perfect Home
+                                {t('home.heroTitle')}
                             </h1>
                             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
-                                Discover the perfect property from thousands of listings across multiple cities
+                                {t('home.heroSubtitle')}
                             </p>
                         </div>
 
@@ -68,10 +68,10 @@ const Home = () => {
                         {/* Stats with Role Theme */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
                             {[
-                                { label: 'Properties', value: '1,000+' },
-                                { label: 'Cities', value: '50+' },
-                                { label: 'Happy Clients', value: '10,000+' },
-                                { label: 'Expert Agents', value: '100+' }
+                                { label: t('home.stats.properties'), value: '1,000+' },
+                                { label: t('home.stats.cities'), value: '50+' },
+                                { label: t('home.stats.clients'), value: '10,000+' },
+                                { label: t('home.stats.agents'), value: '100+' }
                             ].map((stat, index) => (
                                 <div key={index} className="text-center">
                                     <div className={`text-3xl md:text-4xl font-bold ${theme.text} mb-2`}>{stat.value}</div>
@@ -86,10 +86,10 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="mb-10">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-                            Featured Properties
+                            {t('home.featuredTitle')}
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400">
-                            Handpicked selection of the finest properties available
+                            {t('home.featuredSubtitle')}
                         </p>
                     </div>
 
@@ -116,7 +116,7 @@ const Home = () => {
                                     onClick={() => navigate('/properties')}
                                     className={`bg-gradient-to-r ${theme.gradient} hover:${theme.gradientHover} text-white font-bold px-10 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all inline-flex items-center gap-2`}
                                 >
-                                    <span>Explore All Properties</span>
+                                    <span>{t('home.exploreAll')}</span>
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
@@ -131,13 +131,13 @@ const Home = () => {
                                 </svg>
                             </div>
                             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                                No Properties Yet
+                                {t('home.noProperties')}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 mb-6">
-                                Be the first to list your property and reach thousands of buyers!
+                                {t('home.beTheFirst')}
                             </p>
                             <Link to="/register" className={`bg-gradient-to-r ${theme.gradient} hover:${theme.gradientHover} text-white font-bold px-8 py-3 rounded-full inline-flex transition-all shadow-lg hover:shadow-xl`}>
-                                Get Started Today
+                                {t('home.getStartedToday')}
                             </Link>
                         </div>
                     )}
@@ -148,10 +148,10 @@ const Home = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                                Why Choose Us
+                                {t('home.whyChooseUs')}
                             </h2>
                             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                                Experience the best in real estate with our comprehensive platform
+                                {t('home.whyChooseUsDesc')}
                             </p>
                         </div>
 
@@ -203,21 +203,21 @@ const Home = () => {
                 </div>
 
                 {/* CTA Section */}
-                <div className="bg-teal-600 dark:bg-teal-700">
+                <div className={`bg-gradient-to-r ${theme.gradient}`}>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
                         <div className="max-w-3xl mx-auto">
                             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                                Ready to Find Your Perfect Home?
+                                {t('home.ctaTitle')}
                             </h2>
-                            <p className="text-lg text-teal-50 mb-8">
-                                Join thousands of satisfied clients who found their dream properties
+                            <p className="text-lg text-white/90 mb-8">
+                                {t('home.ctaDesc')}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link to="/properties" className="bg-white text-teal-700 hover:bg-gray-100 font-semibold px-8 py-3 rounded-lg transition-colors duration-200">
-                                    Browse Properties
+                                <Link to="/properties" className={`bg-white ${theme.text} hover:bg-gray-50 font-semibold px-8 py-3 rounded-lg transition-colors duration-200 shadow-lg`}>
+                                    {t('home.browseProperties')}
                                 </Link>
-                                <Link to="/register" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-teal-700 font-semibold px-8 py-3 rounded-lg transition-all duration-200">
-                                    Get Started Free
+                                <Link to="/register" className="bg-transparent border-2 border-white text-white hover:bg-white/10 hover:text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200">
+                                    {t('home.getStarted')}
                                 </Link>
                             </div>
                         </div>

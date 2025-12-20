@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import PageTransition from '../components/PageTransition';
 import { LoadingSpinner } from '../components/Spinner';
+import Toast from '../components/Toast';
+import { AnimatePresence } from 'framer-motion';
 
 const EditProfile = () => {
     const { user, updateUser } = useAuth();
@@ -11,6 +13,7 @@ const EditProfile = () => {
     const [profile, setProfile] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -24,6 +27,10 @@ const EditProfile = () => {
     useEffect(() => {
         loadProfile();
     }, []);
+
+    const showNotification = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+    };
 
     const loadProfile = async () => {
         try {
@@ -40,7 +47,7 @@ const EditProfile = () => {
             setAvatarPreview(res.data.profile_image_url);
         } catch (err) {
             console.error('Failed to load profile:', err);
-            alert('Failed to load profile');
+            showNotification('Failed to load profile', 'error');
         } finally {
             setLoading(false);
         }
@@ -50,7 +57,7 @@ const EditProfile = () => {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB');
+                showNotification('File size must be less than 5MB', 'error');
                 return;
             }
             setSelectedFile(file);
@@ -73,6 +80,7 @@ const EditProfile = () => {
             setAvatarPreview(res.data.profile_image_url);
             setSelectedFile(null);
             setUploadStatus('success');
+            showNotification('Profile photo uploaded successfully!', 'success');
 
             // Update user context immediately for instant navbar update
             const updatedUser = await api.get('/me');
@@ -82,7 +90,7 @@ const EditProfile = () => {
             setTimeout(() => setUploadStatus('idle'), 2000);
         } catch (err) {
             console.error('Failed to upload avatar:', err);
-            alert(err.response?.data?.error || 'Failed to upload avatar');
+            showNotification(err.response?.data?.error || 'Failed to upload avatar', 'error');
             setUploadStatus('error');
             setTimeout(() => setUploadStatus('idle'), 3000);
         }
@@ -94,14 +102,14 @@ const EditProfile = () => {
         try {
             setSaving(true);
             await api.put('/me', formData);
-            alert('Profile updated successfully!');
+            showNotification('Profile updated successfully!', 'success');
 
             // Update user context
             const updatedUser = await api.get('/me');
             updateUser(updatedUser.data);
         } catch (err) {
             console.error('Failed to update profile:', err);
-            alert(err.response?.data?.error || 'Failed to update profile');
+            showNotification(err.response?.data?.error || 'Failed to update profile', 'error');
         } finally {
             setSaving(false);
         }
@@ -301,6 +309,15 @@ const EditProfile = () => {
                         </div>
                     </div>
                 </div>
+                <AnimatePresence>
+                    {toast.show && (
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            onClose={() => setToast({ ...toast, show: false })}
+                        />
+                    )}
+                </AnimatePresence>
             </div>
         </PageTransition>
     );

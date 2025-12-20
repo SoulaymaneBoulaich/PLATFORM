@@ -38,3 +38,61 @@ exports.deleteMessage = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.uploadAudio = async (req, res, next) => {
+    try {
+        const { conversationId } = req.params;
+        const file = req.file;
+        const senderId = req.user.user_id;
+
+        if (!file) {
+            return res.status(400).json({ message: 'No audio file uploaded' });
+        }
+
+        const mediaUrl = `/uploads/${file.filename}`;
+
+        const messageId = await Message.create({
+            conversationId,
+            senderId,
+            content: '',
+            mediaUrl,
+            mediaType: 'AUDIO'
+        });
+
+        res.status(201).json({ message_id: messageId, mediaUrl });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.uploadMedia = async (req, res, next) => {
+    try {
+        const { conversationId } = req.params;
+        const { caption } = req.body;
+        const file = req.file;
+        const senderId = req.user.user_id;
+
+        if (!file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        const mediaUrl = `/uploads/${file.filename}`;
+        let mediaType = 'IMAGE';
+
+        if (file.mimetype.startsWith('video/')) {
+            mediaType = 'VIDEO';
+        }
+
+        const messageId = await Message.create({
+            conversationId,
+            senderId,
+            content: caption || '',
+            mediaUrl,
+            mediaType
+        });
+
+        res.status(201).json({ message_id: messageId, mediaUrl });
+    } catch (err) {
+        next(err);
+    }
+};

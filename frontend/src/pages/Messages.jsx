@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import Loader from '../components/Loader';
 import AudioPlayer from '../components/AudioPlayer';
+import Toast from '../components/Toast';
 
 const Messages = () => {
     const { user } = useAuth();
@@ -19,6 +20,7 @@ const Messages = () => {
     const [editingMessage, setEditingMessage] = useState(null);
     const [editContent, setEditContent] = useState('');
     const [error, setError] = useState(null);
+    const [toast, setToast] = useState(null);
 
     // Media states
     const [isRecording, setIsRecording] = useState(false);
@@ -111,7 +113,7 @@ const Messages = () => {
             await fetchConversations(); // Refresh list to update last message
         } catch (err) {
             console.error('Failed to send message:', err);
-            alert('Failed to send message. Please try again.');
+            setToast({ message: 'Failed to send message. Please try again.', type: 'error' });
         } finally {
             setSending(false);
         }
@@ -121,7 +123,7 @@ const Messages = () => {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 50 * 1024 * 1024) {
-                alert('File size exceeds 50MB limit');
+                setToast({ message: 'File size exceeds 50MB limit', type: 'error' });
                 return;
             }
             setSelectedFile(file);
@@ -151,7 +153,7 @@ const Messages = () => {
                     await fetchMessages(activeConversation.conversation_id);
                 } catch (err) {
                     console.error('Failed to send audio:', err);
-                    alert('Failed to send voice message');
+                    setToast({ message: 'Failed to send voice message', type: 'error' });
                 }
             };
 
@@ -160,7 +162,7 @@ const Messages = () => {
             setIsRecording(true);
         } catch (err) {
             console.error('Microphone access denied:', err);
-            alert('Could not access microphone');
+            setToast({ message: 'Could not access microphone', type: 'error' });
         }
     };
 
@@ -183,7 +185,7 @@ const Messages = () => {
         } catch (err) {
             console.error('Failed to edit message:', err);
             const errorMsg = err.response?.data?.message || 'Failed to edit message';
-            alert(errorMsg);
+            setToast({ message: errorMsg, type: 'error' });
         }
     };
 
@@ -195,7 +197,7 @@ const Messages = () => {
             await fetchMessages(activeConversation.conversation_id);
         } catch (err) {
             console.error('Failed to delete message:', err);
-            alert('Failed to delete message. Please try again.');
+            setToast({ message: 'Failed to delete message. Please try again.', type: 'error' });
         }
     };
 
@@ -289,61 +291,73 @@ const Messages = () => {
 
                         {/* Messages List */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-slate-900">
-                            {messages.map((msg) => {
-                                const isOwn = msg.sender_id === user.user_id;
-                                const isDeleted = msg.deleted_at;
-                                return (
-                                    <div key={msg.message_id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[75%] ${isOwn ? 'order-1' : 'order-2'}`}>
-                                            {/* Conditional Styling: No bubble for audio-only messages */}
-                                            <div className={`rounded-2xl ${msg.media_type === 'AUDIO' && !msg.content
+                            {messages.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-gray-400 opacity-70">
+                                    <div className="text-4xl mb-2">👋</div>
+                                    <p>Say hello to {activeConversation.other_first_name}!</p>
+                                </div>
+                            ) : (
+                                messages.map((msg) => {
+                                    const isOwn = msg.sender_id === user.user_id;
+                                    const isDeleted = msg.deleted_at;
+                                    return (
+                                        <div key={msg.message_id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`max-w-[75%] ${isOwn ? 'order-1' : 'order-2'}`}>
+                                                {/* Conditional Styling: No bubble for audio-only messages */}
+                                                <div className={`rounded-2xl ${msg.media_type === 'AUDIO' && !msg.content
                                                     ? ''
                                                     : `px-4 py-3 shadow-sm ${isOwn ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-gray-900 dark:text-white border dark:border-slate-700 rounded-tl-none'}`
-                                                } ${isDeleted ? 'opacity-60 italic' : ''}`}>
+                                                    } ${isDeleted ? 'opacity-60 italic' : ''}`}>
 
-                                                {/* Text Content */}
-                                                {!isDeleted && msg.content && (
-                                                    <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                                                )}
+                                                    {/* Text Content */}
+                                                    {!isDeleted && msg.content && (
+                                                        <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                                                    )}
 
-                                                {/* Deleted Message */}
-                                                {isDeleted && <p>🗑️ Message deleted</p>}
+                                                    {/* Deleted Message */}
+                                                    {isDeleted && (
+                                                        <p className="flex items-center gap-2 text-sm italic opacity-70">
+                                                            <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center text-[10px]">✕</span>
+                                                            Message deleted
+                                                        </p>
+                                                    )}
 
-                                                {/* Media Content */}
-                                                {!isDeleted && msg.media_url && (
-                                                    <div className={`${msg.content ? 'mt-2' : ''}`}>
-                                                        {msg.media_type === 'IMAGE' && (
-                                                            <img src={`http://localhost:3001${msg.media_url}`} alt="Attachment" className="max-w-full rounded-lg max-h-64 object-cover" />
-                                                        )}
-                                                        {msg.media_type === 'VIDEO' && (
-                                                            <video controls src={`http://localhost:3001${msg.media_url}`} className="max-w-full rounded-lg max-h-64" />
-                                                        )}
-                                                        {msg.media_type === 'AUDIO' && (
-                                                            <AudioPlayer src={`http://localhost:3001${msg.media_url}`} isOwn={isOwn} />
-                                                        )}
-                                                    </div>
-                                                )}
+                                                    {/* Media Content */}
+                                                    {!isDeleted && msg.media_url && (
+                                                        <div className={`${msg.content ? 'mt-2' : ''}`}>
+                                                            {msg.media_type === 'IMAGE' && (
+                                                                <img src={`http://localhost:3001${msg.media_url}`} alt="Attachment" className="max-w-full rounded-lg max-h-64 object-cover" />
+                                                            )}
+                                                            {msg.media_type === 'VIDEO' && (
+                                                                <video controls src={`http://localhost:3001${msg.media_url}`} className="max-w-full rounded-lg max-h-64" />
+                                                            )}
+                                                            {msg.media_type === 'AUDIO' && (
+                                                                <AudioPlayer src={`http://localhost:3001${msg.media_url}`} isOwn={isOwn} />
+                                                            )}
+                                                        </div>
+                                                    )}
 
-                                            </div>
+                                                </div>
 
-                                            {/* Footer & Actions */}
-                                            <div className={`flex items-center gap-2 mt-1 px-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                                                <span className="text-xs text-gray-400">
-                                                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                                {isOwn && !isDeleted && (
-                                                    <>
-                                                        {msg.media_type === 'TEXT' && (
-                                                            <button onClick={() => startEdit(msg)} className="text-xs text-blue-600 hover:underline">Edit</button>
-                                                        )}
-                                                        <button onClick={() => handleDeleteMessage(msg.message_id)} className="text-xs text-red-600 hover:underline">Delete</button>
-                                                    </>
-                                                )}
+                                                {/* Footer & Actions */}
+                                                <div className={`flex items-center gap-2 mt-1 px-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                                                    <span className="text-xs text-gray-400">
+                                                        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                    {isOwn && !isDeleted && (
+                                                        <>
+                                                            {msg.media_type === 'TEXT' && (
+                                                                <button onClick={() => startEdit(msg)} className="text-xs text-blue-600 hover:underline">Edit</button>
+                                                            )}
+                                                            <button onClick={() => handleDeleteMessage(msg.message_id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                                                        </>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })
+                            )}
                             <div ref={messagesEndRef} />
                         </div>
 
@@ -444,15 +458,24 @@ const Messages = () => {
                         </form>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-gray-400 bg-gray-50 dark:bg-slate-900">
-                        <div className="w-24 h-24 bg-gray-200 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                            <span className="text-4xl">💬</span>
+                    <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 dark:bg-slate-900 text-center p-8">
+                        <div className="w-32 h-32 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                            <span className="text-6xl">💬</span>
                         </div>
-                        <p className="text-lg font-medium text-gray-600 dark:text-gray-400">No conversation selected</p>
-                        <p className="text-sm">Choose a chat from the sidebar</p>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Select a Conversation</h2>
+                        <p className="text-gray-600 dark:text-gray-400 max-w-sm">
+                            Choose a chat from the sidebar to start messaging sellers, buyers, or agents.
+                        </p>
                     </div>
                 )}
             </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 };

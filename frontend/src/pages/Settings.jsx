@@ -12,10 +12,18 @@ import {
     FaCheck, FaChevronRight, FaMoon, FaSun, FaEnvelope, FaMobileAlt
 } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
+import { useRoleTheme } from '../context/RoleThemeContext';
 
 const Settings = () => {
     const { user } = useAuth();
-    const { theme, setTheme } = useTheme();
+    const { theme: appTheme, setTheme: setAppTheme } = useTheme();
+    const roleTheme = useRoleTheme(); // Renamed to avoid partial name conflict with appTheme, though fields are simpler to just use theme.
+    // Actually, let's call it 'theme' for simplicity and rename the global one to 'globalTheme' or just keep existing 'theme' as 'appTheme'
+
+    // RE-DO:
+    // const { theme: mode, setTheme: setMode } = useTheme(); 
+    // const theme = useRoleTheme();
+
     const { t, i18n } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -70,7 +78,7 @@ const Settings = () => {
 
             // Handle theme change
             if (key === 'theme') {
-                setTheme(value);
+                setAppTheme(value);
             }
         } catch (err) {
             console.error('Failed to update setting:', err);
@@ -118,18 +126,18 @@ const Settings = () => {
     }
 
     const sections = [
-        { id: 'profile', name: t('settings.profile'), icon: <FaUser />, description: 'Manage your personal information' },
-        { id: 'security', name: t('settings.security'), icon: <FaLock />, description: 'Password and security settings' },
-        { id: 'notifications', name: t('settings.notifications'), icon: <FaBell />, description: 'Control how we contact you' },
-        { id: 'appearance', name: t('settings.appearance'), icon: <FaPalette />, description: 'Customize your experience' }
+        { id: 'profile', name: t('settings.profile'), icon: <FaUser />, description: t('settings.descProfile') },
+        { id: 'security', name: t('settings.security'), icon: <FaLock />, description: t('settings.descSecurity') },
+        { id: 'notifications', name: t('settings.notifications'), icon: <FaBell />, description: t('settings.descNotifications') },
+        { id: 'appearance', name: t('settings.appearance'), icon: <FaPalette />, description: t('settings.descAppearance') }
     ];
 
     return (
         <PageTransition>
-            <div className="min-h-screen bg-stone-50 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+            <div className="min-h-screen bg-stone-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-10 text-center sm:text-left">
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600 animate-slideIn">
+                        <h1 className={`text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r ${roleTheme.gradient} animate-slideIn`}>
                             {t('settings.title')}
                         </h1>
                         <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
@@ -141,7 +149,7 @@ const Settings = () => {
                         {/* Sidebar Navigation */}
                         <div className="lg:w-1/4">
                             <motion.div
-                                className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden sticky top-24 border border-stone-100 dark:border-slate-700"
+                                className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden sticky top-24 border border-stone-100 dark:border-slate-800"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.1 }}
@@ -152,11 +160,11 @@ const Settings = () => {
                                             key={section.id}
                                             onClick={() => setActiveSection(section.id)}
                                             className={`w-full flex items-center p-4 rounded-xl transition-all duration-300 group ${activeSection === section.id
-                                                ? 'bg-gradient-to-r from-primary-50 to-white dark:from-primary-900/20 dark:to-slate-800 text-primary-600 dark:text-primary-400 shadow-sm border-s-4 border-primary-500'
+                                                ? `bg-gradient-to-r ${roleTheme.bgLight} ${roleTheme.text} shadow-sm border-s-4 ${roleTheme.border}`
                                                 : 'text-gray-600 dark:text-gray-400 hover:bg-stone-50 dark:hover:bg-slate-700 hover:ps-5'
                                                 }`}
                                         >
-                                            <span className={`text-xl me-4 ${activeSection === section.id ? 'text-primary-600' : 'text-gray-400 group-hover:text-primary-500'}`}>
+                                            <span className={`text-xl me-4 ${activeSection === section.id ? roleTheme.text : `text-gray-400 group-hover:${roleTheme.text}`}`}>
                                                 {section.icon}
                                             </span>
                                             <div className="text-start">
@@ -164,7 +172,7 @@ const Settings = () => {
                                                 <span className="text-xs text-gray-400 hidden sm:block">{section.description}</span>
                                             </div>
                                             {activeSection === section.id && (
-                                                <FaChevronRight className="ms-auto text-primary-400 rtl:rotate-180" />
+                                                <FaChevronRight className={`ms-auto rtl:rotate-180 ${roleTheme.text}`} />
                                             )}
                                         </button>
                                     ))}
@@ -181,15 +189,15 @@ const Settings = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.3 }}
-                                    className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-stone-100 dark:border-slate-700 p-8 min-h-[500px]"
+                                    className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-stone-100 dark:border-slate-800 p-8 min-h-[500px]"
                                 >
                                     {/* Profile Section */}
                                     {activeSection === 'profile' && (
                                         <div>
                                             <div className="flex items-center justify-between mb-8">
-                                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
-                                                <Link to="/account/profile" className="btn-primary flex items-center gap-2">
-                                                    <FaUser /> Edit Profile
+                                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('settings.profileInfo')}</h2>
+                                                <Link to="/account/profile" className={`flex items-center gap-2 bg-gradient-to-r ${roleTheme.gradient} text-white font-semibold py-2 px-6 rounded-full shadow-md hover:shadow-lg transition-all`}>
+                                                    <FaUser /> {t('settings.editProfile')}
                                                 </Link>
                                             </div>
 
@@ -204,7 +212,7 @@ const Settings = () => {
                                                             className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-slate-600 shadow-lg"
                                                         />
                                                     ) : (
-                                                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white dark:border-slate-600">
+                                                        <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${roleTheme.gradient} flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white dark:border-slate-600`}>
                                                             {user?.first_name?.charAt(0)}{user?.last_name?.charAt(0)}
                                                         </div>
                                                     )}
@@ -218,20 +226,20 @@ const Settings = () => {
                                                     <p className="text-gray-500 dark:text-gray-400 flex items-center justify-center sm:justify-start gap-2 mb-4">
                                                         <FaEnvelope className="text-gray-400" /> {user?.email}
                                                     </p>
-                                                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium">
-                                                        Role: <span className="uppercase ms-1">{user?.role}</span>
+                                                    <div className={`inline-flex items-center px-3 py-1 rounded-full ${roleTheme.bgLight} ${roleTheme.text} text-sm font-medium`}>
+                                                        <span>{t('settings.role')}:</span> <span className="uppercase ms-1">{user?.role}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="p-4 bg-stone-50 dark:bg-slate-700/50 rounded-xl">
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Phone Number</p>
-                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.phone || 'Not provided'}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t('settings.phoneNumber')}</p>
+                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.phone || t('settings.notProvided')}</p>
                                                 </div>
                                                 <div className="p-4 bg-stone-50 dark:bg-slate-700/50 rounded-xl">
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Location</p>
-                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.location || 'Not provided'}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t('settings.location')}</p>
+                                                    <p className="font-semibold text-gray-900 dark:text-white">{user?.location || t('settings.notProvided')}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -240,7 +248,7 @@ const Settings = () => {
                                     {/* Security Section */}
                                     {activeSection === 'security' && (
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Security Settings</h2>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('settings.securitySettings')}</h2>
 
                                             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-s-4 border-yellow-400 p-4 mb-8 rounded-e-lg">
                                                 <div className="flex">
@@ -249,7 +257,7 @@ const Settings = () => {
                                                     </div>
                                                     <div className="ms-3">
                                                         <p className="text-sm text-yellow-700 dark:text-yellow-200">
-                                                            Use a strong password to keep your account secure.
+                                                            {t('settings.securityTip')}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -258,7 +266,7 @@ const Settings = () => {
                                             <form onSubmit={handleChangePassword} className="space-y-6 max-w-lg">
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                        Current Password
+                                                        {t('settings.currentPassword')}
                                                     </label>
                                                     <input
                                                         type="password"
@@ -271,7 +279,7 @@ const Settings = () => {
 
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                        New Password
+                                                        {t('settings.newPassword')}
                                                     </label>
                                                     <input
                                                         type="password"
@@ -285,7 +293,7 @@ const Settings = () => {
 
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                        Confirm New Password
+                                                        {t('settings.confirmPassword')}
                                                     </label>
                                                     <input
                                                         type="password"
@@ -296,8 +304,8 @@ const Settings = () => {
                                                     />
                                                 </div>
 
-                                                <button type="submit" disabled={saving} className="btn-gradient w-full md:w-auto px-8 py-3 rounded-xl font-bold">
-                                                    {saving ? 'Processing...' : 'Change Password'}
+                                                <button type="submit" disabled={saving} className={`w-full md:w-auto px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r ${roleTheme.gradient} hover:shadow-lg transition-all`}>
+                                                    {saving ? 'Processing...' : t('settings.updatePassword')}
                                                 </button>
                                             </form>
                                         </div>
@@ -310,9 +318,9 @@ const Settings = () => {
 
                                             <div className="space-y-4">
                                                 {[
-                                                    { id: 'notifications_email', title: 'Email Notifications', desc: 'Receive updates via email', icon: <FaEnvelope className="text-blue-500" /> },
-                                                    { id: 'notifications_push', title: 'Push Notifications', desc: 'Receive real-time push alerts', icon: <FaBell className="text-purple-500" /> },
-                                                    { id: 'notifications_marketing', title: 'Marketing Emails', desc: 'Receive news and special offers', icon: <FaGlobe className="text-green-500" /> },
+                                                    { id: 'notifications_email', title: t('settings.emailNotifications'), desc: t('settings.emailDesc'), icon: <FaEnvelope className="text-blue-500" /> },
+                                                    { id: 'notifications_push', title: t('settings.pushNotifications'), desc: t('settings.pushDesc'), icon: <FaBell className="text-purple-500" /> },
+                                                    { id: 'notifications_marketing', title: t('settings.marketingEmails'), desc: t('settings.marketingDesc'), icon: <FaGlobe className="text-green-500" /> },
                                                 ].map((item) => (
                                                     <div key={item.id} className="flex items-center justify-between p-5 bg-stone-50 dark:bg-slate-700/50 rounded-xl hover:bg-stone-100 dark:hover:bg-slate-700 transition-colors">
                                                         <div className="flex items-center gap-4">
@@ -326,7 +334,7 @@ const Settings = () => {
                                                         </div>
                                                         <button
                                                             onClick={() => handleToggleSetting(item.id, !settings?.[item.id])}
-                                                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${settings?.[item.id] ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
+                                                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${settings?.[item.id] ? roleTheme.bg : 'bg-gray-300 dark:bg-gray-600'
                                                                 }`}
                                                         >
                                                             <span
@@ -343,42 +351,42 @@ const Settings = () => {
                                     {/* Appearance Section */}
                                     {activeSection === 'appearance' && (
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Appearance & Language</h2>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('settings.appearance')}</h2>
 
                                             <div className="grid gap-6">
                                                 {/* Theme Selection */}
-                                                <div className="p-6 bg-stone-50 dark:bg-slate-700/50 rounded-2xl">
+                                                <div className="p-6 bg-stone-50 dark:bg-slate-800/50 rounded-2xl">
                                                     <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                                        <FaPalette className="text-primary-500" /> Theme Mode
+                                                        <FaPalette className={roleTheme.text} /> {t('settings.themeMode')}
                                                     </h3>
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <button
                                                             onClick={() => handleToggleSetting('theme', 'light')}
-                                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme === 'light'
-                                                                ? 'border-primary-500 bg-white shadow-md'
+                                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${appTheme === 'light'
+                                                                ? `border-current ${roleTheme.text} bg-white shadow-md`
                                                                 : 'border-transparent bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700'
                                                                 }`}
                                                         >
-                                                            <FaSun className={`text-3xl ${theme === 'light' ? 'text-yellow-500' : 'text-gray-400'}`} />
-                                                            <span className="font-medium text-gray-900 dark:text-white">Light Mode</span>
+                                                            <FaSun className={`text-3xl ${appTheme === 'light' ? 'text-yellow-500' : 'text-gray-400'}`} />
+                                                            <span className="font-medium text-gray-900 dark:text-white">{t('settings.lightMode')}</span>
                                                         </button>
                                                         <button
                                                             onClick={() => handleToggleSetting('theme', 'dark')}
-                                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme === 'dark'
-                                                                ? 'border-primary-500 bg-slate-800 text-white shadow-md'
+                                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${appTheme === 'dark'
+                                                                ? `border-current ${roleTheme.text} bg-slate-800 shadow-md`
                                                                 : 'border-transparent bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700'
                                                                 }`}
                                                         >
-                                                            <FaMoon className={`text-3xl ${theme === 'dark' ? 'text-purple-400' : 'text-gray-400'}`} />
-                                                            <span className="font-medium text-gray-700 dark:text-white">Dark Mode</span>
+                                                            <FaMoon className={`text-3xl ${appTheme === 'dark' ? 'text-purple-400' : 'text-gray-400'}`} />
+                                                            <span className="font-medium text-gray-700 dark:text-white">{t('settings.darkMode')}</span>
                                                         </button>
                                                     </div>
                                                 </div>
 
                                                 {/* Language Selection */}
-                                                <div className="p-6 bg-stone-50 dark:bg-slate-700/50 rounded-2xl">
+                                                <div className="p-6 bg-stone-50 dark:bg-slate-800/50 rounded-2xl">
                                                     <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                                        <FaGlobe className="text-primary-500" /> Language
+                                                        <FaGlobe className={roleTheme.text} /> {t('settings.language')}
                                                     </h3>
                                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                                         {SUPPORTED_LANGUAGES.map(lang => (
@@ -386,12 +394,12 @@ const Settings = () => {
                                                                 key={lang.code}
                                                                 onClick={() => handleToggleSetting('language', lang.code)}
                                                                 className={`p-3 rounded-lg border text-start transition-all flex items-center justify-between ${settings?.language === lang.code
-                                                                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
-                                                                    : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-primary-300'
+                                                                    ? `border-current ${roleTheme.text} ${roleTheme.bgLight}`
+                                                                    : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-gray-300'
                                                                     }`}
                                                             >
                                                                 <span className="dark:text-white">{lang.label}</span>
-                                                                {settings?.language === lang.code && <FaCheck className="text-primary-600" />}
+                                                                {settings?.language === lang.code && <FaCheck className={roleTheme.text} />}
                                                             </button>
                                                         ))}
                                                     </div>

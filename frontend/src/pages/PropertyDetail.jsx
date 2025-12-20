@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -219,7 +220,12 @@ const PropertyDetail = () => {
             <div className="min-h-screen bg-stone-50 dark:bg-slate-900 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Main Image */}
-                    <div className="relative mb-8 rounded-xl overflow-hidden shadow-lg">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative mb-8 rounded-xl overflow-hidden shadow-lg"
+                    >
                         <img
                             src={property.image_url || '/placeholder.jpg'}
                             alt={property.title}
@@ -235,13 +241,27 @@ const PropertyDetail = () => {
                         <div className="absolute top-4 left-4 px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow">
                             For {property.listing_type === 'rent' ? 'Rent' : 'Sale'}
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: {
+                                    staggerChildren: 0.1,
+                                    delayChildren: 0.2
+                                }
+                            }
+                        }}
+                        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                    >
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-6">
                             {/* Title and Price */}
-                            <div>
+                            <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
                                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{property.title}</h1>
                                 <div className="flex items-center text-gray-600 dark:text-gray-400 mb-4">
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,10 +274,10 @@ const PropertyDetail = () => {
                                     {formatPrice(property.price)}
                                     {property.listing_type === 'rent' && <span className="text-2xl text-gray-600 dark:text-gray-400">/month</span>}
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Key Features */}
-                            <div className="card bg-white dark:bg-slate-800 p-6">
+                            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="card bg-white dark:bg-slate-800 p-6">
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Key Features</h2>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {property.bedrooms && (
@@ -305,19 +325,19 @@ const PropertyDetail = () => {
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Description */}
                             {property.description && (
-                                <div className="card bg-white dark:bg-slate-800 p-6">
+                                <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="card bg-white dark:bg-slate-800 p-6">
                                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Description</h2>
                                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{property.description}</p>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* Amenities */}
                             {(property.has_garage || property.has_pool || property.has_garden) && (
-                                <div className="card bg-white dark:bg-slate-800 p-6">
+                                <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="card bg-white dark:bg-slate-800 p-6">
                                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Amenities</h2>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                         {property.has_garage && (
@@ -345,12 +365,12 @@ const PropertyDetail = () => {
                                             </div>
                                         )}
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
                         </div>
 
                         {/* Sidebar */}
-                        <div className="space-y-6">
+                        <motion.div variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0 } }} className="space-y-6">
                             {/* Action Buttons */}
                             {!isOwner && (
                                 <div className="card bg-white dark:bg-slate-800 p-6 space-y-3">
@@ -433,8 +453,8 @@ const PropertyDetail = () => {
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </div>
 
