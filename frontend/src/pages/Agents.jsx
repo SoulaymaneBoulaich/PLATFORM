@@ -79,7 +79,7 @@ const Agents = () => {
                                         {agent.profile_image_url ? (
                                             <img
                                                 src={agent.profile_image_url.startsWith('/')
-                                                    ? `http://localhost:3001${agent.profile_image_url}`
+                                                    ? `http://localhost:5000${agent.profile_image_url}`
                                                     : agent.profile_image_url}
                                                 alt={`${agent.first_name} ${agent.last_name}`}
                                                 className="w-full h-full object-cover"
