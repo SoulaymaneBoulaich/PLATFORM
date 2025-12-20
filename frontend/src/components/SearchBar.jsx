@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useRoleTheme } from '../context/RoleThemeContext';
 
 const SearchBar = ({ onSearch }) => {
+    const theme = useRoleTheme();
     const [searchParams, setSearchParams] = useState({
         city: '',
         property_type: '',
@@ -65,7 +67,7 @@ const SearchBar = ({ onSearch }) => {
 
             <button
                 type="submit"
-                className="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                className={`w-full mt-4 bg-gradient-to-r ${theme.gradient} hover:${theme.gradientHover} text-white font-semibold py-3.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0`}
             >
                 🔍 Search Properties
             </button>

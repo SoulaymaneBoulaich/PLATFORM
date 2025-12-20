@@ -4,8 +4,10 @@ import api from '../services/api';
 import Loader from '../components/Loader';
 import StartChatButton from '../components/StartChatButton';
 import ErrorMessage from '../components/ErrorMessage';
+import { useRoleTheme } from '../context/RoleThemeContext';
 
 const Agents = () => {
+    const theme = useRoleTheme();
     const [agents, setAgents] = useState([]);
     const [filteredAgents, setFilteredAgents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ const Agents = () => {
                             <div key={agent.user_id} className="card p-6 hover:shadow-lg transition-shadow bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
                                 {/* Profile Image */}
                                 <div className="flex justify-center mb-4">
-                                    <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
+                                    <div className={`w-24 h-24 rounded-full ${theme.bgLight} flex items-center justify-center overflow-hidden`}>
                                         {agent.profile_image_url ? (
                                             <img
                                                 src={agent.profile_image_url.startsWith('/')
@@ -85,7 +87,7 @@ const Agents = () => {
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <span className="text-3xl font-bold text-primary-600">
+                                            <span className={`text-3xl font-bold ${theme.text}`}>
                                                 {agent.first_name?.[0]}{agent.last_name?.[0]}
                                             </span>
                                         )}
@@ -106,7 +108,7 @@ const Agents = () => {
 
                                     {/* Property Count & Rating Badge */}
                                     <div className="mb-3 space-y-1">
-                                        <span className="inline-block bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-3 py-1 rounded-full text-sm font-medium">
+                                        <span className={`inline-block ${theme.bgLight} ${theme.text} px-3 py-1 rounded-full text-sm font-medium`}>
                                             {agent.property_count || 0} {(agent.property_count || 0) === 1 ? 'Property' : 'Properties'}
                                         </span>
                                         {agent.avg_rating > 0 && (
@@ -140,7 +142,7 @@ const Agents = () => {
                                     <div className="flex gap-2">
                                         <Link
                                             to={`/agents/${agent.user_id}`}
-                                            className="btn-primary flex-1 text-center"
+                                            className={`bg-gradient-to-r ${theme.gradient} hover:${theme.gradientHover} text-white font-semibold px-6 py-2.5 rounded-lg flex-1 text-center transition-all shadow-sm hover:shadow-md`}
                                         >
                                             View Profile
                                         </Link>
