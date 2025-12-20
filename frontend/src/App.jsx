@@ -3,6 +3,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { RoleThemeProvider } from './context/RoleThemeContext';
 import AppRouter from './router/AppRouter';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -13,13 +14,15 @@ function App() {
       <ThemeProvider>
         <BrowserRouter>
           <AuthProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                <AppRouter />
-              </main>
-              <Footer />
-            </div>
+            <RoleThemeProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow">
+                  <AppRouter />
+                </main>
+                <Footer />
+              </div>
+            </RoleThemeProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
