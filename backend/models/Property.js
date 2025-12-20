@@ -23,9 +23,6 @@ class Property {
                           area_sqft as area, status, image_url,
                           has_garage, has_pool, has_garden
                    FROM properties WHERE status = 'active'`;
-        if (filters.seller_id) {
-            sql += ' AND seller_id = ?';
-            params.push(filters.seller_id);
         if (seller_id) {
             sql += ' AND seller_id = ?';
             params.push(seller_id);

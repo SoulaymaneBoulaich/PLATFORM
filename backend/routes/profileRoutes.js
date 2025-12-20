@@ -2,7 +2,25 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const multer = require('multer');
-const { storage } = require('../config/cloudinary');
+const path = require('path');
+const fs = require('fs');
+
+// Ensure uploads directory exists
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname))
+    }
+});
+
 const avatarUpload = multer({ storage });
 const bcrypt = require('bcryptjs');
 const Profile = require('../models/Profile');
@@ -62,7 +80,7 @@ router.post('/me/avatar', auth, avatarUpload.single('avatar'), async (req, res) 
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const imageUrl = file.path; // Cloudinary URL
+        const imageUrl = `/uploads/${file.filename}`; // Local URL
 
         await Profile.updateAvatar(userId, imageUrl);
 

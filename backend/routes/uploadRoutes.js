@@ -1,102 +1,93 @@
 const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
-const pool = require('../config/database');
-
 const multer = require('multer');
-const { storage } = require('../config/cloudinary');
-const upload = multer({ storage });
+const path = require('path');
+const fs = require('fs');
 
-// Helper function not valid anymore for file uploads
-// function isValidUrl(string) { ... }
+const router = express.Router();
 
+// Ensure uploads directory exists
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
-// POST /upload/property
-router.post('/upload/property', auth, upload.single('image'), async (req, res, next) => {
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        // Create unique filename: fieldname-timestamp-random.ext
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Helper for file type validation
+const fileFilter = (req, file, cb) => {
+    // Accept images only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+// Upload single image
+router.post('/', upload.single('image'), (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
+            return res.status(400).json({ error: 'No file uploaded' });
         }
-        res.json({ url: req.file.path });
+
+        // Return local path that can be served statically
+        // Frontend should prepend backend URL e.g., http://localhost:5000/uploads/filename
+        const localUrl = `/uploads/${req.file.filename}`;
+
+        res.json({
+            url: localUrl,
+            message: 'Image uploaded successfully'
+        });
     } catch (err) {
-        next(err);
+        console.error('Upload error:', err);
+        res.status(500).json({ error: 'Upload failed' });
     }
 });
 
-// POST /upload/avatar
-router.post('/upload/avatar', auth, upload.single('image'), async (req, res, next) => {
+// Upload multiple images (for properties)
+router.post('/multiple', upload.array('images', 10), (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded' });
         }
-        res.json({ url: req.file.path });
+
+        const urls = req.files.map(file => `/uploads/${file.filename}`);
+
+        res.json({
+            urls: urls,
+            message: `${req.files.length} images uploaded successfully`
+        });
     } catch (err) {
-        next(err);
+        console.error('Upload error:', err);
+        res.status(500).json({ error: 'Upload failed' });
     }
 });
 
-// Legacy support for direct URL adding (optional, keeping for compatibility if needed)
-router.post('/properties/:id/images', auth, async (req, res, next) => {
-    // ... (Keep existing URL logic if frontend still uses it for manual URLs)
-    // For now, I'm assuming we replace it or keep it as fallback.
-    // Let's keep it but simplified or just comment it out if not needed.
-    // Or better, let's just add the file upload support to existing endpoints if relevant.
-    // The previous logic took a JSON body with imageUrl.
-    // The frontend likely sends a file now.
-
-    // Let's keep the URL endpoint for now just in case, but the main goal is file uploads.
+// Keep the URL upload endpoint for flexibility
+router.post('/url', async (req, res) => {
     try {
-        const { imageUrl } = req.body;
-        if (imageUrl) {
-            // ... logic from before ...
-            // Simplified for brevity in this replace block, assume existing logic stays or gets updated separately
-            // For this task, we want NEW endpoints that return a Cloudinary URL
+        const { url } = req.body;
+        if (!url) {
+            return res.status(400).json({ error: 'URL is required' });
         }
-        next();
+
+        // Just echo back the URL or validate it
+        // In a real app we might download it to our server
+
+        res.json({ url });
     } catch (err) {
-        next(err);
-    }
-});
-
-// DELETE /api/properties/:id/images/:imageId - Delete a specific image
-router.delete('/properties/:id/images/:imageId', auth, async (req, res, next) => {
-    try {
-        const { id: propertyId, imageId } = req.params;
-        const userId = req.user.user_id;
-        const userType = req.user.user_type;
-
-        // Verify property exists and user has permission
-        const [properties] = await pool.query(
-            'SELECT seller_id FROM properties WHERE property_id = ?',
-            [propertyId]
-        );
-
-        if (properties.length === 0) {
-            return res.status(404).json({ error: 'Property not found' });
-        }
-
-        const property = properties[0];
-
-        if (property.seller_id !== userId && userType !== 'admin') {
-            return res.status(403).json({ error: 'You can only delete images for your own properties' });
-        }
-
-        // Delete the image
-        const [result] = await pool.query(
-            'DELETE FROM property_images WHERE image_id = ? AND property_id = ?',
-            [imageId, propertyId]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Image not found' });
-        }
-
-        res.json({ message: 'Image deleted successfully' });
-
-    } catch (error) {
-        next(error);
+        res.status(500).json({ error: 'Failed to process URL' });
     }
 });
 
 module.exports = router;
-

@@ -14,15 +14,32 @@ exports.getById = async (req, res, next) => {
     try {
         const userId = req.params.userId;
         // Logic to get agent details + properties
-        const agent = await Agent.findById(userId); // Assuming findById handles user_id mapping or we fix model later
+        let agent = await Agent.findById(userId);
+
+        // Fallback: If not found in agents table, check users table (for regular sellers)
+        if (!agent) {
+            const User = require('../models/User');
+            const user = await User.findById(userId);
+            if (user && (user.user_type === 'seller' || user.user_type === 'agent')) {
+                // Map user to agent-like structure
+                agent = {
+                    ...user,
+                    user_id: user.user_id,
+                    profile_image_url: user.profile_image, // Ensure mapping exists
+                    // Add dummy agent fields if needed or handle in frontend
+                    agency_name: 'Independent Seller',
+                    experience_years: 0,
+                    license_number: 'N/A',
+                    bio: user.bio || 'No bio available'
+                };
+            }
+        }
 
         let properties = [];
         if (agent) {
             properties = await Property.findAll({ seller_id: agent.user_id });
         } else {
-            // Fallback if not found in agents table but is a seller user?
-            // For now standardized on Agent model.
-            return res.status(404).json({ error: 'Agent not found' });
+            return res.status(404).json({ error: 'Agent/Seller not found' });
         }
 
         res.json({ ...agent, properties });

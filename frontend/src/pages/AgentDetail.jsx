@@ -51,7 +51,7 @@ const AgentDetail = () => {
                                     >
                                         <img
                                             src={agent.profile_image_url.startsWith('/')
-                                                ? `http://localhost:3001${agent.profile_image_url}`
+                                                ? `http://localhost:5000${agent.profile_image_url}`
                                                 : agent.profile_image_url}
                                             alt={`${agent.first_name} ${agent.last_name}`}
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -167,7 +167,7 @@ const AgentDetail = () => {
                         <div className="relative max-w-3xl max-h-[90vh] mx-4">
                             <img
                                 src={agent.profile_image_url.startsWith('/')
-                                    ? `http://localhost:3001${agent.profile_image_url}`
+                                    ? `http://localhost:5000${agent.profile_image_url}`
                                     : agent.profile_image_url}
                                 alt={`${agent.first_name} ${agent.last_name}`}
                                 className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
