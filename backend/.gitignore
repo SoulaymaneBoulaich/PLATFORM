@@ -1,1 +1,5 @@
 .env
+error.log
+node_modules
+coverage
+.DS_Store
