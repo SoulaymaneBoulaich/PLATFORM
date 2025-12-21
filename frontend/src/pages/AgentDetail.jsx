@@ -38,7 +38,7 @@ const AgentDetail = () => {
     if (!agent) return <div className="text-center py-12">Agent not found</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8 pt-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Agent Profile Section */}
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 mb-8">

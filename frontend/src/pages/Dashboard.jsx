@@ -136,7 +136,11 @@ const Dashboard = () => {
                 has_garden: prop.has_garden || false,
             });
             // CRITICAL: Set the image URL when editing
-            setImageUrl(prop.image_url || '');
+            if (prop.images && prop.images.length > 0) {
+                setImageUrl(prop.images.map(img => img.image_url).join('\n'));
+            } else {
+                setImageUrl(prop.image_url || '');
+            }
             setShowPropertyForm(true);
         } catch (err) {
             setError('Failed to load property for editing');
@@ -163,9 +167,16 @@ const Dashboard = () => {
             let propertyId;
 
             // Include image_url in the request body
+            const imageList = imageUrl?.trim().split('\n').filter(url => url.trim()) || [];
+
+            if (imageList.length < 3) {
+                setError('Please provide at least 3 images');
+                return;
+            }
+
             const propertyData = {
                 ...formData,
-                image_url: imageUrl?.trim() || null
+                images: imageList
             };
 
             if (editingProperty) {
@@ -251,7 +262,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-32 pb-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* User Profile Section */}
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-8">
@@ -600,24 +611,29 @@ const Dashboard = () => {
                                         />
                                     </div>
 
-                                    {/* Image URL Input */}
+                                    {/* Image URLs Input */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Property Image URL
+                                            Property Image URLs (Min 3 required)
                                         </label>
-                                        <input
-                                            type="url"
-                                            placeholder="https://example.com/image.jpg"
+                                        <textarea
+                                            placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg&#10;https://example.com/image3.jpg"
                                             value={imageUrl}
                                             onChange={(e) => setImageUrl(e.target.value)}
+                                            rows={5}
                                             className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                         />
                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            Paste a direct URL to an image (e.g., from Imgur, your cloud storage, etc.)
+                                            Enter each image URL on a new line. You must provide at least 3 images.
                                         </p>
-                                        {imageUrl && (
-                                            <p className="text-sm text-primary-600 dark:text-primary-400 mt-2">
-                                                ✓ URL provided
+                                        {imageUrl && imageUrl.trim().split('\n').filter(url => url.trim()).length >= 3 && (
+                                            <p className="text-sm text-green-600 dark:text-green-400 mt-2">
+                                                ✓ {imageUrl.trim().split('\n').filter(url => url.trim()).length} images provided
+                                            </p>
+                                        )}
+                                        {imageUrl && imageUrl.trim().split('\n').filter(url => url.trim()).length < 3 && (
+                                            <p className="text-sm text-red-600 dark:text-red-400 mt-2">
+                                                ⚠ {3 - imageUrl.trim().split('\n').filter(url => url.trim()).length} more image(s) required
                                             </p>
                                         )}
                                     </div>

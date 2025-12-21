@@ -36,14 +36,15 @@ const SearchBar = ({ onSearch }) => {
                     name="property_type"
                     value={searchParams.property_type}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-3 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-slate-700 appearance-none cursor-pointer"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right 0.5rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.5em 1.5em`, paddingRight: '2.5rem' }}
                 >
-                    <option value="" className="text-gray-500">Property Type</option>
-                    <option value="House" className="text-gray-900">House</option>
-                    <option value="Apartment" className="text-gray-900">Apartment</option>
-                    <option value="Condo" className="text-gray-900">Condo</option>
-                    <option value="Townhouse" className="text-gray-900">Townhouse</option>
-                    <option value="Land" className="text-gray-900">Land</option>
+                    <option value="" className="text-gray-500 bg-white dark:bg-slate-800">Property Type</option>
+                    <option value="House" className="text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800">House</option>
+                    <option value="Apartment" className="text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800">Apartment</option>
+                    <option value="Condo" className="text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800">Condo</option>
+                    <option value="Townhouse" className="text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800">Townhouse</option>
+                    <option value="Land" className="text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800">Land</option>
                 </select>
 
                 <input
