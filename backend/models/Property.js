@@ -18,50 +18,57 @@ class Property {
         } = filters;
 
         const params = [];
-        let sql = `SELECT property_id, seller_id, title, description, property_type, listing_type, 
-                          price, address_line1 as address, city, bedrooms, bathrooms, 
-                          area_sqft as area, status, image_url,
-                          has_garage, has_pool, has_garden
-                   FROM properties WHERE status = 'active'`;
+        let sql = `SELECT p.property_id, p.seller_id, p.title, p.description, p.property_type, p.listing_type, 
+                          p.price, p.address_line1 as address, p.city, p.bedrooms, p.bathrooms, 
+                          p.area_sqft as area, p.status, p.image_url,
+                          p.has_garage, p.has_pool, p.has_garden,
+                          GROUP_CONCAT(pi.image_url ORDER BY pi.is_primary DESC SEPARATOR ',') as all_images
+                   FROM properties p
+                   LEFT JOIN property_images pi ON p.property_id = pi.property_id
+                   WHERE p.status = 'active'`;
         if (seller_id) {
-            sql += ' AND seller_id = ?';
+            sql += ' AND p.seller_id = ?';
             params.push(seller_id);
         }
 
         if (city) {
-            sql += ' AND city = ?';
+            sql += ' AND p.city = ?';
             params.push(city);
         }
         if (property_type) {
-            sql += ' AND property_type = ?';
+            sql += ' AND p.property_type = ?';
             params.push(property_type);
         }
         if (listing_type) {
-            sql += ' AND listing_type = ?';
+            sql += ' AND p.listing_type = ?';
             params.push(listing_type);
         }
         if (minPrice) {
-            sql += ' AND price >= ?';
+            sql += ' AND p.price >= ?';
             params.push(minPrice);
         }
         if (maxPrice) {
-            sql += ' AND price <= ?';
+            sql += ' AND p.price <= ?';
             params.push(maxPrice);
         }
         if (minBedrooms) {
-            sql += ' AND bedrooms >= ?';
+            sql += ' AND p.bedrooms >= ?';
             params.push(minBedrooms);
         }
         if (minBathrooms) {
-            sql += ' AND bathrooms >= ?';
+            sql += ' AND p.bathrooms >= ?';
             params.push(minBathrooms);
         }
 
-        sql += ' ORDER BY listing_date DESC LIMIT ?';
+        sql += ' GROUP BY p.property_id ORDER BY p.listing_date DESC LIMIT ?';
         params.push(Number(limit));
 
         const [rows] = await pool.query(sql, params);
-        return rows;
+
+        return rows.map(row => ({
+            ...row,
+            images: row.all_images ? row.all_images.split(',') : [row.image_url]
+        }));
     }
 
     static async findById(id) {

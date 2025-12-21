@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import api from '../services/api';
 import AuthLayout from '../components/AuthLayout';
-import { motion } from 'framer-motion';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -25,12 +25,6 @@ const Login = () => {
         if (rememberedEmail) {
             setFormData(prev => ({ ...prev, email: rememberedEmail, rememberMe: true }));
         }
-    }, []);
-
-    // Auto-focus email field
-    useEffect(() => {
-        const emailInput = document.getElementById('email');
-        if (emailInput) emailInput.focus();
     }, []);
 
     const handleChange = (e) => {
@@ -68,25 +62,25 @@ const Login = () => {
     };
 
     return (
-        <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue">
+        <AuthLayout title="Welcome Back" subtitle="Sign in to continue to your dashboard">
             {/* Tab Switcher */}
-            <div className="flex gap-1 mb-8 p-1 bg-gray-100 dark:bg-slate-700/50 rounded-lg">
+            <div className="flex gap-1 mb-8 p-1 bg-gray-100 dark:bg-slate-700/50 rounded-xl">
                 <button
                     type="button"
                     onClick={() => setActiveTab('login')}
-                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${activeTab === 'login'
-                        ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-white shadow-sm'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all duration-200 ${activeTab === 'login'
+                        ? 'bg-white dark:bg-slate-600 text-teal-600 dark:text-white shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                 >
                     Log In
                 </button>
                 <button
                     type="button"
-                    onClick={() => navigate('/signup')}
-                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${activeTab === 'signup'
-                        ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-white shadow-sm'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    onClick={() => navigate('/register')}
+                    className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all duration-200 ${activeTab === 'signup'
+                        ? 'bg-white dark:bg-slate-600 text-teal-600 dark:text-white shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                 >
                     Sign Up
@@ -94,15 +88,7 @@ const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-800 dark:text-red-300"
-                    >
-                        {error}
-                    </motion.div>
-                )}
+                <ErrorMessage message={error} />
 
                 {/* Email */}
                 <div>
@@ -129,7 +115,7 @@ const Login = () => {
                         </label>
                         <Link
                             to="/forgot-password"
-                            className="text-sm font-medium text-primary-600 hover:text-primary-500"
+                            className="text-sm font-medium text-teal-600 hover:text-teal-500"
                         >
                             Forgot password?
                         </Link>
@@ -163,7 +149,7 @@ const Login = () => {
                         type="checkbox"
                         checked={formData.rememberMe}
                         onChange={handleChange}
-                        className="w-4 h-4 text-primary-600 border-gray-300 dark:border-slate-600 rounded focus:ring-primary-500"
+                        className="w-4 h-4 text-teal-600 border-gray-300 dark:border-slate-600 rounded focus:ring-teal-500"
                     />
                     <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                         Remember me
@@ -183,7 +169,7 @@ const Login = () => {
 
             <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
                 Don't have an account?{' '}
-                <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-500">
+                <Link to="/register" className="font-medium text-teal-600 hover:text-teal-500">
                     Create one now
                 </Link>
             </div>
@@ -192,4 +178,3 @@ const Login = () => {
 };
 
 export default Login;
-

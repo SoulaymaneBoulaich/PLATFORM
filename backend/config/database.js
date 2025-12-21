@@ -13,6 +13,7 @@ const pool = mysql.createPool({
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
   connectTimeout: 60000, // 60s timeout for slow connections
+  family: 4, // Force IPv4 to avoid EAI_AGAIN DNS errors
 });
 
 module.exports = pool;

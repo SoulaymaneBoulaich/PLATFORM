@@ -1,7 +1,11 @@
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Home, MessageSquare, Star, TrendingUp } from 'lucide-react';
+import useFloat from '../hooks/useFloat';
 
 const AuthLayout = ({ children, title, subtitle }) => {
+    const floatRef1 = useFloat(0, 10, 5);
+    const floatRef2 = useFloat(2, 15, 7);
+
     const features = [
         {
             icon: <Home className="w-5 h-5" />,
@@ -21,82 +25,76 @@ const AuthLayout = ({ children, title, subtitle }) => {
         }
     ];
 
-    const valueProp = [
-        "Find your dream home with RealEstate",
-        "List properties and reach thousands of buyers",
-        "Connect with expert agents in your area"
-    ];
-
     return (
-        <div className="min-h-screen flex flex-col md:flex-row">
+        <div className="min-h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50 dark:bg-slate-900">
             {/* Left Panel - Hero Section */}
-            <div className="relative w-full md:w-1/2 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 flex items-center justify-center p-8 md:p-12">
+            <div className="relative w-full md:w-1/2 bg-gradient-to-br from-teal-600 to-emerald-800 dark:from-slate-900 dark:to-teal-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+                {/* Floating Orbs */}
+                <div
+                    ref={floatRef1}
+                    className="absolute top-20 left-[10%] w-64 h-64 bg-white/10 rounded-full blur-3xl mix-blend-overlay"
+                />
+                <div
+                    ref={floatRef2}
+                    className="absolute bottom-20 right-[10%] w-96 h-96 bg-teal-400/20 rounded-full blur-3xl mix-blend-overlay"
+                />
+
                 {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-                    }} />
-                </div>
+                <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+                    backgroundSize: '32px 32px'
+                }} />
 
                 {/* Content */}
                 <div className="relative z-10 max-w-lg text-white">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                            Welcome to
-                            <span className="block text-secondary-400">RealEstate</span>
+                    <div className="animate-enter">
+                        <Link to="/" className="inline-flex items-center gap-2 mb-8 glass-card px-4 py-2 rounded-full hover:bg-white/20 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span className="text-sm font-medium">Back to Home</span>
+                        </Link>
+
+                        <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight drop-shadow-lg">
+                            Welcome to <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-200">RealEstate</span>
                         </h1>
 
-                        {/* Animated value propositions */}
-                        <div className="mb-8 space-y-3">
-                            {valueProp.map((text, index) => (
-                                <motion.p
-                                    key={index}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                                    className="text-lg text-primary-100"
-                                >
-                                    {text}
-                                </motion.p>
-                            ))}
-                        </div>
+                        <p className="text-xl text-teal-100 mb-12 font-light leading-relaxed">
+                            Join thousands of users finding their dream homes and connecting with top agents today.
+                        </p>
 
                         {/* Features Grid */}
-                        <div className="grid grid-cols-1 gap-4 mt-8">
+                        <div className="grid grid-cols-1 gap-6">
                             {features.map((feature, index) => (
-                                <motion.div
+                                <div
                                     key={index}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                                    className="flex items-center gap-3 text-primary-100"
+                                    className="flex items-center gap-4 text-white/90 animate-enter"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
                                 >
-                                    <div className="flex-shrink-0 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                                    <div className="flex-shrink-0 w-12 h-12 glass-card rounded-2xl flex items-center justify-center text-white">
                                         {feature.icon}
                                     </div>
-                                    <span className="text-sm">{feature.text}</span>
-                                </motion.div>
+                                    <span className="text-lg font-medium">{feature.text}</span>
+                                </div>
                             ))}
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
 
             {/* Right Panel - Auth Form */}
-            <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 bg-gray-50 dark:bg-slate-900">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="w-full max-w-md"
-                >
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-10">
+            <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 relative">
+                {/* Decorative Background for Form Side */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div className="absolute -top-[20%] -right-[10%] w-[500px] h-[500px] bg-teal-500/5 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-[20%] -left-[10%] w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl" />
+                </div>
+
+                <div className="w-full max-w-md animate-enter stagger-1 relative z-10">
+                    <div className="glass-card p-8 md:p-10 shadow-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl">
                         {title && (
-                            <div className="mb-8">
+                            <div className="mb-8 text-center">
                                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                                     {title}
                                 </h2>
@@ -107,7 +105,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
                         )}
                         {children}
                     </div>
-                </motion.div>
+                </div>
             </div>
         </div>
     );

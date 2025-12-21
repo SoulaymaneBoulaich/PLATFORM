@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import PropertyCard from '../components/PropertyCard';
 import { SkeletonPropertyList } from '../components/SkeletonLoader';
@@ -10,8 +9,8 @@ const PropertyList = () => {
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [searchParams] = useSearchParams();
-    const { user } = useAuth();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [isFilterOpen, setIsFilterOpen] = useState(false); // Mobile filter toggle
 
     const [filters, setFilters] = useState({
         city: searchParams.get('city') || '',
@@ -46,7 +45,15 @@ const PropertyList = () => {
 
     const handleFilterChange = (newFilters) => {
         setFilters(newFilters);
+        // Debounce fetching if needed, for now direct fetch
         fetchProperties(newFilters);
+
+        // Update URL params
+        const params = new URLSearchParams();
+        Object.entries(newFilters).forEach(([key, value]) => {
+            if (value) params.set(key, value);
+        });
+        setSearchParams(params);
     };
 
     const handleClearFilters = () => {
@@ -60,190 +67,208 @@ const PropertyList = () => {
             minBathrooms: '',
         };
         setFilters(emptyFilters);
+        setSearchParams({});
         fetchProperties(emptyFilters);
     };
 
     return (
         <PageTransition>
-            <div className="flex min-h-full bg-gray-50 dark:bg-slate-900">
-                {/* Filters Sidebar */}
-                <div className="w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 p-6 overflow-y-auto hidden lg:block flex-shrink-0">
-                    <div className="mb-6">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Filters</h2>
-                        <button
-                            onClick={handleClearFilters}
-                            className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-                        >
-                            Clear All
-                        </button>
-                    </div>
-
-                    {/* City */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">City</label>
-                        <input
-                            type="text"
-                            value={filters.city}
-                            onChange={(e) => handleFilterChange({ ...filters, city: e.target.value })}
-                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                            placeholder="Enter city"
-                        />
-                    </div>
-
-                    {/* Property Type */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Property Type</label>
-                        <select
-                            value={filters.property_type}
-                            onChange={(e) => handleFilterChange({ ...filters, property_type: e.target.value })}
-                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                        >
-                            <option value="">All Types</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="house">House</option>
-                            <option value="villa">Villa</option>
-                            <option value="land">Land</option>
-                            <option value="commercial">Commercial</option>
-                        </select>
-                    </div>
-
-                    {/* Listing Type */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Listing Type</label>
-                        <select
-                            value={filters.listing_type}
-                            onChange={(e) => handleFilterChange({ ...filters, listing_type: e.target.value })}
-                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                        >
-                            <option value="">All</option>
-                            <option value="sale">For Sale</option>
-                            <option value="rent">For Rent</option>
-                        </select>
-                    </div>
-
-                    {/* Price Range */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price Range</label>
-                        <div className="grid grid-cols-2 gap-2">
-                            <input
-                                type="number"
-                                value={filters.minPrice}
-                                onChange={(e) => handleFilterChange({ ...filters, minPrice: e.target.value })}
-                                className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                                placeholder="Min"
-                            />
-                            <input
-                                type="number"
-                                value={filters.maxPrice}
-                                onChange={(e) => handleFilterChange({ ...filters, maxPrice: e.target.value })}
-                                className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                                placeholder="Max"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Bedrooms */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Bedrooms</label>
-                        <select
-                            value={filters.minBedrooms}
-                            onChange={(e) => handleFilterChange({ ...filters, minBedrooms: e.target.value })}
-                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                        >
-                            <option value="">Any</option>
-                            <option value="1">1+</option>
-                            <option value="2">2+</option>
-                            <option value="3">3+</option>
-                            <option value="4">4+</option>
-                            <option value="5">5+</option>
-                        </select>
-                    </div>
-
-                    {/* Bathrooms */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Bathrooms</label>
-                        <select
-                            value={filters.minBathrooms}
-                            onChange={(e) => handleFilterChange({ ...filters, minBathrooms: e.target.value })}
-                            className="input-field w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                        >
-                            <option value="">Any</option>
-                            <option value="1">1+</option>
-                            <option value="2">2+</option>
-                            <option value="3">3+</option>
-                            <option value="4">4+</option>
-                        </select>
-                    </div>
+            <div className="flex min-h-screen relative overflow-hidden bg-slate-50 dark:bg-slate-900 pt-20 lg:pt-24">
+                {/* Background Decor */}
+                <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
+                    <div className="absolute top-[10%] -left-[10%] w-[50vw] h-[50vw] bg-teal-500/5 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-overlay" />
+                    <div className="absolute bottom-[10%] -right-[10%] w-[50vw] h-[50vw] bg-purple-500/5 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-overlay" />
                 </div>
 
+                {/* Mobile Filter Toggle */}
+                <button
+                    className="lg:hidden fixed bottom-6 right-6 z-50 btn-primary shadow-floating rounded-full p-4"
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                </button>
+
+                {/* Filters Sidebar */}
+                <aside className={`
+                    fixed inset-y-0 left-0 z-40 w-80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-white/20 dark:border-slate-700/50 transform transition-transform duration-300 ease-spring
+                    lg:relative lg:translate-x-0 overflow-y-auto
+                    ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}
+                `}>
+                    <div className="p-6">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white">Filters</h2>
+                            <button
+                                onClick={handleClearFilters}
+                                className="text-sm font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700"
+                            >
+                                Reset All
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* City */}
+                            <div>
+                                <label className="label mb-2 block">City / Location</label>
+                                <input
+                                    type="text"
+                                    value={filters.city}
+                                    onChange={(e) => handleFilterChange({ ...filters, city: e.target.value })}
+                                    className="input-field w-full py-3"
+                                    placeholder="e.g. New York"
+                                />
+                            </div>
+
+                            {/* Listing Type - Radio Group */}
+                            <div>
+                                <label className="label mb-3 block">Looking For</label>
+                                <div className="grid grid-cols-2 gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+                                    {['sale', 'rent'].map((type) => (
+                                        <button
+                                            key={type}
+                                            onClick={() => handleFilterChange({ ...filters, listing_type: filters.listing_type === type ? '' : type })}
+                                            className={`py-2 rounded-lg text-sm font-semibold capitalize transition-all ${filters.listing_type === type
+                                                ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400'
+                                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                                                }`}
+                                        >
+                                            {type || 'Any'}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Property Type */}
+                            <div>
+                                <label className="label mb-2 block">Property Type</label>
+                                <select
+                                    value={filters.property_type}
+                                    onChange={(e) => handleFilterChange({ ...filters, property_type: e.target.value })}
+                                    className="input-field w-full py-3"
+                                >
+                                    <option value="">Any Type</option>
+                                    <option value="house">House</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="condo">Condo</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="land">Land</option>
+                                    <option value="commercial">Commercial</option>
+                                </select>
+                            </div>
+
+                            {/* Price Range */}
+                            <div>
+                                <label className="label mb-2 block">Price Range</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <input
+                                        type="number"
+                                        value={filters.minPrice}
+                                        onChange={(e) => handleFilterChange({ ...filters, minPrice: e.target.value })}
+                                        className="input-field w-full py-2 text-sm"
+                                        placeholder="Min Price"
+                                    />
+                                    <input
+                                        type="number"
+                                        value={filters.maxPrice}
+                                        onChange={(e) => handleFilterChange({ ...filters, maxPrice: e.target.value })}
+                                        className="input-field w-full py-2 text-sm"
+                                        placeholder="Max Price"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Beds & Baths */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label mb-2 block">Bedrooms</label>
+                                    <select
+                                        value={filters.minBedrooms}
+                                        onChange={(e) => handleFilterChange({ ...filters, minBedrooms: e.target.value })}
+                                        className="input-field w-full py-2"
+                                    >
+                                        <option value="">Any</option>
+                                        <option value="1">1+</option>
+                                        <option value="2">2+</option>
+                                        <option value="3">3+</option>
+                                        <option value="4">4+</option>
+                                        <option value="5">5+</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="label mb-2 block">Bathrooms</label>
+                                    <select
+                                        value={filters.minBathrooms}
+                                        onChange={(e) => handleFilterChange({ ...filters, minBathrooms: e.target.value })}
+                                        className="input-field w-full py-2"
+                                    >
+                                        <option value="">Any</option>
+                                        <option value="1">1+</option>
+                                        <option value="2">2+</option>
+                                        <option value="3">3+</option>
+                                        <option value="4">4+</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
                 {/* Main Content Area */}
-                <div className="flex-1 overflow-y-auto">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <main className="flex-1 relative z-10 overflow-y-auto h-screen scroll-smooth">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
                         {/* Header */}
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Browse Properties</h1>
-                            <p className="text-gray-600 dark:text-gray-400">
-                                {loading ? 'Loading...' : `${properties.length} properties found`}
+                        <div className="mb-10 animate-enter">
+                            <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+                                Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-500">Dream Home</span>
+                            </h1>
+                            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
+                                {loading ? 'Searching properties...' : `We found ${properties.length} properties matching your criteria.`}
                             </p>
                         </div>
 
                         {/* Error Message */}
                         {error && (
-                            <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded">
+                            <div className="mb-8 p-4 glass-card border-red-200 dark:border-red-800 text-red-600 dark:text-red-300">
                                 {error}
                             </div>
                         )}
 
-                        {/* Properties Grid */}
+                        {/* Properties Grid - Masonry style feel with CSS Grid */}
                         {loading ? (
-                            <SkeletonPropertyList count={6} />
+                            <SkeletonPropertyList count={8} />
                         ) : properties.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 pb-20">
                                 {properties.map((property, index) => (
-                                    <div
+                                    <PropertyCard
                                         key={property.property_id}
-                                        className="property-card-stagger"
-                                        style={{ animationDelay: `${index * 50}ms` }}
-                                    >
-                                        <PropertyCard property={property} />
-                                    </div>
+                                        property={property}
+                                        delayIndex={index}
+                                    />
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-16">
-                                <svg className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                </svg>
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No properties found</h3>
-                                <p className="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your filters to see more results</p>
+                            <div className="glass-card p-12 text-center max-w-lg mx-auto mt-20">
+                                <div className="w-24 h-24 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No properties found</h3>
+                                <p className="text-gray-600 dark:text-gray-400 mb-8">
+                                    We couldn't find any properties matching your current filters. Try relaxing your search criteria.
+                                </p>
                                 <button
                                     onClick={handleClearFilters}
-                                    className="btn-primary"
+                                    className="btn-primary px-8"
                                 >
-                                    Clear Filters
+                                    Reset Filters
                                 </button>
                             </div>
                         )}
                     </div>
-                </div>
+                </main>
             </div>
-
-            <style>{`
-                .property-card-stagger {
-                    animation: fadeInUp 400ms ease-out backwards;
-                }
-                
-                @keyframes fadeInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-            `}</style>
         </PageTransition>
     );
 };

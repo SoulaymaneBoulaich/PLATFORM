@@ -1,7 +1,52 @@
 import { Link } from 'react-router-dom';
+import { useRef, useState, useEffect } from 'react';
 import FavoriteButton from './FavoriteButton';
+import useFloat from '../hooks/useFloat';
 
-const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
+const PropertyCard = ({ property, onDelete, onEdit, showActions = false, delayIndex = 0 }) => {
+    const cardRef = useRef(null);
+    const floatRef = useFloat(delayIndex * 0.2); // Staggered floating
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+    // Prepare images array
+    const images = property.images && property.images.length > 0
+        ? property.images
+        : [property.image_url || '/images/property-placeholder.svg'];
+
+    // Carousel on hover
+    useEffect(() => {
+        let interval;
+        if (isHovered && images.length > 1) {
+            interval = setInterval(() => {
+                setCurrentImgIndex((prev) => (prev + 1) % images.length);
+            }, 1200); // 1.2s per slide
+        } else {
+            setCurrentImgIndex(0); // Reset on mouse leave
+        }
+        return () => clearInterval(interval);
+    }, [isHovered, images.length]);
+
+    const handleMouseMove = (e) => {
+        if (!cardRef.current) return;
+        const { left, top, width, height } = cardRef.current.getBoundingClientRect();
+        const x = (e.clientX - left) / width - 0.5;
+        const y = (e.clientY - top) / height - 0.5;
+
+        // Tilt Effect: Rotate based on mouse position
+        setTilt({
+            x: y * -10,
+            y: x * 10
+        });
+    };
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => {
+        setTilt({ x: 0, y: 0 });
+        setIsHovered(false);
+    };
+
     const formatPrice = (price) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -10,160 +55,129 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false }) => {
         }).format(price);
     };
 
-    const hasValidImageUrl = property.image_url &&
-        (property.image_url.startsWith('http') ||
-            property.image_url.startsWith('/uploads'));
-
-    const src = hasValidImageUrl ? property.image_url : '/images/property-placeholder.svg';
+    const currentSrc = images[currentImgIndex];
+    const hasValidImageUrl = currentSrc && (currentSrc.startsWith('http') || currentSrc.startsWith('/uploads') || currentSrc.startsWith('/images'));
+    const src = hasValidImageUrl ? currentSrc : '/images/property-placeholder.svg';
 
     return (
-        <div className="group relative bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-md hover:shadow-premium transition-all duration-500 border border-gray-100 dark:border-slate-700 hover:-translate-y-2">
-            {/* Image Container with Overlay */}
-            <Link to={`/properties/${property.property_id}`} className="block relative overflow-hidden h-72">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div
+            className="group perspective-1000 h-full"
+            style={{
+                animationDelay: `${delayIndex * 100}ms`
+            }}
+        >
+            <div
+                ref={(node) => {
+                    cardRef.current = node;
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                className="glass-card h-full overflow-hidden relative preserve-3d hover:shadow-premium"
+                style={{
+                    transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1, 1, 1)`,
+                    transition: 'transform 0.1s ease-out, box-shadow 0.3s ease'
+                }}
+            >
+                <div ref={floatRef} className="h-full flex flex-col">
 
-                <img
-                    src={src}
-                    alt={property.title || 'Property'}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/property-placeholder.svg';
-                    }}
-                />
+                    {/* Image Container */}
+                    <Link to={`/properties/${property.property_id}`} className="block relative h-72 overflow-hidden rounded-t-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-80 group-hover:opacity-60 transition-opacity" />
 
-                {/* Floating Badges */}
-                <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-20">
-                    <span className="inline-block bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
-                        {property.listing_type}
-                    </span>
-                    <FavoriteButton propertyId={property.property_id} size="sm" />
-                </div>
+                        <img
+                            src={src}
+                            alt={property.title || 'Property'}
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                            style={{ transform: `scale(${1 + Math.abs(tilt.x) / 20})` }} /* Subtle zoom on tilt */
+                            onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = '/images/property-placeholder.svg';
+                                // Avoid infinite loop if placeholder fails?
+                            }}
+                        />
 
-                {/* Quick View Button - appears on hover */}
-                <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
-                    <div className="bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2 hover:bg-teal-600 hover:text-white transition-colors duration-200">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        <span>View Details</span>
-                    </div>
-                </div>
-            </Link>
-
-            {/* Content */}
-            <div className="p-6">
-                <Link to={`/properties/${property.property_id}`}>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors mb-3 line-clamp-1">
-                        {property.title}
-                    </h3>
-                </Link>
-
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
-                    <svg className="w-5 h-5 text-teal-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="line-clamp-1 text-sm font-medium">{property.address}, {property.city}</span>
-                </div>
-
-                <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-3xl font-extrabold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
-                        {formatPrice(property.price)}
-                    </span>
-                    {property.listing_type === 'Rent' && <span className="text-sm font-medium text-gray-500 dark:text-gray-400">/month</span>}
-                </div>
-
-                {/* Property Features */}
-                <div className="flex items-center gap-6 text-sm text-gray-700 dark:text-gray-300 mb-5 pb-5 border-b border-gray-100 dark:border-slate-700">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="font-bold text-gray-900 dark:text-white">{property.bedrooms}</div>
-                            <div className="text-xs text-gray-500">Beds</div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="font-bold text-gray-900 dark:text-white">{property.bathrooms}</div>
-                            <div className="text-xs text-gray-500">Baths</div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="font-bold text-gray-900 dark:text-white">{property.area}</div>
-                            <div className="text-xs text-gray-500">sqft</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Amenities Badges */}
-                {(property.has_garage || property.has_pool || property.has_garden) && (
-                    <div className="flex flex-wrap gap-2 mb-5">
-                        {property.has_garage && (
-                            <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 text-blue-700 dark:text-blue-300 text-xs px-3 py-1.5 rounded-full font-medium border border-blue-200 dark:border-blue-800">
-                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                                    <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
-                                </svg>
-                                Garage
-                            </span>
+                        {/* Carousel Indicators (Dots) - Only show on hover if multiple images */}
+                        {isHovered && images.length > 1 && (
+                            <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-1.5">
+                                {images.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`w-1.5 h-1.5 rounded-full shadow-sm transition-all ${idx === currentImgIndex ? 'bg-white w-3' : 'bg-white/50'}`}
+                                    />
+                                ))}
+                            </div>
                         )}
-                        {property.has_pool && (
-                            <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 text-cyan-700 dark:text-cyan-300 text-xs px-3 py-1.5 rounded-full font-medium border border-cyan-200 dark:border-cyan-800">
-                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-                                </svg>
-                                Pool
-                            </span>
-                        )}
-                        {property.has_garden && (
-                            <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 text-green-700 dark:text-green-300 text-xs px-3 py-1.5 rounded-full font-medium border border-green-200 dark:border-green-800">
-                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M5.5 3A2.5 2.5 0 003 5.5v9A2.5 2.5 0 005.5 17h9a2.5 2.5 0 002.5-2.5v-9A2.5 2.5 0 0014.5 3h-9zM10 7a3 3 0 100 6 3 3 0 000-6z" clipRule="evenodd" />
-                                </svg>
-                                Garden
-                            </span>
-                        )}
-                    </div>
-                )}
 
-                {/* Action Buttons */}
-                {showActions && (
-                    <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-slate-700">
-                        {onEdit && (
-                            <button
-                                onClick={() => onEdit(property)}
-                                className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-                            >
-                                Edit
+                        {/* Floating Badges */}
+                        <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-20">
+                            <span className="glass-card px-3 py-1 text-xs font-bold text-teal-800 dark:text-teal-200 bg-white/80 dark:bg-black/50 backdrop-blur-md border-none shadow-sm">
+                                {property.listing_type}
+                            </span>
+                            <div className="transform transition-transform hover:scale-110">
+                                <FavoriteButton propertyId={property.property_id} size="sm" />
+                            </div>
+                        </div>
+
+                        {/* Quick View - Slides up */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
+                            <button className="w-full py-3 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 shadow-lg rounded-xl flex items-center justify-center gap-2 transition-colors">
+                                View Details
                             </button>
-                        )}
-                        {onDelete && (
-                            <button
-                                onClick={() => onDelete(property.property_id)}
-                                className="flex-1 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-600 dark:text-red-400 hover:from-red-100 hover:to-red-200 dark:hover:from-red-900/50 dark:hover:to-red-800/50 font-semibold py-3 px-4 rounded-xl transition-all duration-300 border border-red-200 dark:border-red-800"
-                            >
-                                Delete
-                            </button>
+                        </div>
+                    </Link>
+
+                    {/* Content */}
+                    <div className="p-6 flex-1 flex flex-col relative z-0 bg-white/50 dark:bg-slate-800/50">
+                        <Link to={`/properties/${property.property_id}`}>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-teal-600 transition-colors">
+                                {property.title}
+                            </h3>
+                        </Link>
+
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4 text-sm">
+                            <span className="line-clamp-1">{property.address}, {property.city}</span>
+                        </div>
+
+                        <div className="flex items-baseline gap-2 mb-6">
+                            <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                                {formatPrice(property.price)}
+                            </span>
+                        </div>
+
+                        {/* Features Grid */}
+                        <div className="grid grid-cols-3 gap-2 py-4 border-t border-gray-100/50 dark:border-gray-700/50 mt-auto">
+                            <div className="text-center">
+                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.bedrooms}</span>
+                                <span className="text-xs text-gray-500">Beds</span>
+                            </div>
+                            <div className="text-center border-l border-gray-100 dark:border-gray-700">
+                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.bathrooms}</span>
+                                <span className="text-xs text-gray-500">Baths</span>
+                            </div>
+                            <div className="text-center border-l border-gray-100 dark:border-gray-700">
+                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.area}</span>
+                                <span className="text-xs text-gray-500">Sqft</span>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        {showActions && (
+                            <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100/50 dark:border-gray-700/50">
+                                {onEdit && (
+                                    <button onClick={() => onEdit(property)} className="flex-1 btn-secondary py-2 text-sm">
+                                        Edit
+                                    </button>
+                                )}
+                                {onDelete && (
+                                    <button onClick={() => onDelete(property.property_id)} className="flex-1 py-2 rounded-full border border-red-200 text-red-600 text-sm hover:bg-red-50 transition-colors">
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

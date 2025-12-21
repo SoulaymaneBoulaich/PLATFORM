@@ -37,11 +37,26 @@ exports.create = async (req, res, next) => {
         const seller_id = req.user.user_id;
         const propertyData = { ...req.body, seller_id };
 
+        // Validate images
+        if (!propertyData.images || !Array.isArray(propertyData.images) || propertyData.images.length < 3) {
+            return res.status(400).json({ error: 'Please upload at least 3 images for your property.' });
+        }
+
         if (!propertyData.address_line1 && !propertyData.address) {
             return res.status(400).json({ message: 'Address is required' });
         }
 
+        // Use the first image as the main image_url for backward compatibility
+        propertyData.image_url = propertyData.images[0];
+
         const propertyId = await Property.create(propertyData);
+
+        // Save all images
+        const PropertyImage = require('../models/PropertyImage');
+        for (let i = 0; i < propertyData.images.length; i++) {
+            const isPrimary = i === 0;
+            await PropertyImage.create(propertyId, propertyData.images[i], isPrimary);
+        }
 
         res.status(201).json({ property_id: propertyId });
     } catch (err) {
@@ -61,12 +76,47 @@ exports.update = async (req, res, next) => {
         const seller_id = req.user.user_id;
         const updateData = req.body;
 
+        // Validate images if they are being updated
+        if (updateData.images) {
+            if (!Array.isArray(updateData.images) || updateData.images.length < 3) {
+                return res.status(400).json({ error: 'Please provide at least 3 images.' });
+            }
+            // Update main image_url
+            updateData.image_url = updateData.images[0];
+        }
+
         const success = await Property.update(id, seller_id, updateData);
 
         if (!success) {
             return res
                 .status(404)
                 .json({ message: 'Property not found or not owner' });
+        }
+
+        // Update images table if new images provided
+        if (updateData.images) {
+            const PropertyImage = require('../models/PropertyImage');
+            // Delete old images (simplified approach: delete all for this property and re-add)
+            // Note: Ideally we should only delete images associated with this property, but PropertyImage.delete takes imageId.
+            // We need a method to delete all by propertyId or logic to handle it.
+            // Let's add a robust way: delete all via raw query or assume logic.
+            // Wait, PropertyImage doesn't have deleteAllByPropertyId exposed? 
+            // I'll assume we can use the pool directly or add a method. 
+            // Actually, I'll use a direct query here to keep it simple or modify PropertyImage model.
+            // Better: update PropertyImage.js first? No, let's just do it here carefully.
+            // Actually PropertyImage has `setPrimary` which does an update. 
+            // I'll just check if I can import pool.
+
+            // To be safe and clean, I will first get all existing images, delete them, then add new ones.
+            const currentImages = await PropertyImage.findAllByPropertyId(id);
+            for (const img of currentImages) {
+                await PropertyImage.delete(img.image_id);
+            }
+
+            for (let i = 0; i < updateData.images.length; i++) {
+                const isPrimary = i === 0;
+                await PropertyImage.create(id, updateData.images[i], isPrimary);
+            }
         }
 
         res.json({ message: 'Updated' });
