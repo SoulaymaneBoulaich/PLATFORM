@@ -4128,3 +4128,195 @@
     at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
     at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
 
+[2025-12-21T17:10:13.665Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:10:13.674Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:10:13.687Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:10:13.708Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:10:13.728Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:10:37.429Z] Error: connect ETIMEDOUT 198.18.240.170:18687
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:11:07.464Z] Error: connect ETIMEDOUT 198.18.240.170:18687
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:12:51.721Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:13:20.916Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:13:47.044Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:15:47.175Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:16:20.665Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:16:50.202Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:17:21.167Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:17:50.642Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-21T17:18:38.105Z] Error: connect ETIMEDOUT 198.18.240.170:18687
+    at PromisePool.query (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\maxi platform\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
