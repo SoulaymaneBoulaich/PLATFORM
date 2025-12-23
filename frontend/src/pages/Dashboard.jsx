@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useRoleTheme } from '../context/RoleThemeContext';
+import { motion } from 'framer-motion';
 import api from '../services/api';
 import PropertyCard from '../components/PropertyCard';
 import Loader from '../components/Loader';
@@ -10,6 +12,7 @@ import AnalyticsCharts from '../components/AnalyticsCharts';
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const roleTheme = useRoleTheme();
     const [searchParams] = useSearchParams();
     const [properties, setProperties] = useState([]);
     const [favorites, setFavorites] = useState([]);
@@ -262,26 +265,36 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-32 pb-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-32 pb-8 relative overflow-hidden transition-colors duration-300">
+            {/* Aurora Background */}
+            <div className="absolute inset-0 w-full h-full opacity-30 dark:opacity-20 pointer-events-none">
+                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+                <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br ${roleTheme.blob} rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob`}></div>
+                <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000`}></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* User Profile Section */}
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Dashboard</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Name</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{user?.first_name} {user?.last_name}</p>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass-card rounded-2xl p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6"
+                >
+                    <div className="flex items-center gap-6">
+                        <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${roleTheme.gradient} flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                            {user?.first_name?.charAt(0)}
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{user?.email}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Account Type</p>
-                            <p className="text-lg font-semibold capitalize text-gray-900 dark:text-white">{user?.user_type}</p>
+                            <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-1">
+                                Hello, <span className={`text-transparent bg-clip-text bg-gradient-to-r ${roleTheme.gradient}`}>{user?.first_name}</span>!
+                            </h1>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium">{user?.email}</p>
+                            <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-opacity-10 ${roleTheme.bg} ${roleTheme.text}`}>
+                                {user?.user_type} Account
+                            </span>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 <ErrorMessage message={error} />
 

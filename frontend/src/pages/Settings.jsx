@@ -175,7 +175,7 @@ const Settings = () => {
                                             {activeSection === section.id && (
                                                 <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${roleTheme.gradient}`}></div>
                                             )}
-                                            <span className={`text-xl me-4 relative z-10 ${activeSection === section.id ? roleTheme.text : `text-gray-400 group-hover:${roleTheme.text}`}`}>
+                                            <span className={`text-xl me-4 relative z-10 ${activeSection === section.id ? roleTheme.text : `text-gray-400 ${roleTheme.groupHoverText}`}`}>
                                                 {section.icon}
                                             </span>
                                             <div className="text-start relative z-10">
@@ -241,7 +241,7 @@ const Settings = () => {
                                                         <FaEnvelope className="text-gray-400" /> {user?.email}
                                                     </p>
                                                     <div className={`inline-flex items-center px-4 py-1.5 rounded-full ${roleTheme.bgLight} ${roleTheme.text} text-sm font-bold shadow-sm border ${roleTheme.border}`}>
-                                                        <span className="opacity-70 font-normal mr-1">{t('settings.role')}:</span> <span className="uppercase tracking-wider">{user?.role}</span>
+                                                        <span className="opacity-70 font-normal mr-1">{t('settings.role')}:</span> <span className="uppercase tracking-wider">{user?.user_type}</span>
                                                     </div>
                                                 </div>
                                             </div>

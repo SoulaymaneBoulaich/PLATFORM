@@ -62,7 +62,7 @@ const Agents = () => {
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12 animate-enter">
-                    <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-purple-600 to-blue-600 dark:from-teal-400 dark:via-purple-400 dark:to-blue-400 mb-4 drop-shadow-sm">
+                    <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-slate-600 dark:from-blue-400 dark:via-indigo-400 dark:to-slate-400 mb-4 drop-shadow-sm">
                         Elite Agents
                     </h1>
                     <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
@@ -73,7 +73,7 @@ const Agents = () => {
                 {/* Glass Portal Search */}
                 <div className="mb-16 flex justify-center animate-enter stagger-1">
                     <div className="relative group w-full max-w-xl">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-60 transition duration-500"></div>
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-60 transition duration-500"></div>
                         <div className="relative glass-card p-1">
                             <input
                                 type="text"
@@ -118,14 +118,15 @@ const Agents = () => {
                                 className="group relative"
                             >
                                 {/* Holographic Card */}
-                                <div className="h-full glass-card p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-neon border-white/40 dark:border-white/5 hover:border-teal-500/30 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-2xl">
+                                <div className="h-full glass-card p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-neon border-white/40 dark:border-white/5 hover:border-blue-500/30 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-2xl">
 
                                     {/* Neon Glow Hover Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 via-purple-500/0 to-blue-500/0 group-hover:from-teal-500/5 group-hover:via-purple-500/5 group-hover:to-blue-500/5 transition-all duration-500"></div>
+                                    {/* Neon Glow Hover Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-indigo-500/0 to-slate-500/0 group-hover:from-blue-500/5 group-hover:via-indigo-500/5 group-hover:to-slate-500/5 transition-all duration-500"></div>
 
                                     {/* Profile Image with Story Ring */}
                                     <div className="relative mb-6 transform group-hover:scale-105 transition-transform duration-500">
-                                        <div className="absolute -inset-1 bg-gradient-to-tr from-teal-400 via-purple-500 to-blue-500 rounded-full opacity-70 blur-sm group-hover:opacity-100 transition-opacity"></div>
+                                        <div className="absolute -inset-1 bg-gradient-to-tr from-blue-400 via-indigo-500 to-slate-500 rounded-full opacity-70 blur-sm group-hover:opacity-100 transition-opacity"></div>
                                         <div className="relative p-[3px] rounded-full bg-white dark:bg-slate-900">
                                             <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-800">
                                                 {agent.profile_image_url ? (
@@ -156,7 +157,7 @@ const Agents = () => {
                                     </div>
 
                                     {/* Info */}
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-teal-400 group-hover:to-blue-500 transition-all duration-300">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-indigo-500 transition-all duration-300">
                                         {agent.first_name} {agent.last_name}
                                     </h3>
 
@@ -169,7 +170,7 @@ const Agents = () => {
 
                                     {/* Stats Badge */}
                                     <div className="flex items-center gap-3 mb-6">
-                                        <span className="px-3 py-1 rounded-lg bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 text-xs font-bold uppercase tracking-wider">
+                                        <span className="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">
                                             {agent.property_count || 0} Listings
                                         </span>
                                         {agent.avg_rating > 0 && (
@@ -191,7 +192,7 @@ const Agents = () => {
                                             <StartChatButton
                                                 targetUser={{ user_id: agent.user_id, first_name: agent.first_name, last_name: agent.last_name }}
                                                 variant="icon"
-                                                className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-500 to-blue-500 text-white flex items-center justify-center hover:scale-110 shadow-lg hover:shadow-teal-500/50 transition-all"
+                                                className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center hover:scale-110 shadow-lg hover:shadow-blue-500/50 transition-all"
                                             />
                                         </div>
                                     </div>

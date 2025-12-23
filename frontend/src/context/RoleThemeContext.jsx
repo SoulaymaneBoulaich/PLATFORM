@@ -22,6 +22,8 @@ export const RoleThemeProvider = ({ children }) => {
                 bgLight: 'bg-teal-50 dark:bg-teal-900/20',
                 border: 'border-teal-600',
                 heroGradient: 'from-teal-50 to-emerald-50 dark:from-slate-800 dark:to-slate-900',
+                groupHoverText: 'group-hover:text-teal-600 dark:group-hover:text-teal-400',
+                hoverText: 'hover:text-teal-600 dark:hover:text-teal-400',
             };
         }
 
@@ -37,6 +39,8 @@ export const RoleThemeProvider = ({ children }) => {
                     bgLight: 'bg-purple-50 dark:bg-purple-900/20',
                     border: 'border-purple-600',
                     heroGradient: 'from-purple-50 to-violet-50 dark:from-slate-800 dark:to-slate-900',
+                    groupHoverText: 'group-hover:text-purple-600 dark:group-hover:text-purple-400',
+                    hoverText: 'hover:text-purple-600 dark:hover:text-purple-400',
                 };
 
             case 'agent':
@@ -50,6 +54,8 @@ export const RoleThemeProvider = ({ children }) => {
                     bgLight: 'bg-blue-50 dark:bg-blue-900/20',
                     border: 'border-blue-600',
                     heroGradient: 'from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900',
+                    groupHoverText: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
+                    hoverText: 'hover:text-blue-600 dark:hover:text-blue-400',
                 };
 
             default: // buyer
@@ -63,6 +69,8 @@ export const RoleThemeProvider = ({ children }) => {
                     bgLight: 'bg-teal-50 dark:bg-teal-900/20',
                     border: 'border-teal-600',
                     heroGradient: 'from-teal-50 to-emerald-50 dark:from-slate-800 dark:to-slate-900',
+                    groupHoverText: 'group-hover:text-teal-600 dark:group-hover:text-teal-400',
+                    hoverText: 'hover:text-teal-600 dark:hover:text-teal-400',
                 };
         }
     };

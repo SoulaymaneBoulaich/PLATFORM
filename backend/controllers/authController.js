@@ -140,6 +140,8 @@ exports.login = async (req, res, next) => {
                 agency_name: user.agency_name,
                 license_id: user.license_id,
                 profile_image_url: user.profile_image_url,
+                phone: user.phone,
+                location: user.location || user.address, // Handle potential field naming difference
             },
         });
     } catch (err) {

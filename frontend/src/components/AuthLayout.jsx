@@ -26,7 +26,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50 dark:bg-slate-900">
+        <div className="min-h-screen flex flex-col md:flex-row md:overflow-hidden bg-slate-50 dark:bg-slate-900">
             {/* Left Panel - Hero Section */}
             <div className="relative w-full md:w-1/2 bg-gradient-to-br from-teal-600 to-emerald-800 dark:from-slate-900 dark:to-teal-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
                 {/* Floating Orbs */}
