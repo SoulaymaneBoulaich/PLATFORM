@@ -132,17 +132,31 @@
   /* Premium Glass Cards */
   .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
     @apply rounded-3xl transition-all duration-500;
   }
 
+  /* Large Glass Panel with more breathing room */
+  .glass-panel {
+    @apply glass-card p-8 md:p-10;
+  }
+
   .glass-card:hover {
     transform: translateY(-8px) scale(1.01);
     box-shadow: var(--shadow-floating);
-    border-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Spacing Utilities */
+  .section-spacing {
+    @apply py-20 md:py-32;
+  }
+
+  .container-breath {
+    @apply max-w-7xl mx-auto px-6 md:px-12 lg:px-16;
   }
 
   /* Input Fields - Floating Label Style */

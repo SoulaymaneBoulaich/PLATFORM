@@ -44,7 +44,7 @@ const Home = () => {
 
     return (
         <PageTransition>
-            <div className="min-h-screen bg-slate-50 dark:bg-slate-900 overflow-hidden pt-20 lg:pt-24">
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-900 overflow-hidden pt-24 lg:pt-24">
                 {/* Hero Section - Aurora Design */}
                 <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
 
@@ -73,11 +73,11 @@ const Home = () => {
                         </div>
 
                         {/* Main Title - Massive & Tight */}
-                        <div className="max-w-4xl mx-auto mb-12 animate-enter stagger-1">
-                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-6 drop-shadow-sm leading-[0.9]">
+                        <div className="max-w-4xl mx-auto mb-8 md:mb-12 animate-enter stagger-1">
+                            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-4 md:mb-6 drop-shadow-sm leading-[0.9]">
                                 {t('home.heroTitle')}
                             </h1>
-                            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+                            <p className="text-lg md:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light leading-relaxed px-4">
                                 {t('home.heroSubtitle')}
                             </p>
                         </div>
@@ -103,7 +103,7 @@ const Home = () => {
                         </div>
 
                         {/* Stats - Minimalist Row */}
-                        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 w-full max-w-4xl opacity-80 animate-enter stagger-3 border-t border-gray-200/50 dark:border-white/10 pt-10">
+                        <div className="mt-24 mb-24 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 w-full max-w-4xl opacity-80 animate-enter stagger-3 border-t border-gray-200/50 dark:border-white/10 pt-12">
                             {[
                                 { label: t('home.stats.properties'), value: '1,000+' },
                                 { label: t('home.stats.cities'), value: '50+' },

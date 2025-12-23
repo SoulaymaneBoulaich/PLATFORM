@@ -60,4 +60,16 @@ app.use('/api/visits', visitRoutes); // Property visits management
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
+
+// Database Keep-Alive (Fix for ECONNRESET/ETIMEDOUT on Railway)
+const pool = require('./config/database');
+setInterval(async () => {
+    try {
+        await pool.query('SELECT 1');
+        // console.log('Keep-alive query sent');
+    } catch (err) {
+        console.error('Keep-alive query failed:', err.message);
+    }
+}, 30000); // Ping every 30 seconds
+
 app.listen(PORT, () => console.log(`API running on port ${PORT}`));
