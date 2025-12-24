@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import { Home, MessageSquare, Star, TrendingUp } from 'lucide-react';
 import useFloat from '../hooks/useFloat';
 
+
 const AuthLayout = ({ children, title, subtitle }) => {
     const floatRef1 = useFloat(0, 10, 5);
     const floatRef2 = useFloat(2, 15, 7);
+
 
     const features = [
         {

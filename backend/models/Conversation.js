@@ -64,6 +64,7 @@ class Conversation {
                 u.first_name as other_first_name,
                 u.last_name as other_last_name,
                 u.user_type as other_role,
+                u.profile_image as other_profile_picture,
                 m.content as last_message,
                 m.created_at as last_message_at,
                 m.sender_id as last_message_sender_id,
@@ -121,6 +122,39 @@ class Conversation {
             'UPDATE conversations SET updated_at = NOW() WHERE conversation_id = ?',
             [conversationId]
         );
+    }
+
+    static async delete(conversationId) {
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Delete participants
+            await connection.query(
+                'DELETE FROM conversation_participants WHERE conversation_id = ?',
+                [conversationId]
+            );
+
+            // Delete messages
+            await connection.query(
+                'DELETE FROM messages WHERE conversation_id = ?',
+                [conversationId]
+            );
+
+            // Delete conversation
+            await connection.query(
+                'DELETE FROM conversations WHERE conversation_id = ?',
+                [conversationId]
+            );
+
+            await connection.commit();
+            return true;
+        } catch (err) {
+            await connection.rollback();
+            throw err;
+        } finally {
+            connection.release();
+        }
     }
 }
 

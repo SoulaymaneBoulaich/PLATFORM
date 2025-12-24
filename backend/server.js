@@ -72,4 +72,11 @@ setInterval(async () => {
     }
 }, 30000); // Ping every 30 seconds
 
-app.listen(PORT, () => console.log(`API running on port ${PORT}`));
+// Socket.io Setup
+const http = require('http');
+const { initSocket } = require('./socketHandler');
+
+const server = http.createServer(app);
+initSocket(server);
+
+server.listen(PORT, () => console.log(`API running on port ${PORT}`));

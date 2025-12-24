@@ -70,4 +70,41 @@ router.delete('/:id/favorites/:propertyId', auth, async (req, res, next) => {
   }
 });
 
+const UserReview = require('../models/UserReview');
+
+// GET /api/users/:id/reviews/stats
+router.get('/:id/reviews/stats', async (req, res, next) => {
+  try {
+    const agentId = +req.params.id;
+    const stats = await UserReview.getStats(agentId);
+    res.json(stats);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/users/:id/reviews
+router.post('/:id/reviews', auth, async (req, res, next) => {
+  try {
+    const agentId = +req.params.id;
+    const reviewerId = req.user.user_id; // From auth middleware
+    const { rating, comment } = req.body;
+
+    if (agentId === reviewerId) {
+      return res.status(400).json({ error: 'You cannot rate yourself' });
+    }
+
+    const result = await UserReview.createOrUpdate({
+      agentId,
+      reviewerId,
+      rating,
+      comment
+    });
+
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

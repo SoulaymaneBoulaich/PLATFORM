@@ -4,6 +4,7 @@ import i18n from './i18n';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { RoleThemeProvider } from './context/RoleThemeContext';
+import { SocketProvider } from './context/SocketContext';
 import AppRouter from './router/AppRouter';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -15,16 +16,18 @@ function App() {
       <ThemeProvider>
         <BrowserRouter>
           <AuthProvider>
-            <RoleThemeProvider>
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow">
-                  <AppRouter />
-                </main>
-                <ScrollToTop />
-                <Footer />
-              </div>
-            </RoleThemeProvider>
+            <SocketProvider>
+              <RoleThemeProvider>
+                <div className="flex flex-col min-h-screen">
+                  <Navbar />
+                  <main className="flex-grow">
+                    <AppRouter />
+                  </main>
+                  <ScrollToTop />
+                  <Footer />
+                </div>
+              </RoleThemeProvider>
+            </SocketProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>

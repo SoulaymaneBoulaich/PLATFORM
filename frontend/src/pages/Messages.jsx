@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import Loader from '../components/Loader';
@@ -7,8 +8,13 @@ import AudioPlayer from '../components/AudioPlayer';
 import Toast from '../components/Toast';
 import { useRoleTheme } from '../context/RoleThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import ConfirmModal from '../components/ConfirmModal';
+import LinkPreview from '../components/LinkPreview';
+import ProfileImage from '../components/ProfileImage';
+import ForwardModal from '../components/ForwardModal';
 
 const Messages = () => {
+    // Force refresh
     const { user } = useAuth();
     const roleTheme = useRoleTheme();
     const [searchParams] = useSearchParams();
@@ -23,7 +29,14 @@ const Messages = () => {
     const [editingMessage, setEditingMessage] = useState(null);
     const [editContent, setEditContent] = useState('');
     const [error, setError] = useState(null);
+    const { socket, onlineUsers } = useSocket();
     const [toast, setToast] = useState(null);
+    const [typingUsers, setTypingUsers] = useState(new Set());
+    const typingTimeoutRef = useRef(null);
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+    const [activeMenuId, setActiveMenuId] = useState(null);
+    const [forwardMessage, setForwardMessage] = useState(null);
+    const [isForwardModalOpen, setIsForwardModalOpen] = useState(false);
 
     // Media states
     const [isRecording, setIsRecording] = useState(false);
@@ -54,17 +67,155 @@ const Messages = () => {
     useEffect(() => {
         if (activeConversation) {
             fetchMessages(activeConversation.conversation_id);
-            const interval = setInterval(() => fetchMessages(activeConversation.conversation_id), 5000);
-            return () => clearInterval(interval);
+            // Join room
+            socket?.emit('join_conversation', activeConversation.conversation_id);
+
+            // Mark visible messages as read (simple version: mark all unread from other)
+            // In production, use IntersectionObserver to only mark visible ones
+            markMessagesAsRead(activeConversation.conversation_id);
         }
-    }, [activeConversation]);
+
+        return () => {
+            if (activeConversation) {
+                socket?.emit('leave_conversation', activeConversation.conversation_id);
+            }
+        };
+    }, [activeConversation, socket]);
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+        if (!socket) return;
+
+        const handleMessageReceived = (msg) => {
+            if (activeConversation && msg.conversation_id === activeConversation.conversation_id) {
+                // Prevent duplicate: if I sent it, I already have it via optimistic UI (which gets updated by handleMessageSent)
+                if (String(msg.sender_id) === String(user.user_id)) return;
+
+                setMessages(prev => {
+                    // Double check for duplicates based on ID just in case
+                    if (prev.some(m => m.message_id === msg.message_id)) return prev;
+                    if (prev.some(m => m.tempId && m.content === msg.content && String(m.sender_id) === String(msg.sender_id))) return prev; // Dedupe against optimistic
+                    return [...prev, msg];
+                });
+                scrollToBottom();
+
+                // Mark as read immediately if window is focused
+                if (document.hasFocus()) {
+                    socket.emit('mark_read', {
+                        conversationId: msg.conversation_id,
+                        messageIds: [msg.message_id]
+                    });
+                }
+            } else {
+                // Look into updating the conversation list preview here if needed
+            }
+        };
+
+        const handleMessageSent = ({ tempId, message_id, status }) => {
+            // Update temp message with real ID and status
+            setMessages(prev => prev.map(m => m.tempId === tempId ? { ...m, message_id, status } : m));
+        };
+
+        const handleMessagesRead = ({ userId, messageIds }) => {
+            // Update status of my messages to 'read'
+            if (userId !== user.user_id) { // If someone else read MY messages
+                setMessages(prev => prev.map(m =>
+                    messageIds.includes(m.message_id) ? { ...m, status: 'read', read_at: new Date() } : m
+                ));
+            }
+        };
+
+        const handleTypingStart = ({ userId }) => {
+            if (userId !== user.user_id) {
+                setTypingUsers(prev => new Set(prev).add(userId));
+            }
+        };
+
+        const handleTypingStop = ({ userId }) => {
+            setTypingUsers(prev => {
+                const next = new Set(prev);
+                next.delete(userId);
+                return next;
+            });
+        };
+
+        socket.on('message_received', handleMessageReceived);
+        socket.on('message_sent', handleMessageSent);
+        socket.on('messages_read', handleMessagesRead);
+        socket.on('typing_start', handleTypingStart);
+        socket.on('typing_stop', handleTypingStop);
+
+        return () => {
+            socket.off('message_received', handleMessageReceived);
+            socket.off('message_sent', handleMessageSent);
+            socket.off('messages_read', handleMessagesRead);
+            socket.off('typing_start', handleTypingStart);
+            socket.off('typing_stop', handleTypingStop);
+        };
+    }, [socket, activeConversation, user]);
+
+    const markMessagesAsRead = async (conversationId) => {
+        try {
+            // Find unread messages from API or local state
+            const unread = messages.filter(m => m.sender_id !== user.user_id && m.status !== 'read');
+            if (unread.length > 0) {
+                const ids = unread.map(m => m.message_id);
+                await api.post(`/messages/mark-read`, { messageIds: ids }); // You might need this endpoint or use socket
+                socket?.emit('mark_read', { conversationId, messageIds: ids });
+            }
+            // Also simple socket emit for safety
+            // socket?.emit('mark_read_all', conversationId);
+        } catch (err) { console.error(err); }
+    };
+
+    // Typing Handler
+    const handleTyping = () => {
+        if (!socket || !activeConversation) return;
+        socket.emit('typing_start', activeConversation.conversation_id);
+
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => {
+            socket.emit('typing_stop', activeConversation.conversation_id);
+        }, 2000);
+    };
+
+    // Auto-scroll removed as requested
+    // useLayoutEffect(() => {
+    //     scrollToBottom();
+    // }, [messages, activeConversation]);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+            // Fallback for immediate scroll on initial load (avoids smooth scroll lag)
+            if (loading) {
+                messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }
+        }
+    };
+
+    const handleDeleteConversation = (e, conversationId) => {
+        e.stopPropagation();
+        setConfirmModal({
+            isOpen: true,
+            title: 'Delete Conversation',
+            message: 'Are you sure you want to delete this conversation? This action cannot be undone.',
+            confirmText: 'Delete',
+            type: 'danger',
+            onConfirm: async () => {
+                try {
+                    await api.delete(`/conversations/${conversationId}`);
+                    setConversations(prev => prev.filter(c => c.conversation_id !== conversationId));
+                    if (activeConversation?.conversation_id === conversationId) {
+                        setActiveConversation(null);
+                    }
+                    setToast({ message: 'Conversation deleted', type: 'success' });
+                } catch (err) {
+                    console.error('Failed to delete conversation:', err);
+                    setToast({ message: 'Failed to delete conversation', type: 'error' });
+                }
+            }
+        });
     };
 
     const fetchConversations = async () => {
@@ -104,8 +255,33 @@ const Messages = () => {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                await api.post(`/conversations/${activeConversation.conversation_id}/messages`, {
+
+                // Optimistic UI
+                const tempId = Date.now();
+                const optimisticMsg = {
+                    message_id: tempId,
+                    conversation_id: activeConversation.conversation_id,
+                    sender_id: user.user_id,
+                    content: newMessage,
+                    status: 'sending', // distinct status
+                    created_at: new Date().toISOString(),
+                    tempId
+                };
+                setMessages(prev => [...prev, optimisticMsg]);
+
+                // 1. Call API FIRST to persist and get ID
+                const res = await api.post(`/conversations/${activeConversation.conversation_id}/messages`, {
                     content: newMessage
+                });
+
+                const realMessageId = res.data.message_id;
+
+                // 2. Emit via socket with the REAL ID
+                socket?.emit('send_message', {
+                    conversationId: activeConversation.conversation_id,
+                    content: newMessage,
+                    tempId,
+                    message_id: realMessageId // Pass the ID to the socket
                 });
             }
 
@@ -192,16 +368,53 @@ const Messages = () => {
         }
     };
 
-    const handleDeleteMessage = async (messageId) => {
-        if (!window.confirm('Are you sure you want to delete this message?')) return;
+    const handleDeleteMessage = (messageId) => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Delete Message',
+            message: 'Are you sure you want to delete this message?',
+            confirmText: 'Delete',
+            type: 'danger',
+            onConfirm: async () => {
+                try {
+                    await api.delete(`/messages/${messageId}`);
+                    await fetchMessages(activeConversation.conversation_id);
+                } catch (err) {
+                    console.error('Failed to delete message:', err);
+                    setToast({ message: 'Failed to delete message. Please try again.', type: 'error' });
+                }
+            }
+        });
+    };
+
+    const executeForward = async (targetConversationId) => {
+        if (!forwardMessage) return;
 
         try {
-            await api.delete(`/messages/${messageId}`);
-            await fetchMessages(activeConversation.conversation_id);
+            const contentToForward = forwardMessage.content;
+            // Handle both snake_case (DB) and camelCase (API/Socket)
+            const mediaUrl = forwardMessage.media_url || forwardMessage.mediaUrl;
+            const mediaType = forwardMessage.media_type || forwardMessage.mediaType || 'TEXT';
+
+            // Send via API
+            await api.post(`/messages`, {
+                conversationId: targetConversationId,
+                content: contentToForward,
+                mediaUrl,
+                mediaType
+            });
+
+            setToast({ message: 'Message forwarded', type: 'success' });
         } catch (err) {
-            console.error('Failed to delete message:', err);
-            setToast({ message: 'Failed to delete message. Please try again.', type: 'error' });
+            console.error('Failed to forward', err);
+            setToast({ message: 'Failed to forward message', type: 'error' });
         }
+    };
+
+    const handleForwardAction = (msg) => {
+        setForwardMessage(msg);
+        setIsForwardModalOpen(true);
+        setActiveMenuId(null);
     };
 
     const startEdit = (message) => {
@@ -290,11 +503,16 @@ const Messages = () => {
                                             )}
 
                                             <div className="flex items-center gap-4 relative z-10">
-                                                <div className={`w-12 h-12 rounded-2xl shadow-sm flex items-center justify-center text-lg font-bold transition-transform duration-300 ${activeConversation?.conversation_id === conv.conversation_id
+                                                <div className={`w-12 h-12 rounded-2xl shadow-sm flex items-center justify-center text-lg font-bold transition-transform duration-300 overflow-hidden ${activeConversation?.conversation_id === conv.conversation_id
                                                     ? `bg-gradient-to-br ${roleTheme.gradient} text-white scale-105`
                                                     : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 text-slate-600 dark:text-slate-200 group-hover:scale-105'
                                                     }`}>
-                                                    {conv.other_first_name?.charAt(0)}
+                                                    <ProfileImage
+                                                        src={conv.other_profile_picture}
+                                                        alt="Profile"
+                                                        className="w-full h-full object-cover"
+                                                        fallbackText={conv.other_first_name?.charAt(0)}
+                                                    />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-baseline mb-0.5">
@@ -304,6 +522,15 @@ const Messages = () => {
                                                             }`}>
                                                             {conv.other_first_name} {conv.other_last_name}
                                                         </p>
+                                                        {activeConversation?.conversation_id !== conv.conversation_id && (
+                                                            <button
+                                                                onClick={(e) => handleDeleteConversation(e, conv.conversation_id)}
+                                                                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 hover:text-red-500 rounded text-slate-400 transition-all"
+                                                                title="Delete conversation"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                            </button>
+                                                        )}
                                                     </div>
                                                     <p className={`text-xs truncate font-medium transition-colors ${activeConversation?.conversation_id === conv.conversation_id
                                                         ? `text-${roleTheme.primary}-600 dark:text-${roleTheme.primary}-400`
@@ -331,16 +558,23 @@ const Messages = () => {
                                     </button>
 
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl shadow-lg flex items-center justify-center text-white font-bold bg-gradient-to-br ${roleTheme.gradient}`}>
-                                            {activeConversation.other_first_name?.charAt(0)}
+                                        <div className={`w-10 h-10 rounded-xl shadow-lg flex items-center justify-center text-white font-bold bg-gradient-to-br ${roleTheme.gradient} overflow-hidden`}>
+                                            <ProfileImage
+                                                src={activeConversation.other_profile_picture}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                                fallbackText={activeConversation.other_first_name?.charAt(0)}
+                                            />
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-slate-900 dark:text-white text-lg leading-tight flex items-center gap-2">
                                                 {activeConversation.other_first_name} {activeConversation.other_last_name}
                                             </h3>
                                             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                                {activeConversation.property_title}
+                                                <span className={`w-1.5 h-1.5 rounded-full ${onlineUsers.has(activeConversation.other_user_id) ? 'bg-green-500' : 'bg-slate-400'} animate-pulse`}></span>
+                                                {typingUsers.size > 0 ? (
+                                                    <span className="text-blue-500 animate-pulse">Typing...</span>
+                                                ) : onlineUsers.has(activeConversation.other_user_id) ? 'Online' : activeConversation.property_title}
                                             </p>
                                         </div>
                                     </div>
@@ -370,8 +604,8 @@ const Messages = () => {
                                                     transition={{ duration: 0.3 }}
                                                     className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                                                 >
-                                                    <div className={`max-w-[85%] md:max-w-[70%] ${isOwn ? 'order-1' : 'order-2'}`}>
-                                                        <div className={`rounded-2xl relative transition-all duration-300 group overflow-hidden ${msg.media_type === 'AUDIO' && !msg.content
+                                                    <div className={`max-w-[85%] md:max-w-[70%] ${isOwn ? 'order-1' : 'order-2'} relative group`}>
+                                                        <div className={`rounded-2xl relative transition-all duration-300 overflow-hidden ${msg.media_type === 'AUDIO' && !msg.content
                                                             ? ''
                                                             : `px-5 py-3.5 shadow-sm ${isOwn
                                                                 ? `bg-gradient-to-br ${roleTheme.gradient} text-white rounded-tr-sm shadow-blue-500/10`
@@ -409,19 +643,70 @@ const Messages = () => {
                                                             )}
                                                         </div>
 
-                                                        {/* Footer & Actions */}
-                                                        <div className={`flex items-center gap-2 mt-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                                                            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                                                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                            </span>
-                                                            {isOwn && !isDeleted && (
-                                                                <>
-                                                                    {msg.media_type === 'TEXT' && (
-                                                                        <button onClick={() => startEdit(msg)} className="text-[10px] font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase">Edit</button>
+                                                        {/* Message Menu Trigger */}
+                                                        <div className={`absolute top-0 ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} h-full flex items-start pt-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity`}>
+                                                            <div className="relative">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setActiveMenuId(activeMenuId === msg.message_id ? null : msg.message_id);
+                                                                    }}
+                                                                    className="p-1.5 rounded-full bg-white dark:bg-slate-700 shadow-sm border border-slate-100 dark:border-slate-600 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+                                                                >
+                                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                                                </button>
+
+                                                                {/* Dropdown Menu */}
+                                                                <AnimatePresence>
+                                                                    {activeMenuId === msg.message_id && (
+                                                                        <motion.div
+                                                                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                                            className={`absolute top-8 ${isOwn ? 'right-0' : 'left-0'} w-32 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50`}
+                                                                        >
+                                                                            <div className="py-1">
+                                                                                <button onClick={() => { navigator.clipboard.writeText(msg.content); setActiveMenuId(null); setToast({ message: 'Copied', type: 'success' }); }} className="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                                    <span>📋</span> Copy
+                                                                                </button>
+                                                                                <button onClick={() => { handleForwardAction(msg); }} className="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                                    <span>➡️</span> Forward
+                                                                                </button>
+                                                                                {isOwn && !isDeleted && (
+                                                                                    <>
+                                                                                        {msg.media_type === 'TEXT' && (
+                                                                                            <button onClick={() => { startEdit(msg); setActiveMenuId(null); }} className="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                                                <span>✏️</span> Edit
+                                                                                            </button>
+                                                                                        )}
+                                                                                        <button onClick={() => { handleDeleteMessage(msg.message_id); setActiveMenuId(null); }} className="w-full text-left px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
+                                                                                            <span>🗑️</span> Delete
+                                                                                        </button>
+                                                                                    </>
+                                                                                )}
+                                                                            </div>
+                                                                        </motion.div>
                                                                     )}
-                                                                    <button onClick={() => handleDeleteMessage(msg.message_id)} className="text-[10px] font-bold text-slate-500 hover:text-red-600 transition-colors uppercase">Delete</button>
-                                                                </>
-                                                            )}
+                                                                </AnimatePresence>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Footer Timestamp */}
+                                                        <div className={`flex items-center gap-2 mt-1 px-1 opacity-70 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                                                            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                                                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                {isOwn && (
+                                                                    <span className="ml-1" title={msg.status}>
+                                                                        {msg.status === 'read' ? (
+                                                                            <span className="text-blue-500">✓✓</span>
+                                                                        ) : msg.status === 'delivered' ? (
+                                                                            <span className="text-slate-400">✓✓</span>
+                                                                        ) : (
+                                                                            <span className="text-slate-300">✓</span>
+                                                                        )}
+                                                                    </span>
+                                                                )}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </motion.div>
@@ -508,7 +793,10 @@ const Messages = () => {
                                                 <input
                                                     type="text"
                                                     value={editingMessage ? editContent : newMessage}
-                                                    onChange={(e) => editingMessage ? setEditContent(e.target.value) : setNewMessage(e.target.value)}
+                                                    onChange={(e) => {
+                                                        editingMessage ? setEditContent(e.target.value) : setNewMessage(e.target.value);
+                                                        if (!editingMessage) handleTyping();
+                                                    }}
                                                     placeholder={editingMessage ? "Update your message..." : "Type your message..."}
                                                     className="w-full bg-transparent border-none py-3 px-4 focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500 text-slate-800 dark:text-slate-100"
                                                     disabled={sending || (isRecording && !editingMessage)}
@@ -581,6 +869,22 @@ const Messages = () => {
                     onClose={() => setToast(null)}
                 />
             )}
+            <ConfirmModal
+                isOpen={confirmModal.isOpen}
+                onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                type={confirmModal.type}
+            />
+            <ForwardModal
+                isOpen={isForwardModalOpen}
+                onClose={() => setIsForwardModalOpen(false)}
+                conversations={conversations}
+                onForward={executeForward}
+                currentConversationId={activeConversation?.conversation_id}
+            />
         </motion.div>
     );
 };

@@ -110,4 +110,14 @@ router.post('/:id/messages', auth, requireConversationParticipant(), async (req,
   }
 });
 
+// DELETE /api/conversations/:id - Delete a conversation
+router.delete('/:id', auth, requireConversationParticipant(), async (req, res, next) => {
+  try {
+    await Conversation.delete(req.params.id);
+    res.json({ message: 'Conversation deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

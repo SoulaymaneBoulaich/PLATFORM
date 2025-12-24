@@ -3,9 +3,11 @@ import { useRef, useState, useEffect } from 'react';
 import FavoriteButton from './FavoriteButton';
 import useFloat from '../hooks/useFloat';
 
+
 const PropertyCard = ({ property, onDelete, onEdit, showActions = false, delayIndex = 0 }) => {
     const cardRef = useRef(null);
     const floatRef = useFloat(delayIndex * 0.2); // Staggered floating
+
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
     const [currentImgIndex, setCurrentImgIndex] = useState(0);
@@ -73,17 +75,14 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false, delayIn
                 onMouseEnter={handleMouseEnter}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="glass-card h-full overflow-hidden relative preserve-3d hover:shadow-premium"
-                style={{
-                    transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1, 1, 1)`,
-                    transition: 'transform 0.1s ease-out, box-shadow 0.3s ease'
-                }}
+                className="h-full overflow-hidden relative shadow-xl hover:shadow-2xl bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 flex flex-col transition-shadow duration-300"
+                style={{}}
             >
                 <div ref={floatRef} className="h-full flex flex-col">
 
                     {/* Image Container */}
                     <Link to={`/properties/${property.property_id}`} className="block relative h-72 overflow-hidden rounded-t-2xl">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-80 group-hover:opacity-60 transition-opacity" />
+                        {/* Removed Overlay */}
 
                         <img
                             src={src}
@@ -128,14 +127,14 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false, delayIn
                     </Link>
 
                     {/* Content */}
-                    <div className="p-6 flex-1 flex flex-col relative z-0 bg-white/50 dark:bg-slate-800/50">
+                    <div className="p-6 flex-1 flex flex-col relative z-0 bg-transparent">
                         <Link to={`/properties/${property.property_id}`}>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-teal-600 transition-colors">
+                            <h3 className="text-xl font-bold text-black dark:text-white mb-2 line-clamp-1 group-hover:text-teal-600 transition-colors">
                                 {property.title}
                             </h3>
                         </Link>
 
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4 text-sm">
+                        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 mb-4 text-sm font-medium">
                             <span className="line-clamp-1">{property.address}, {property.city}</span>
                         </div>
 
@@ -148,15 +147,15 @@ const PropertyCard = ({ property, onDelete, onEdit, showActions = false, delayIn
                         {/* Features Grid */}
                         <div className="grid grid-cols-3 gap-2 py-4 border-t border-gray-100/50 dark:border-gray-700/50 mt-auto">
                             <div className="text-center">
-                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.bedrooms}</span>
+                                <span className="block font-bold text-slate-900 dark:text-white">{property.bedrooms}</span>
                                 <span className="text-xs text-gray-500">Beds</span>
                             </div>
                             <div className="text-center border-l border-gray-100 dark:border-gray-700">
-                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.bathrooms}</span>
+                                <span className="block font-bold text-slate-900 dark:text-white">{property.bathrooms}</span>
                                 <span className="text-xs text-gray-500">Baths</span>
                             </div>
                             <div className="text-center border-l border-gray-100 dark:border-gray-700">
-                                <span className="block font-bold text-gray-800 dark:text-gray-200">{property.area}</span>
+                                <span className="block font-bold text-slate-900 dark:text-white">{property.area}</span>
                                 <span className="text-xs text-gray-500">Sqft</span>
                             </div>
                         </div>
