@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import useMagnetic from '../hooks/useMagnetic';
 import useFloat from '../hooks/useFloat';
+import ProfileImage from './ProfileImage';
 
 const MagneticNavItem = ({ children, to, className, active }) => {
     const itemRef = useRef(null);
@@ -45,7 +46,7 @@ const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
 
-    const logoRef = useFloat(0, 5, 4);
+
 
     // Role-based theme colors
     const getThemeColors = () => {
@@ -175,6 +176,8 @@ const Navbar = () => {
 
     const navClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out transform ${visible ? 'translate-y-0' : '-translate-y-full'
         } ${scrolled ? 'py-2 mx-4 mt-4 glass-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-xl' : 'py-4 bg-transparent'}`;
+
+    const logoRef = useFloat(0, 5, 4);
 
     return (
         !isAuthPage && (
@@ -309,17 +312,16 @@ const Navbar = () => {
                                             }}
                                             className="flex items-center gap-3 p-1.5 pr-4 rounded-full glass-card hover:bg-white/80 transition-all hover:scale-105"
                                         >
-                                            {user?.profile_image_url ? (
-                                                <img
-                                                    src={user.profile_image_url.startsWith('/') ? `http://localhost:3001${user.profile_image_url}` : user.profile_image_url}
-                                                    alt="Profile"
-                                                    className="w-9 h-9 rounded-full object-cover border-2 border-white"
-                                                />
-                                            ) : (
-                                                <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${theme.gradient} flex items-center justify-center text-white text-sm font-bold shadow-md`}>
-                                                    {user?.first_name?.charAt(0)}{user?.last_name?.charAt(0)}
-                                                </div>
-                                            )}
+                                            <ProfileImage
+                                                src={user?.profile_image_url}
+                                                alt="Profile"
+                                                className="w-9 h-9 rounded-full object-cover border-2 border-white"
+                                                fallbackText={
+                                                    <div className={`w-full h-full flex items-center justify-center`}>
+                                                        {user?.first_name?.charAt(0)}{user?.last_name?.charAt(0)}
+                                                    </div>
+                                                }
+                                            />
                                             <svg className="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showUserMenu ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
                                             </svg>
@@ -407,13 +409,16 @@ const Navbar = () => {
                                             <div className="px-4 py-2">
                                                 <p className="text-xs font-bold uppercase text-gray-500 mb-1">Account</p>
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    {user?.profile_image_url ? (
-                                                        <img src={user.profile_image_url} alt="Profile" className="w-8 h-8 rounded-full" />
-                                                    ) : (
-                                                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${theme.gradient} flex items-center justify-center text-white text-xs font-bold`}>
-                                                            {user?.first_name?.charAt(0)}
-                                                        </div>
-                                                    )}
+                                                    <ProfileImage
+                                                        src={user?.profile_image_url}
+                                                        alt="Profile"
+                                                        className="w-8 h-8 rounded-full"
+                                                        fallbackText={
+                                                            <div className={`w-full h-full flex items-center justify-center`}>
+                                                                {user?.first_name?.charAt(0)}
+                                                            </div>
+                                                        }
+                                                    />
                                                     <span className="font-bold text-gray-900 dark:text-white">{user?.first_name}</span>
                                                 </div>
                                             </div>

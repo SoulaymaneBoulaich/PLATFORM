@@ -20,7 +20,7 @@ class Agent {
                 u.profile_image as avatar,
                 (SELECT COUNT(*) FROM properties p WHERE p.seller_id = u.user_id OR p.agent_id = a.agent_id) as property_count,
                 (SELECT COUNT(*) FROM reviews r WHERE r.agent_id = a.agent_id) as review_count,
-                (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as rating
+                (SELECT AVG(rating) FROM reviews r WHERE r.agent_id = a.agent_id) as avg_rating
             FROM users u
             LEFT JOIN agents a ON u.user_id = a.user_id
             WHERE u.user_type IN ('agent', 'seller')

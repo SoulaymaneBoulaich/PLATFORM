@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
-import PropertyCard from '../components/PropertyCard';
+import PropertyCard from '../components/PropertyCard.jsx';
 import { SkeletonPropertyList } from '../components/SkeletonLoader';
 import PageTransition from '../components/PageTransition';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -373,29 +373,15 @@ const PropertyList = () => {
                         {loading ? (
                             <SkeletonPropertyList count={6} />
                         ) : filteredProperties.length > 0 ? (
-                            <motion.div
-                                layout
-                                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8"
-                            >
-                                <AnimatePresence>
-                                    {filteredProperties.map((property, index) => (
-                                        <motion.div
-                                            key={property.property_id}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95 }}
-                                            transition={{ duration: 0.3, delay: index * 0.05 }}
-                                            layout
-                                        >
-                                            <PropertyCard
-                                                property={property}
-                                                // Remove delayIndex if we use framer-motion here directly, or keep for internal card anims
-                                                delayIndex={0}
-                                            />
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </motion.div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                                {filteredProperties.map((property, index) => (
+                                    <PropertyCard
+                                        key={property.property_id}
+                                        property={property}
+                                        delayIndex={index}
+                                    />
+                                ))}
+                            </div>
                         ) : (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}

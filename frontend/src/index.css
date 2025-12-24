@@ -40,10 +40,11 @@
     --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
     --gradient-dark-glass: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.4));
 
-    /* Glass Morphism */
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    /* Card Styles - Solid & Visible (Restored) */
+    --glass-bg: #ffffff;
+    --glass-border: #e2e8f0;
+    /* slate-200 */
+    --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
     /* Depth & Shadows */
     --shadow-neumorph: 20px 20px 60px #d1d5db, -20px -20px 60px #ffffff;
@@ -130,18 +131,15 @@
   }
 
   /* Premium Glass Cards */
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    @apply rounded-3xl transition-all duration-500;
+  /* Premium Cards (Solid) */
+  .glass-card,
+  .glass-panel {
+    @apply bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl transition-all duration-500;
   }
 
   /* Large Glass Panel with more breathing room */
   .glass-panel {
-    @apply glass-card p-8 md:p-10;
+    @apply p-8 md:p-10;
   }
 
   .glass-card:hover {

@@ -13,6 +13,9 @@ class Message {
                 m.updated_at,
                 m.is_edited,
                 m.deleted_at,
+                m.status,
+                m.delivered_at,
+                m.read_at,
                 u.first_name,
                 u.last_name,
                 u.user_type as role
@@ -27,7 +30,7 @@ class Message {
     static async create(data) {
         const { conversationId, senderId, content, mediaUrl, mediaType } = data;
         const [result] = await pool.query(
-            'INSERT INTO messages (conversation_id, sender_id, content, media_url, media_type) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO messages (conversation_id, sender_id, content, media_url, media_type, status) VALUES (?, ?, ?, ?, ?, "sent")',
             [conversationId, senderId, content, mediaUrl || null, mediaType || null]
         );
         return result.insertId;
@@ -53,6 +56,30 @@ class Message {
             [messageId]
         );
         return messages[0] || null;
+    }
+
+    static async markAsReadForUser(messageIds, userId) {
+        if (!messageIds || messageIds.length === 0) return;
+
+        // We only mark as read messages that were sent TO this user. 
+        // Logic: Message.sender_id != userId. 
+        // Ideally we check conversation participants, but assuming messageIds are valid:
+        const placeholders = messageIds.map(() => '?').join(',');
+        await pool.query(
+            `UPDATE messages 
+             SET status = 'read', read_at = NOW() 
+             WHERE message_id IN (${placeholders}) AND sender_id != ?`,
+            [...messageIds, userId]
+        );
+    }
+
+    static async findUnreadByConversation(conversationId, userId) {
+        const [messages] = await pool.query(
+            `SELECT message_id FROM messages 
+             WHERE conversation_id = ? AND sender_id != ? AND status != 'read'`,
+            [conversationId, userId]
+        );
+        return messages;
     }
 }
 
