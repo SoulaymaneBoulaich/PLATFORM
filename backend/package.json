@@ -12,6 +12,7 @@
     "seed:agents": "node scripts/seeds/seed-agents.js",
     "seed:images": "node scripts/seeds/seed-property-images.js",
     "seed:presentation": "node scripts/seeds/seed-presentation.js",
+    "seed:offers": "node scripts/seeds/seed-offers.js",
     "db:restore": "node scripts/restore-db.js"
   },
   "dependencies": {
@@ -35,5 +36,10 @@
     "nodemon": "^3.1.0",
     "jest": "^29.6.1",
     "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "setupFilesAfterEnv": ["<rootDir>/test/teardown.js"]
   }
 }
