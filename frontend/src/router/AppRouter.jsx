@@ -18,6 +18,7 @@ import Settings from '../pages/Settings';
 import Offers from '../pages/Offers';
 import Favorites from '../pages/Favorites';
 import PageTransition from '../components/PageTransition';
+import StyleGuide from '../pages/StyleGuide';
 
 
 const AppRouter = () => {
@@ -68,6 +69,7 @@ const AppRouter = () => {
                     <PageTransition><Favorites /></PageTransition>
                 </ProtectedRoute>
             } />
+            <Route path="/styleguide" element={<PageTransition><StyleGuide /></PageTransition>} />
         </Routes>
     );
 };
