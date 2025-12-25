@@ -61,22 +61,41 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-// Database Keep-Alive (Fix for ECONNRESET/ETIMEDOUT on Railway)
-const pool = require('./config/database');
-setInterval(async () => {
-    try {
-        await pool.query('SELECT 1');
-        // console.log('Keep-alive query sent');
-    } catch (err) {
-        console.error('Keep-alive query failed:', err.message);
-    }
-}, 30000); // Ping every 30 seconds
-
-// Socket.io Setup
+// Export app and server creation so tests can import app without starting the server
 const http = require('http');
 const { initSocket } = require('./socketHandler');
 
 const server = http.createServer(app);
 initSocket(server);
 
-server.listen(PORT, () => console.log(`API running on port ${PORT}`));
+// Only start listening and the DB keep-alive when this file is run directly
+if (require.main === module) {
+  // Database Keep-Alive (Fix for ECONNRESET/ETIMEDOUT on Railway)
+  const pool = require('./config/database');
+  const keepAlive = setInterval(async () => {
+      try {
+          await pool.query('SELECT 1');
+          // console.log('Keep-alive query sent');
+      } catch (err) {
+          console.error('Keep-alive query failed:', err.message);
+      }
+  }, 30000); // Ping every 30 seconds
+
+  server.listen(PORT, () => console.log(`API running on port ${PORT}`));
+
+  // Graceful shutdown
+  const shutdown = async () => {
+    clearInterval(keepAlive);
+    try {
+      await pool.end();
+    } catch (err) {
+      // ignore errors during shutdown
+    }
+    server.close(() => process.exit(0));
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+}
+
+module.exports = { app, server };

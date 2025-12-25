@@ -9,6 +9,25 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: real_estate_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent -ppassword"
+          --health-interval=5s
+          --health-timeout=2s
+          --health-retries=10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: real_estate_db
+      DB_PORT: 3306
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -34,6 +53,22 @@ jobs:
             npm install
             npm i --package-lock-only
           fi || npm install
+
+      - name: Wait for MySQL
+        working-directory: ./backend
+        run: |
+          node -e "const mysql=require('mysql2/promise'); (async function(){for(let i=0;i<60;i++){try{const c=await mysql.createConnection({host:process.env.DB_HOST,user:process.env.DB_USER,password:process.env.DB_PASSWORD,port:process.env.DB_PORT}); await c.end(); console.log('DB ready'); process.exit(0);}catch(e){await new Promise(r=>setTimeout(r,1000));}} console.error('Timed out waiting for DB'); process.exit(1);})()"
+
+      - name: Run migrations
+        working-directory: ./backend
+        run: npm run migrate:all
+
+      - name: Seed DB (presentation + offers)
+        working-directory: ./backend
+        run: |
+          npm run seed:presentation || echo 'presentation seed failed or skipped'
+          npm run seed:offers || echo 'offers seed failed or skipped'
+
       - name: Run backend tests
         working-directory: ./backend
         run: npm test
