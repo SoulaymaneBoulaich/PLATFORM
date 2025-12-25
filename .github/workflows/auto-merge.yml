@@ -1,0 +1,74 @@
+name: Auto-merge on green
+
+on:
+  check_suite:
+    types: [completed]
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auto-merge PRs for successful check_suite
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const suite = context.payload.check_suite;
+            if (!suite) return;
+            if (suite.conclusion !== 'success') {
+              console.log('Check suite not successful:', suite.conclusion);
+              return;
+            }
+
+            // Find PRs associated with the head SHA
+            const headSha = suite.head_sha;
+            const { data: prs } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} type:pr head_sha:${headSha}`,
+            });
+
+            if (!prs.items || prs.items.length === 0) {
+              console.log('No PRs found for head SHA', headSha);
+              return;
+            }
+
+            for (const prItem of prs.items) {
+              const prNumber = prItem.number;
+
+              // Get labels
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+
+              const labels = pr.labels.map(l => l.name);
+              if (!labels.includes('automerge')) {
+                console.log(`PR #${prNumber} does not have 'automerge' label, skipping.`);
+                continue;
+              }
+
+              // Ensure mergeable state
+              if (pr.mergeable === false) {
+                console.log(`PR #${prNumber} not mergeable (mergeable=false). Skipping.`);
+                continue;
+              }
+
+              // Merge the PR
+              try {
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  merge_method: 'squash'
+                });
+                console.log(`Merged PR #${prNumber}`);
+              } catch (err) {
+                console.error(`Failed to merge PR #${prNumber}:`, err.message);
+              }
+            }

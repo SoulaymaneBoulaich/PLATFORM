@@ -65,13 +65,33 @@ jobs:
 
       - name: Restore DB snapshot (presentation)
         working-directory: ./backend
-        run: npm run db:restore || echo 'DB restore failed or skipped'
+        run: |
+          mkdir -p ci-logs
+          npm run db:restore 2>&1 | tee ci-logs/db-restore.log || echo 'DB restore failed or skipped'
+
+      - name: Verify DB schema
+        working-directory: ./backend
+        env:
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_PORT: ${{ env.DB_PORT }}
+        run: |
+          node -e "const mysql=require('mysql2/promise');(async()=>{try{const c=await mysql.createConnection({host:process.env.DB_HOST,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME,port:process.env.DB_PORT||3306});const [tables]=await c.query(\"SHOW TABLES LIKE 'properties'\");console.log('properties table exists:', tables.length>0); if(tables.length===0) {console.error('properties table not found'); process.exit(2);} const [count]=await c.query('SELECT COUNT(*) as cnt FROM properties LIMIT 1'); console.log('properties count sample:', count[0].cnt); await c.end(); process.exit(0);}catch(e){console.error('DB verify failed:', e.message); process.exit(1)}})()" || true
 
       - name: Seed DB (presentation + offers)
         working-directory: ./backend
         run: |
-          npm run seed:presentation || echo 'presentation seed failed or skipped'
-          npm run seed:offers || echo 'offers seed failed or skipped'
+          mkdir -p ci-logs
+          npm run seed:presentation 2>&1 | tee ci-logs/seed-presentation.log || echo 'presentation seed failed or skipped'
+          npm run seed:offers 2>&1 | tee ci-logs/seed-offers.log || echo 'offers seed failed or skipped'
+
+      - name: Upload DB & seed logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-logs
+          path: backend/ci-logs/**
 
       - name: Run backend tests
         working-directory: ./backend
