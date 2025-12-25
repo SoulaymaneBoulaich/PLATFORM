@@ -426,6 +426,17 @@ npm test
 - The CI workflow now provisions a **MySQL 8** service for the backend job, waits for it to be ready, runs migrations and seeds, then runs the test suite.
 - If you want CI to run integration tests locally, ensure your job exposes MySQL and sets appropriate `DB_*` env vars.
 
+### Auto-merge workflow (convenience)
+We added an `auto-merge` workflow that will automatically merge a pull request when the associated check suite completes successfully, but only for PRs that have the label **`automerge`**.
+
+Usage:
+- Add the `automerge` label to a PR when you want it to be merged automatically once all checks pass and the PR is mergeable.
+- The workflow performs a squash merge using the `GITHUB_TOKEN` and requires the PR to be in a mergeable state.
+
+Notes:
+- Only use `automerge` for low-risk, routine changes (docs, test infra tweaks). For feature work, prefer manual review and merging.
+- If a PR fails to merge automatically (non-mergeable or conflicts), the workflow will log the reason and leave the PR for manual intervention.
+
 <!-- end of added docs -->
 
 
