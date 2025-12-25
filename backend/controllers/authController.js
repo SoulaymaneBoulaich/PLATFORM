@@ -5,20 +5,7 @@ const User = require('../models/User');
 const Agent = require('../models/Agent');
 const PasswordResetToken = require('../models/PasswordResetToken');
 
-// Helper function to validate password strength
-function validatePassword(password) {
-    const errors = [];
-    if (password.length < 8) {
-        errors.push('Password must be at least 8 characters');
-    }
-    if (!/\d/.test(password)) {
-        errors.push('Password must contain at least one number');
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        errors.push('Password must contain at least one special character');
-    }
-    return errors;
-}
+const { validatePassword } = require('../utils/password');
 
 exports.register = async (req, res, next) => {
     try {
