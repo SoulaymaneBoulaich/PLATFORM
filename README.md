@@ -398,6 +398,37 @@ SELECT * FROM table_name;
 
 ```bash
 # Navigate to project
+
+# --- NEW: Running tests, migrations, and database seeds ---
+# Run migrations (creates/updates DB schema)
+cd backend
+npm run migrate:all
+
+# Seed presentation data (idempotent)
+npm run seed:presentation
+
+# Seed offers (idempotent)
+npm run seed:offers
+
+# Run the backend test suite
+npm test
+```
+
+### Running tests and seeds locally (recommended)
+- Easiest: use Docker Compose (recommended)
+  - `docker compose up -d` (spins up DB + backend + frontend)
+  - `cd backend && npm run migrate:all && npm run seed:presentation && npm run seed:offers && npm test`
+- If running against a local MySQL instance set these environment variables in a `.env` file in `backend/`:
+  - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+- Tests which require a database will be tolerant when the DB or seed data are not available (the seed-based integration test is skipped or will not fail when no DB is configured).
+
+### How CI runs tests (GitHub Actions)
+- The CI workflow now provisions a **MySQL 8** service for the backend job, waits for it to be ready, runs migrations and seeds, then runs the test suite.
+- If you want CI to run integration tests locally, ensure your job exposes MySQL and sets appropriate `DB_*` env vars.
+
+<!-- end of added docs -->
+
+
 cd Desktop/PLATFORM
 
 # Start everything

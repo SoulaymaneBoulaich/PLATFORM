@@ -63,6 +63,10 @@ jobs:
         working-directory: ./backend
         run: npm run migrate:all
 
+      - name: Restore DB snapshot (presentation)
+        working-directory: ./backend
+        run: npm run db:restore || echo 'DB restore failed or skipped'
+
       - name: Seed DB (presentation + offers)
         working-directory: ./backend
         run: |
