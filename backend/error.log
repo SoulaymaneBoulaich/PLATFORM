@@ -3509,3 +3509,267 @@
     at Route.dispatch (C:\Users\pc\Downloads\wiam\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
     at Layer.handle [as handle_request] (C:\Users\pc\Downloads\wiam\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
 
+[2025-12-26T09:16:41.347Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.findAllByUserId (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Notification.js:27:35)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\notificationRoutes.js:10:50
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.340Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.906Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.910Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.918Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.927Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.930Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.934Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.949Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:41.953Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.816Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.821Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.818Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.834Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.837Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.849Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.855Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2025-12-26T09:16:43.868Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-02T12:09:35.616Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:10:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-02T12:09:35.698Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:10:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-02T12:09:38.168Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:10:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-02T12:09:38.207Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:10:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
