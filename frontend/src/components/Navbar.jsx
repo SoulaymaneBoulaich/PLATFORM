@@ -341,7 +341,7 @@ const Navbar = () => {
                                                     <Link to="/account/settings" onClick={() => setShowUserMenu(false)} className={`block px-4 py-2 ${theme.hoverBg} ${theme.hoverText} transition-colors text-sm font-medium`}>
                                                         {t('navbar.settings')}
                                                     </Link>
-                                                    <Link to="/dashboard" onClick={() => setShowUserMenu(false)} className={`block px-4 py-2 ${theme.hoverBg} ${theme.hoverText} transition-colors text-sm font-medium`}>
+                                                    <Link to={user?.user_type === 'seller' ? "/seller-dashboard" : "/dashboard"} onClick={() => setShowUserMenu(false)} className={`block px-4 py-2 ${theme.hoverBg} ${theme.hoverText} transition-colors text-sm font-medium`}>
                                                         {t('navbar.dashboard')}
                                                     </Link>
                                                     <Link to="/transactions" onClick={() => setShowUserMenu(false)} className={`block px-4 py-2 ${theme.hoverBg} ${theme.hoverText} transition-colors text-sm font-medium`}>
@@ -422,7 +422,7 @@ const Navbar = () => {
                                                     <span className="font-bold text-gray-900 dark:text-white">{user?.first_name}</span>
                                                 </div>
                                             </div>
-                                            <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className={`px-4 py-3 rounded-xl ${theme.hoverBg} ${theme.hoverText} font-bold`}>
+                                            <Link to={user?.user_type === 'seller' ? "/seller-dashboard" : "/dashboard"} onClick={() => setMobileMenuOpen(false)} className={`px-4 py-3 rounded-xl ${theme.hoverBg} ${theme.hoverText} font-bold`}>
                                                 Dashboard
                                             </Link>
                                             <Link to="/account/settings" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300">

@@ -73,6 +73,10 @@ class User {
 
         return this.findById(userId);
     }
+    static async delete(userId) {
+        const [result] = await pool.query('DELETE FROM users WHERE user_id = ?', [userId]);
+        return result.affectedRows > 0;
+    }
 }
 
 module.exports = User;

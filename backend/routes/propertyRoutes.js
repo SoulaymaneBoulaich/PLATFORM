@@ -18,7 +18,7 @@ router.post('/', auth, propertyController.create);
 router.put('/:id', auth, propertyController.update);
 
 // DELETE /api/properties/:id  (only seller who owns it or admin)
-router.delete('/:id', auth, propertyController.deleteProperty);
+router.delete('/:id', auth, propertyController.delete);
 
 // POST /api/properties/:id/offers - Submit an offer
 router.post('/:id/offers', auth, propertyController.submitOffer);

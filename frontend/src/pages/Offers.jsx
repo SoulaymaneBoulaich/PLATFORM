@@ -42,12 +42,12 @@ const Offers = () => {
         try {
             setLoading(true);
             const [receivedRes, sentRes] = await Promise.all([
-                api.get('/offers/seller').catch(() => ({ data: [] })), // Ignore error if not seller
-                api.get('/offers/buyer').catch(() => ({ data: [] }))   // Ignore error if not buyer
+                api.get('/offers/seller').catch(() => ({ data: { offers: [] } })), // Ignore error if not seller
+                api.get('/offers/buyer').catch(() => ({ data: { offers: [] } }))   // Ignore error if not buyer
             ]);
 
-            setReceivedOffers(receivedRes.data);
-            setSentOffers(sentRes.data);
+            setReceivedOffers(receivedRes.data.offers || []);
+            setSentOffers(sentRes.data.offers || []);
             setError('');
         } catch (err) {
             console.error('Failed to fetch offers:', err);
@@ -133,8 +133,8 @@ const Offers = () => {
                         <button
                             onClick={() => setActiveTab('received')}
                             className={`pb-4 px-6 text-lg font-medium transition-all duration-200 ${activeTab === 'received'
-                                    ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
-                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
+                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                 }`}
                         >
                             Received Offers
@@ -147,8 +147,8 @@ const Offers = () => {
                         <button
                             onClick={() => setActiveTab('sent')}
                             className={`pb-4 px-6 text-lg font-medium transition-all duration-200 ${activeTab === 'sent'
-                                    ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
-                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
+                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                 }`}
                         >
                             Sent Offers

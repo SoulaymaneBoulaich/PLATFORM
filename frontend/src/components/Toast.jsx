@@ -37,7 +37,7 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
             animate="animate"
             exit="exit"
             variants={variants}
-            className={`fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4 px-6 py-4 rounded-xl shadow-2xl text-white border ${styles[type] || styles.info} min-w-[320px] max-w-md backdrop-blur-sm bg-opacity-95`}
+            className={`flex items-center gap-4 px-6 py-4 rounded-xl shadow-2xl text-white border ${styles[type] || styles.info} min-w-[320px] max-w-md backdrop-blur-sm bg-opacity-95 shadow-lg mb-2`}
         >
             <div className="flex-shrink-0">
                 {icons[type] || icons.info}

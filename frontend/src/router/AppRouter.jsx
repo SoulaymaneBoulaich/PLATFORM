@@ -18,6 +18,8 @@ import Settings from '../pages/Settings';
 import Offers from '../pages/Offers';
 import Favorites from '../pages/Favorites';
 import PageTransition from '../components/PageTransition';
+import AddProperty from '../pages/AddProperty';
+import SellerDashboard from '../pages/SellerDashboard';
 
 
 const AppRouter = () => {
@@ -66,6 +68,16 @@ const AppRouter = () => {
             <Route path="/favorites" element={
                 <ProtectedRoute>
                     <PageTransition><Favorites /></PageTransition>
+                </ProtectedRoute>
+            } />
+            <Route path="/add-property" element={
+                <ProtectedRoute>
+                    <PageTransition><AddProperty /></PageTransition>
+                </ProtectedRoute>
+            } />
+            <Route path="/seller-dashboard" element={
+                <ProtectedRoute>
+                    <PageTransition><SellerDashboard /></PageTransition>
                 </ProtectedRoute>
             } />
         </Routes>

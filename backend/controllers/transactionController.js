@@ -2,7 +2,12 @@ const Transaction = require('../models/Transaction');
 
 exports.getAll = async (req, res, next) => {
     try {
-        const transactions = await Transaction.findByUserId(req.user.user_id);
+        let transactions;
+        if (req.user.user_type === 'admin') {
+            transactions = await Transaction.findAll({});
+        } else {
+            transactions = await Transaction.findByUserId(req.user.user_id);
+        }
         res.json(transactions);
     } catch (err) {
         next(err);

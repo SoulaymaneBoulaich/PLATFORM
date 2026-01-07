@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { RoleThemeProvider } from './context/RoleThemeContext';
 import { SocketProvider } from './context/SocketContext';
+import { ToastProvider } from './context/ToastContext';
 import AppRouter from './router/AppRouter';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -18,14 +19,16 @@ function App() {
           <AuthProvider>
             <SocketProvider>
               <RoleThemeProvider>
-                <div className="flex flex-col min-h-screen">
-                  <Navbar />
-                  <main className="flex-grow">
-                    <AppRouter />
-                  </main>
-                  <ScrollToTop />
-                  <Footer />
-                </div>
+                <ToastProvider>
+                  <div className="flex flex-col min-h-screen">
+                    <Navbar />
+                    <main className="flex-grow">
+                      <AppRouter />
+                    </main>
+                    <ScrollToTop />
+                    <Footer />
+                  </div>
+                </ToastProvider>
               </RoleThemeProvider>
             </SocketProvider>
           </AuthProvider>

@@ -3,6 +3,8 @@ const Offer = require('../models/Offer');
 const Favorite = require('../models/Favorite');
 const Analytics = require('../models/Analytics');
 const Appointment = require('../models/Appointment');
+const Notification = require('../models/Notification');
+const { getIo } = require('../socketHandler');
 
 exports.getAll = async (req, res, next) => {
     try {
@@ -56,6 +58,36 @@ exports.create = async (req, res, next) => {
         for (let i = 0; i < propertyData.images.length; i++) {
             const isPrimary = i === 0;
             await PropertyImage.create(propertyId, propertyData.images[i], isPrimary);
+        }
+
+        // Create Notification
+        try {
+            const notificationFull = {
+                user_to_notify: seller_id,
+                user_from: null,
+                property_id: propertyId,
+                type: 'system',
+                message: `Property "${propertyData.title}" created successfully`,
+                is_read: 0,
+                created_at: new Date()
+            };
+            const notifId = await Notification.create(
+                notificationFull.user_to_notify,
+                notificationFull.user_from,
+                notificationFull.property_id,
+                notificationFull.type,
+                notificationFull.message
+            );
+
+            // Real-time update
+            try {
+                const io = getIo();
+                io.to(seller_id).emit('notification', { ...notificationFull, notification_id: notifId });
+            } catch (e) {
+                console.error('Socket emit error:', e);
+            }
+        } catch (notifErr) {
+            console.error('Notification error:', notifErr);
         }
 
         res.status(201).json({ property_id: propertyId });
@@ -125,26 +157,44 @@ exports.update = async (req, res, next) => {
     }
 };
 
-exports.deleteProperty = async (req, res, next) => {
+exports.delete = async (req, res, next) => {
     try {
-        if (req.user.user_type !== 'seller' && req.user.user_type !== 'admin') {
-            return res
-                .status(403)
-                .json({ message: 'Only sellers can delete properties' });
+        const propertyId = req.params.id;
+        const userId = req.user.user_id;
+
+        const property = await Property.findById(propertyId);
+        if (!property) return res.status(404).json({ message: 'Property not found' });
+
+        // Allow deletion if user is admin OR if user is the owner (seller)
+        if (req.user.user_type !== 'admin' && property.seller_id !== userId) {
+            return res.status(403).json({ message: 'Unauthorized. You are not the owner.' });
         }
 
-        const id = req.params.id;
-        const seller_id = req.user.user_id;
+        // Cascade delete property data using a transaction
+        const connection = await require('../config/database').getConnection();
+        try {
+            await connection.beginTransaction();
 
-        const success = await Property.delete(id, seller_id);
+            // Delete associated data
+            await connection.query('DELETE FROM property_images WHERE property_id = ?', [propertyId]);
+            await connection.query('DELETE FROM favorites WHERE property_id = ?', [propertyId]);
+            await connection.query('DELETE FROM transactions WHERE property_id = ?', [propertyId]);
+            await connection.query('DELETE FROM offers WHERE property_id = ?', [propertyId]); // Added offers deletion
+            await connection.query('DELETE FROM appointments WHERE property_id = ?', [propertyId]); // Added appointments deletion
+            await connection.query('DELETE FROM notifications WHERE property_id = ?', [propertyId]); // Added notifications
 
-        if (!success) {
-            return res
-                .status(404)
-                .json({ message: 'Property not found or not owner' });
+            // Finally delete the property
+            await connection.query('DELETE FROM properties WHERE property_id = ?', [propertyId]);
+
+            await connection.commit();
+            res.json({ message: 'Property and all related data deleted successfully' });
+        } catch (dbErr) {
+            await connection.rollback();
+            console.error('Database transaction error:', dbErr);
+            throw dbErr;
+        } finally {
+            connection.release();
         }
-
-        res.json({ message: 'Deleted' });
     } catch (err) {
         next(err);
     }

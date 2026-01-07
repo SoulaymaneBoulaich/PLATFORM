@@ -1,8 +1,13 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const Favorite = require('../models/Favorite');
+const userController = require('../controllers/userController');
 
 const router = express.Router();
+
+// DELETE /api/users/:id - Admin only
+router.delete('/:id', auth, userController.deleteUser);
+
 
 // GET /api/users/:id/favorites
 router.get('/:id/favorites', auth, async (req, res, next) => {

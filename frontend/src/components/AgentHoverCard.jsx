@@ -68,7 +68,7 @@ const AgentHoverCard = ({ agentId, children }) => {
                                             <div className="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden flex-shrink-0">
                                                 {property.image_url ? (
                                                     <img
-                                                        src={`http://localhost:3001${property.image_url.startsWith('/') ? '' : '/'}${property.image_url}`}
+                                                        src={property.image_url.startsWith('http') ? property.image_url : `http://localhost:3001${property.image_url.startsWith('/') ? '' : '/'}${property.image_url}`}
                                                         alt={property.title}
                                                         className="w-full h-full object-cover"
                                                     />

@@ -10,6 +10,8 @@ import useFloat from '../hooks/useFloat';
 import ImageGrid from '../components/ImageGrid';
 import ProfileHoverCard from '../components/ProfileHoverCard';
 import ProfileImage from '../components/ProfileImage';
+import ConfirmModal from '../components/ConfirmModal';
+import { useToast } from '../context/ToastContext';
 
 const PropertyDetail = () => {
     const { id } = useParams();
@@ -114,6 +116,36 @@ const PropertyDetail = () => {
         }
     };
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const { addToast } = useToast();
+
+    const handleDeleteProperty = async () => {
+        try {
+            await api.delete(`/properties/${id}`);
+            addToast('Property deleted successfully', 'success');
+            navigate('/properties');
+        } catch (err) {
+            console.error('Failed to delete property:', err);
+            addToast(err.response?.data?.message || 'Failed to delete property', 'error');
+        }
+    };
+    const handleShare = async () => {
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: property.title,
+                    text: `Check out this property: ${property.title}`,
+                    url: window.location.href,
+                });
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    };
+
     if (loading) return <div className="min-h-screen flex items-center justify-center"><LoadingSpinner message="Loading property..." /></div>;
 
     if (error || !property) {
@@ -161,7 +193,7 @@ const PropertyDetail = () => {
                                     <svg className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-900 dark:text-white'}`} width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
                                     {isFavorite ? 'Saved' : 'Save'}
                                 </button>
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors font-semibold text-sm underline">
+                                <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors font-semibold text-sm underline">
                                     <svg className="w-5 h-5 text-gray-900 dark:text-white" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="6" r="3" /><circle cx="18" cy="18" r="3" /><line x1="8.7" y1="10.7" x2="15.3" y2="7.3" /><line x1="8.7" y1="13.3" x2="15.3" y2="16.7" /></svg>
                                     Share
                                 </button>
@@ -305,6 +337,14 @@ const PropertyDetail = () => {
                                     {isOwner && (
                                         <button onClick={() => navigate('/dashboard')} className="btn-primary w-full">Manage Listing</button>
                                     )}
+                                    {user?.user_type === 'admin' && (
+                                        <button
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className="w-full py-3 mt-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-colors shadow-lg shadow-red-500/20"
+                                        >
+                                            Delete Property
+                                        </button>
+                                    )}
                                 </div>
 
                                 {isUnavailable && (
@@ -397,6 +437,15 @@ const PropertyDetail = () => {
                     {showOfferModal && <MakeOfferModal property={property} onClose={() => setShowOfferModal(false)} onSuccess={() => { alert('Offer submitted!'); setShowOfferModal(false); }} />}
                 </div>
             </div>
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteProperty}
+                title="Delete Property"
+                message="Are you sure you want to delete this property? This action cannot be undone."
+                confirmText="Delete Property"
+            />
         </PageTransition>
     );
 };

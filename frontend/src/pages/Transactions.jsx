@@ -25,7 +25,10 @@ const Transactions = () => {
         fetchTransactions();
         fetchProperties();
         fetchSellers();
-    }, []);
+        if (user && user.user_type === 'seller') {
+            setFormData(prev => ({ ...prev, seller_id: user.user_id }));
+        }
+    }, [user]);
 
     const fetchTransactions = async () => {
         try {
@@ -75,7 +78,7 @@ const Transactions = () => {
             setShowForm(false);
             setFormData({
                 property_id: '',
-                seller_id: '',
+                seller_id: user?.user_type === 'seller' ? user.user_id : '',
                 amount: '',
                 type: 'payment',
                 status: 'pending'
@@ -165,6 +168,7 @@ const Transactions = () => {
                                             onChange={handleFormChange}
                                             className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                             required
+                                            disabled={user?.user_type === 'seller'}
                                         >
                                             <option value="">Select Seller</option>
                                             {sellers.map(seller => (

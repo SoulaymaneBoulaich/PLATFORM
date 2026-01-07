@@ -1,14 +1,33 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import PropertyCard from '../components/PropertyCard';
 import Loader from '../components/Loader';
 import StartChatButton from '../components/StartChatButton';
 import ErrorMessage from '../components/ErrorMessage';
 import { useRoleTheme } from '../context/RoleThemeContext';
+import ConfirmModal from '../components/ConfirmModal';
+import { useToast } from '../context/ToastContext';
 
 const AgentDetail = () => {
     const { id } = useParams();
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const { addToast } = useToast();
+
+    const handleDeleteUser = async () => {
+        try {
+            await api.delete(`/users/${id}`);
+            addToast('Agent deleted successfully', 'success');
+            navigate('/agents');
+        } catch (err) {
+            console.error('Failed to delete agent:', err);
+            addToast(err.response?.data?.message || 'Failed to delete agent', 'error');
+        }
+    };
     const [agent, setAgent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -85,8 +104,16 @@ const AgentDetail = () => {
 
                         {/* Agent Information */}
                         <div className="flex-grow">
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-4">
                                 {agent.first_name} {agent.last_name}
+                                {user?.user_type === 'admin' && (
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors"
+                                    >
+                                        Delete Agent
+                                    </button>
+                                )}
                             </h1>
 
                             {agent.license_number && (
@@ -199,7 +226,16 @@ const AgentDetail = () => {
                     </div>
                 )
             }
-        </div >
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteUser}
+                title="Delete Agent"
+                message="Are you sure you want to delete this agent? This action cannot be undone and will delete all their properties and data."
+                confirmText="Delete Agent"
+            />
+        </div>
     );
 };
 
