@@ -5213,3 +5213,51 @@
     at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
     at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
 
+[2026-01-07T19:18:46.282Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Agent.findById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Agent.js:46:35)
+    at exports.getById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\agentController.js:17:33)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:365:14)
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:376:14)
+
+[2026-01-07T19:18:47.050Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Agent.findById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Agent.js:46:35)
+    at exports.getById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\agentController.js:17:33)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:365:14)
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:376:14)
+
+[2026-01-07T19:18:49.883Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Agent.findById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Agent.js:46:35)
+    at exports.getById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\agentController.js:17:33)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:365:14)
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:376:14)
+
+[2026-01-07T19:18:51.009Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Agent.findById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Agent.js:46:35)
+    at exports.getById (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\agentController.js:17:33)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:365:14)
+    at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:376:14)
+
