@@ -5261,3 +5261,135 @@
     at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:365:14)
     at param (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:376:14)
 
+[2026-01-07T23:15:03.250Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:12:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-07T23:15:03.375Z] Error: getaddrinfo EAI_AGAIN metro.proxy.rlwy.net
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:12:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-08T16:30:47.662Z] Error: connect ETIMEDOUT
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Agent.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Agent.js:28:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\agentController.js:6:36)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-08T16:30:48.070Z] Error: connect ETIMEDOUT
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Property.findAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Property.js:66:35)
+    at exports.getAll (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\controllers\propertyController.js:12:43)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\index.js:280:10)
+
+[2026-01-08T21:16:16.961Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Notification.getUnreadCount (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Notification.js:32:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\notificationRoutes.js:21:42
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:16:20.786Z] Error: connect ETIMEDOUT
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:16:30.808Z] Error: connect ETIMEDOUT
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:16:32.641Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:16:32.730Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:16:52.467Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+
+[2026-01-08T21:17:36.079Z] Error: read ECONNRESET
+    at PromisePool.query (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Favorite.isFavorited (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\models\Favorite.js:64:37)
+    at C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\routes\favoritesRoutes.js:75:44
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at module.exports (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\middleware\auth.js:12:5)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\pc\Downloads\WEBSITE\PLATFORM\backend\node_modules\express\lib\router\layer.js:95:5)
+

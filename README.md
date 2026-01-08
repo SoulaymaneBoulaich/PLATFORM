@@ -1,484 +1,205 @@
-# Real Estate Platform - Team Setup Guide
+# 🏡 Real Estate Platform
 
-Welcome! This guide will help you set up and run the Real Estate Platform on your laptop from scratch.
+> **A modern, full-stack real estate marketplace connecting buyers, sellers, and agents.**
 
-## 📖 What You'll Learn
-
-By following this guide, you will:
-- Install Docker Desktop (our development environment)
-- Clone and run the project
-- Access the website on your laptop
-- Understand how to start/stop the application
-
-**Time needed**: 15-20 minutes for first-time setup
+This platform is a comprehensive solution for property management and real estate transactions, featuring role-based dashboards, real-time messaging, and interactive map-based property search.
 
 ---
 
-## 🎯 Step 1: Install Docker Desktop
-
-### What is Docker?
-Docker is a tool that packages our entire application (database, backend, frontend) into containers. This means:
-- ✅ Everyone on the team has the exact same setup
-- ✅ No manual database installation needed
-- ✅ Works on Windows, Mac, and Linux
-- ✅ No conflicts with other software on your laptop
-
-### Installation Steps
-
-#### For Windows:
-1. Go to: https://www.docker.com/products/docker-desktop
-2. Click **"Download for Windows"**
-3. Run the installer (Docker Desktop Installer.exe)
-4. Follow the installation wizard
-   - Click "OK" to enable WSL 2 if prompted
-   - Restart your computer when asked
-5. After restart, open **Docker Desktop** from your Start menu
-6. Wait for Docker to start (you'll see a whale icon in your system tray)
-
-#### For Mac:
-1. Go to: https://www.docker.com/products/docker-desktop
-2. Click **"Download for Mac"** (choose Intel or Apple Silicon)
-3. Open the downloaded .dmg file
-4. Drag Docker to your Applications folder
-5. Open Docker from Applications
-6. Grant permissions when asked
-7. Wait for Docker to start (you'll see a whale icon in your menu bar)
-
-#### For Linux:
-1. Go to: https://docs.docker.com/desktop/install/linux-install/
-2. Choose your Linux distribution
-3. Follow the installation instructions
-4. Start Docker Desktop after installation
-
-### Verify Docker is Running
-
-Open your terminal (Command Prompt on Windows, Terminal on Mac/Linux) and type:
-
-```bash
-docker --version
-```
-
-You should see something like: `Docker version 24.0.x`
-
-If you see this, **Docker is ready!** ✅
+## 📖 Table of Contents
+- [Features](#-features)
+- [Tech Stack](#%EF%B8%8F-tech-stack)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Environment Setup](#environment-setup)
+  - [Installation & Running](#installation--running)
+- [Project Structure](#-project-structure)
+- [API Documentation](#-api-documentation)
+- [Troubleshooting](#-troubleshooting)
 
 ---
 
-## 🎯 Step 2: Clone the Project
+## ✨ Features
 
-### What is Cloning?
-Cloning downloads a copy of the project code to your laptop.
+### 👤 User Roles
+- **Buyers**: Search properties, save favorites, make offers, chat with agents/sellers.
+- **Sellers**: List properties, manage offers, track views/favorites analytics, manage profile.
+- **Agents**: specialized dashboard, manage multiple listings, verified profile status.
 
-### Steps:
+### 🏠 Property Management
+- **Advanced Search**: Filter by location, price, type, amenities.
+- **Interactive Maps**: Browse properties on a dynamic map (Leaflet).
+- **Rich Media**: High-quality image galleries for listings.
+- **Details**: Comprehensive info including amenities, location, and agent details.
 
-1. **Open your terminal**
-   - Windows: Press `Win + R`, type `cmd`, press Enter
-   - Mac: Press `Cmd + Space`, type "Terminal", press Enter
-   - Linux: Press `Ctrl + Alt + T`
+### 💬 Communication & core
+- **Real-time Chat**: Instant messaging between users (Socket.io).
+- **Notifications**: Instant alerts for offers, messages, and status updates.
+- **Live Updates**: Real-time status changes for properties and offers.
+- **Global Search**: Powerful search across properties and agents.
 
-2. **Navigate to where you want to save the project**
-   ```bash
-   # Example: Save to Desktop
-   cd Desktop
-   ```
-
-3. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd PLATFORM
-   ```
-   
-   > **Note**: Replace `<repository-url>` with the actual Git URL your team lead provides
-
-4. **Verify you're in the right folder**
-   ```bash
-   # Windows
-   dir
-   
-   # Mac/Linux
-   ls
-   ```
-   
-   You should see folders: `backend`, `frontend`, `db`, and a file `docker-compose.yml`
+### 🔐 Security & UX
+- **Secure Auth**: JWT-based authentication with role-based access control.
+- **Modern UI**: Responsive, dark/light mode supported, animated transitions (Framer Motion).
+- **Multi-language**: Internationalization support (i18n).
 
 ---
 
-## 🎯 Step 3: Start the Application
+## 🛠️ Tech Stack
 
-### First Time Setup (takes 2-3 minutes)
+### Frontend
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS
+- **State & Logic**: Context API, React Router v7
+- **Maps**: React Leaflet
+- **Real-time**: Socket.io Client
+- **Animations**: Framer Motion, GSAP
+- **HTTP**: Axios
 
-In your terminal (make sure you're in the PLATFORM folder):
+### Backend
+- **Server**: Node.js + Express
+- **Database**: MySQL (using mysql2)
+- **Auth**: JSON Web Tokens (JWT), Bcrypt
+- **Storage**: Cloudinary (for image uploads)
+- **Real-time**: Socket.io Server
+- **Email**: Nodemailer
 
-```bash
-docker compose up --build
-```
-
-### What's Happening?
-
-You'll see lots of text scrolling. This is normal! Docker is:
-1. ⬇️ Downloading MySQL database (first time only)
-2. 🔨 Building the backend
-3. 🔨 Building the frontend
-4. 🗄️ Creating the database with tables and sample data
-5. 🚀 Starting all services
-
-**Wait until you see**:
-- `API running on port 5000` (backend ready)
-- `ready in XXXms` (frontend ready)
-
----
-
-## 🎯 Step 4: Open the Website
-
-1. **Open your web browser** (Chrome, Firefox, Edge, Safari)
-2. **Go to**: http://localhost:3000
-
-🎉 **You should see the Real Estate Platform!**
-
-You should see:
-- Navigation bar (Home, Properties, Agents, Login)
-- Featured properties with images
-- Property cards showing listings
+### DevOps
+- **Containerization**: Docker & Docker Compose
+- **Database**: MySQL Container
+- **CI/CD**: GitHub Actions (implied)
 
 ---
 
-## 🎯 Daily Usage
+## 🚀 Getting Started
 
-After the first setup, it's much faster!
+Follow these steps to set up the project locally.
 
-### To Start the Application:
+### Prerequisites
+- **Docker Desktop** (Recommended) - [Download Here](https://www.docker.com/products/docker-desktop)
+- *Alternatively*: Node.js v18+ and MySQL 8.0 locally installed.
 
+### Environment Setup
+
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd PLATFORM
+    ```
+
+2.  **Configure Environment Variables**:
+    Create a `.env` file in the `PLATFORM` directory (root) or rely on docker defaults. Required variables include:
+
+    ```env
+    # Database Configuration
+    DB_HOST=mysql_container_name_or_localhost
+    DB_USER=root
+    DB_PASSWORD=your_password
+    DB_NAME=real_estate_db
+    
+    # Backend Config
+    PORT=5000
+    JWT_SECRET=your_jwt_secret_key
+    NODE_ENV=development
+    
+    # Cloudinary (Image Uploads)
+    CLOUDINARY_CLOUD_NAME=your_cloud_name
+    CLOUDINARY_API_KEY=your_api_key
+    CLOUDINARY_API_SECRET=your_api_secret
+    ```
+
+### Installation & Running
+
+The easiest way to run the application is using **Docker Compose**.
+
+1.  **Start the Application**:
+    ```bash
+    docker compose up --build
+    ```
+    *This will build the frontend and backend images, start the MySQL database, and launch the services.*
+
+2.  **Access the Application**:
+    - **Frontend (Website)**: [http://localhost:3000](http://localhost:3000)
+    - **Backend (API)**: [http://localhost:5000](http://localhost:5000)
+    - **Database**: `localhost:3306` (or port defined in docker-compose)
+
+3.  **Stop the Application**:
+    ```bash
+    docker compose down
+    ```
+
+#### Running Manually (Without Docker)
+
+<details>
+<summary>Click to see manual setup instructions</summary>
+
+**Backend:**
 ```bash
-# Go to the project folder
-cd Desktop/PLATFORM
-
-# Start everything (takes 10-15 seconds)
-docker compose up -d
-```
-
-The `-d` flag runs it in the background, so you can close the terminal.
-
-### To Stop the Application:
-
-```bash
-docker compose down
-```
-
-### To Restart After Making Code Changes:
-
-```bash
-docker compose restart backend
-# or
-docker compose restart frontend
-```
-
----
-
-## 🔍 Verify Everything is Working
-
-### Check if containers are running:
-```bash
-docker ps
-```
-
-You should see 3 containers:
-- `realestate-frontend` (port 3000)
-- `realestate-backend` (port 5000)
-- `realestate-db` (port 3307)
-
-### Check backend is responding:
-Open your browser and go to: http://localhost:5000/api/properties
-
-You should see JSON data with property listings.
-
-### Check frontend is working:
-Go to: http://localhost:3000
-
-You should see the website with properties displaying.
-
----
-
-## ❓ Troubleshooting Common Issues
-
-### Issue 1: "Docker is not recognized"
-**Problem**: Docker isn't installed or not in PATH  
-**Solution**: 
-- Make sure Docker Desktop is running (check system tray/menu bar)
-- Restart your terminal after installing Docker
-- Restart your computer if needed
-
-### Issue 2: "Port 3000 is already in use"
-**Problem**: Another application is using port 3000  
-**Solution**:
-```bash
-# Stop any running npm servers
-# Then restart Docker
-docker compose down
-docker compose up -d
-```
-
-### Issue 3: "Permission denied" (Linux/Mac)
-**Problem**: Docker needs permissions  
-**Solution**:
-```bash
-sudo docker compose up -d
-```
-
-### Issue 4: Database connection errors
-**Problem**: Database not ready yet  
-**Solution**:
-```bash
-# Wait 30 seconds for database to initialize
-# Then restart backend
-docker compose restart backend
-```
-
-### Issue 5: Frontend shows "Failed to load properties"
-**Solutions to try**:
-1. Hard refresh your browser: `Ctrl + F5` (Windows) or `Cmd + Shift + R` (Mac)
-2. Check backend is running: `docker ps`
-3. Check backend logs: `docker compose logs backend`
-4. Restart everything:
-   ```bash
-   docker compose down
-   docker compose up -d
-   ```
-
----
-
-## 🌐 Understanding URLs
-
-When the application is running:
-
-| URL | What it shows | Used for |
-|-----|---------------|----------|
-| http://localhost:3000 | Website frontend | Regular browsing |
-| http://localhost:5000/api/properties | JSON data | Testing API |
-| localhost:3307 | MySQL database | Database tools (DBeaver, etc.) |
-
-**localhost** means "this computer" - so it works on any laptop, anywhere, no internet needed!
-
----
-
-## 🎓 Understanding Docker Commands
-
-Here are the commands you'll use:
-
-```bash
-# Start all services
-docker compose up -d
-
-# Stop all services  
-docker compose down
-
-# View running containers
-docker ps
-
-# View logs
-docker compose logs
-
-# View logs for a specific service
-docker compose logs backend
-
-# Restart a service
-docker compose restart backend
-
-# Rebuild and start (after major changes)
-docker compose up --build
-
-# Stop and remove everything including data (CAUTION!)
-docker compose down -v
-```
-
----
-
-## �️ Adding Tables to the Database
-
-### Method 1: Interactive SQL Terminal (Recommended for Learning)
-
-1. **Open MySQL terminal inside the Docker container:**
-   ```bash
-   docker exec -it realestate-db mysql -urealestateuser -pStrongPassword123! real_estate_db
-   ```
-
-2. **You're now in MySQL!** You'll see: `mysql>`
-
-3. **Create your table:**
-   ```sql
-   CREATE TABLE my_new_table (
-       id INT PRIMARY KEY AUTO_INCREMENT,
-       name VARCHAR(255) NOT NULL,
-       description TEXT,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
-   ```
-
-4. **Verify it was created:**
-   ```sql
-   SHOW TABLES;
-   DESCRIBE my_new_table;
-   ```
-
-5. **Exit MySQL terminal:**
-   ```sql
-   exit;
-   ```
-
-### Method 2: Run SQL from a File (For Migration Scripts)
-
-1. **Create a SQL file** (e.g., `add_reviews_table.sql`):
-   ```bash
-   # Create in backend/migrations folder
-   cd backend/migrations
-   # Then create your .sql file
-   ```
-
-2. **Example SQL file content:**
-   ```sql
-   CREATE TABLE IF NOT EXISTS reviews (
-       review_id INT PRIMARY KEY AUTO_INCREMENT,
-       property_id INT NOT NULL,
-       user_id INT NOT NULL,
-       rating INT NOT NULL,
-       comment TEXT,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (property_id) REFERENCES properties(property_id),
-       FOREIGN KEY (user_id) REFERENCES users(user_id)
-   );
-   ```
-
-3. **Run the SQL file:**
-   ```bash
-   docker exec -i realestate-db mysql -urealestateuser -pStrongPassword123! real_estate_db < backend/migrations/add_reviews_table.sql
-   ```
-
-### Method 3: Quick One-Line Command
-
-```bash
-docker exec -i realestate-db mysql -urealestateuser -pStrongPassword123! real_estate_db -e "CREATE TABLE test (id INT PRIMARY KEY);"
-```
-
-### Useful SQL Commands
-
-```sql
--- See all tables
-SHOW TABLES;
-
--- See table structure
-DESCRIBE table_name;
-
--- See how table was created
-SHOW CREATE TABLE table_name;
-
--- Drop a table (CAUTION!)
-DROP TABLE table_name;
-
--- Add a column to existing table
-ALTER TABLE table_name ADD COLUMN new_column VARCHAR(100);
-
--- See all data in a table
-SELECT * FROM table_name;
-```
-
----
-
-## �💡 Tips for Success
-
-1. **Always start Docker Desktop first** before running commands
-2. **Run commands from inside the PLATFORM folder**
-3. **If something doesn't work, try**: `docker compose down` then `docker compose up -d`
-4. **Check Docker Desktop app** to see if containers are running
-5. **Ask the team** if you're stuck - we're here to help!
-
----
-
-## 🎯 Quick Reference Card
-
-**Save this for daily use:**
-
-```bash
-# Navigate to project
-
-# --- NEW: Running tests, migrations, and database seeds ---
-# Run migrations (creates/updates DB schema)
 cd backend
-npm run migrate:all
-
-# Seed presentation data (idempotent)
-npm run seed:presentation
-
-# Seed offers (idempotent)
-npm run seed:offers
-
-# Run the backend test suite
-npm test
+npm install
+npm run dev
+# Server starts on port 5000
 ```
 
-### Running tests and seeds locally (recommended)
-- Easiest: use Docker Compose (recommended)
-  - `docker compose up -d` (spins up DB + backend + frontend)
-  - `cd backend && npm run migrate:all && npm run seed:presentation && npm run seed:offers && npm test`
-- If running against a local MySQL instance set these environment variables in a `.env` file in `backend/`:
-  - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
-- Tests which require a database will be tolerant when the DB or seed data are not available (the seed-based integration test is skipped or will not fail when no DB is configured).
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+# App starts on port 5173 (usually, check console)
+```
+</details>
 
-### How CI runs tests (GitHub Actions)
-- The CI workflow now provisions a **MySQL 8** service for the backend job, waits for it to be ready, runs migrations and seeds, then runs the test suite.
-- If you want CI to run integration tests locally, ensure your job exposes MySQL and sets appropriate `DB_*` env vars.
+---
 
-### Auto-merge workflow (convenience)
-We added an `auto-merge` workflow that will automatically merge a pull request when the associated check suite completes successfully, but only for PRs that have the label **`automerge`**.
+## 📁 Project Structure
 
-Usage:
-- Add the `automerge` label to a PR when you want it to be merged automatically once all checks pass and the PR is mergeable.
-- The workflow performs a squash merge using the `GITHUB_TOKEN` and requires the PR to be in a mergeable state.
-
-Notes:
-- Only use `automerge` for low-risk, routine changes (docs, test infra tweaks). For feature work, prefer manual review and merging.
-- If a PR fails to merge automatically (non-mergeable or conflicts), the workflow will log the reason and leave the PR for manual intervention.
-
-<!-- end of added docs -->
-
-
-cd Desktop/PLATFORM
-
-# Start everything
-docker compose up -d
-
-# Open website
-# Browser: http://localhost:3000
-
-# Stop everything
-docker compose down
+```
+PLATFORM/
+├── backend/                 # Express Server & API
+│   ├── config/             # DB & App Configuration
+│   ├── controllers/        # Request Handlers
+│   ├── middleware/         # Auth & Validation Middleware
+│   ├── models/             # Database Models
+│   ├── routes/             # API Routes
+│   └── server.js           # Entry Point
+│
+├── frontend/               # React Application
+│   ├── src/
+│   │   ├── components/     # Reusable UI Components
+│   │   ├── context/        # Global State (Auth, Theme, etc.)
+│   │   ├── pages/          # Application Views
+│   │   └── services/       # API Calls
+│   └── vite.config.js      # Build Config
+│
+├── db/                     # Database scripts/seeds
+├── docker-compose.yml      # Docker Orchestration
+└── README.md               # You are here
 ```
 
 ---
 
-## 🆘 Getting Help
+## 📖 API Documentation
 
-If you're stuck:
-1. Check the Troubleshooting section above
-2. Ask in the team chat
-3. Share your error message for faster help
-4. Run `docker compose logs` to see detailed errors
+The backend provides a RESTful API for all platform operations.
+For detailed documentation on API routes, architecture, and database schemas, please refer to:
 
----
-
-## 🎉 You're Ready!
-
-Congratulations! You now know how to:
-- ✅ Install Docker
-- ✅ Start the application
-- ✅ Access the website
-- ✅ Stop the application
-- ✅ Troubleshoot common issues
-
-Welcome to the team! 🚀
+👉 **[TECHNICAL_DOCUMENTATION_REPORT.md](./TECHNICAL_DOCUMENTATION_REPORT.md)**
 
 ---
 
-## 📚 Technical Documentation Report ✅
+## ❓ Troubleshooting
 
-A comprehensive technical documentation for this project has been added: [TECHNICAL_DOCUMENTATION_REPORT.md](./TECHNICAL_DOCUMENTATION_REPORT.md)
+**Common Docker Issues:**
+*   **Port Conflicts:** Ensure ports 3000, 5000, and 3306 are free.
+*   **Database Connection:** If the backend fails to connect immediately, wait 30 seconds for the MySQL container to initialize and restart the backend container.
+    ```bash
+    docker compose restart backend
+    ```
 
-This file contains detailed architecture, API routes, database schema, and deployment instructions for developers and operators.
+**Frontend Issues:**
+*   If you see "Network Error", ensure the backend is running and the API URL is correctly configured in the frontend (usually defaults to `http://localhost:5000`).
+
+---
+
+**Built with ❤️ by the Real Estate Platform Team.**
