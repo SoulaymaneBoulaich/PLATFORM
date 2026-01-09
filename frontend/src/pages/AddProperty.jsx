@@ -17,8 +17,10 @@ const AddProperty = () => {
         price: '',
         address: '',
         city: '',
-        property_type: 'House',
-        listing_type: 'Sale',
+        state: '',
+        zip_code: '',
+        property_type: 'house',
+        listing_type: 'sale',
         bedrooms: '',
         bathrooms: '',
         area: '',
@@ -123,6 +125,30 @@ const AddProperty = () => {
                                 </div>
 
                                 <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State</label>
+                                    <input
+                                        type="text"
+                                        name="state"
+                                        value={formData.state}
+                                        onChange={handleFormChange}
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Zip Code</label>
+                                    <input
+                                        type="text"
+                                        name="zip_code"
+                                        value={formData.zip_code}
+                                        onChange={handleFormChange}
+                                        className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Property Type</label>
                                     <select
                                         name="property_type"
@@ -148,8 +174,8 @@ const AddProperty = () => {
                                         onChange={handleFormChange}
                                         className="input-field dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                                     >
-                                        <option value="Sale">For Sale</option>
-                                        <option value="Rent">For Rent</option>
+                                        <option value="sale">For Sale</option>
+                                        <option value="rent">For Rent</option>
                                     </select>
                                 </div>
 
