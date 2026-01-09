@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS offers (
     property_id INT NOT NULL,
     buyer_id INT NOT NULL,
     seller_id INT NOT NULL,
-    amount DECIMAL(12,2) NOT NULL,
+    amount DECIMAL(18,2) NOT NULL,
     status ENUM('Pending', 'Accepted', 'Rejected', 'Countered') DEFAULT 'Pending',
     message TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
